@@ -1,0 +1,186 @@
+================================================================================
+AUTONOMOUS AI RESEARCH RADAR - ARSITEKTUR & ALUR KERJA (WORKFLOW) SISTEM
+================================================================================
+
+1. GAMBARAN UMUM SISTEM
+--------------------------------------------------------------------------------
+Autonomous AI Research Radar adalah sistem riset AI otomatis berbasis bukti
+(evidence-first research engine). Sistem ini BUKAN chatbot konvensional (prompt ->
+jawaban), melainkan pipeline riset yang:
+  - Mengambil data langsung dari sumber primer (GitHub, arXiv, RSS feeds, Brave Search).
+  - Menjalankan agentic workflow menggunakan Hermes Agent yang terisolasi.
+  - Memanfaatkan Google Gemini untuk sintesis terstruktur berbasis fakta.
+  - Menyampaikan hasil melalui Telegram Bot interaktif dan jadwal berkala (digest).
+
+
+2. ARSITEKTUR PROSES (TWO-PROCESS ISOLATION)
+--------------------------------------------------------------------------------
+Aplikasi Research Radar dan Hermes Agent berjalan sebagai DUA PROSES TERPISAH:
+
++-------------------------------------+         HTTP /v1 REST API
+|  Autonomous AI Research Radar Core  | <=================================> +-------------------------+
+|  - Telegram Bot & Handlers          |  (Bearer Auth, Session Key per user,| |   Hermes Agent API      |
+|  - Data Collectors (GitHub/arXiv/..) |   Idempotency Key per request)      | |   (Port 8642)           |
+|  - Digest Engine & Ranking          |                                     | |   - Agent Tool Loop     |
+|  - SQLite Deduplication Store       |                                     | |   - Memory & Skills     |
+|  - Direct Gemini SDK Provider       |                                     | |   - Native Gemini Loop  |
++-------------------------------------+                                     +-------------------------+
+
+
+3. DUA MODE OPERASI UTAMA (ENTRY POINTS)
+--------------------------------------------------------------------------------
+Sistem memiliki 2 mode eksekusi yang dijalankan melalui CLI (src/research_radar/main.py):
+
+[A] Mode Interaktif (Telegram Bot):
+    Perintah CLI : research-radar bot
+    Fungsi       : Menjalankan bot Telegram untuk melayani pertanyaan user secara
+                   realtime, pencarian repositori, paper, analisis repo, atau
+                   percakapan riset mendalam.
+
+[B] Mode Autonomous Digest (Jadwal Otomatis / On-Demand):
+    Perintah CLI : research-radar digest [--force] [--dry-run]
+    Fungsi       : Mengumpulkan temuan riset AI terbaru lintas sumber, menyaring
+                   duplikasi dengan SQLite, melakukan scoring, merangkum dengan
+                   Gemini, dan mengirimkan notifikasi proaktif ke Telegram.
+    Otomasi      : Dijalankan otomatis via Systemd Timer (deploy/systemd/) setiap
+                   hari pukul 07:30 WIB dan 2 menit setelah startup.
+
+
+4. ALUR KERJA 1: INTERAKTIF TELEGRAM (STEP-BY-STEP)
+--------------------------------------------------------------------------------
+Diagram Alur Interaktif:
+
+  User Telegram
+       │
+       ▼
+  [TelegramHandlers] ─── (Cek Allowlist User ID) ───> Tolak jika tidak terdaftar
+       │
+       ├───> Kirim status "Typing..."
+       │
+       ├─── [PILIHAN 1: Command Source Langsung]
+       │    (/repos, /papers, /trending, /web, /analyze)
+       │    │
+       │    ├──> RadarService memanggil Tool spesifik (GitHubClient / ArxivSearchTool / Brave)
+       │    ├──> Mengambil data mentah & menormalisasi ke Pydantic Schema
+       │    ├──> (0 TOKEN LLM DIGUNAKAN - Hemat Biaya & Cepat)
+       │    └──> Formatter merender HTML aman & memecah teks per 3900 karakter
+       │
+       ├─── [PILIHAN 2: Natural Language / /research]
+       │    │
+       │    ├──> RadarService.ask_agent(text, user_id)
+       │    ├──> Kirim HTTP POST ke Hermes API (/chat/completions)
+       │    │    Header: X-Hermes-Session-Key: telegram:<user_id>
+       │    ├──> Hermes menjalankan tool loop agentic internal + Gemini
+       │    └──> Format jawaban teks dan kirim kembali ke user
+       │
+       └─── [PILIHAN 3: Manual Digest] (/digest atau /weekly)
+            └──> Memanggil DigestEngine.generate(force=True)
+
+
+5. ALUR KERJA 2: AUTONOMOUS DIGEST PIPELINE (STEP-BY-STEP)
+--------------------------------------------------------------------------------
+Diagram Alur Digest:
+
+  [1. Start / Systemd Trigger]
+             │
+             ▼
+  [2. Cek Cooldown (is_due)] ─────────> Jika < 12 jam (dan tanpa --force): SKIP
+             │
+             ▼
+  [3. Pengumpulan Data Paralel (asyncio.gather)]
+             ├──> GitHub Search (Topik: AI agent, local AI, CPU inference, dll.)
+             ├──> arXiv Atom API (Kategori: cs.AI, cs.LG, cs.CL, cs.SE, cs.IR)
+             ├──> RSS Feeds Resmi (Feed berita AI dan teknologi)
+             └──> Brave Web Search (Opsional, jika API key tersedia)
+             │
+             ▼
+  [4. Deduplikasi SQLite (state.py)]
+             └──> Memeriksa tabel seen_evidence di SQLite. URL yang pernah dikirim
+                  dalam 365 hari terakhir langsung dibuang agar tidak berulang.
+             │
+             ▼
+  [5. Heuristic Scoring & Ranking]
+             ├──> GitHub : Nilai berdasarkan recency, activity, popularity,
+             │             growth score, relevance, dan technical depth.
+             └──> arXiv  : Nilai berdasarkan kecocokan kata kunci dan tanggal terbit.
+             │
+             ▼
+  [6. AI Synthesis (Gemini 2.5 Flash)]
+             ├──> Jika Gemini API Key ADA:
+             │    - Mengambil potongan README repo (max 750 char) & abstrak paper.
+             │    - Meminta Gemini menghasilkan output JSON terstruktur (DigestSynthesis).
+             │    - Membedakan fakta objektif, tech stack nyata, kegunaan praktis,
+             │      dan inferensi/dampak masa depan.
+             └──> Jika Gemini API Key TIDAK ADA:
+                  - Menggunakan deterministic fallback (format data raw + link sumber).
+             │
+             ▼
+  [7. Pengiriman Telegram (publisher.py)]
+             └──> Mengirim pesan terformat ke seluruh ID pada TELEGRAM_ALLOWED_USER_IDS.
+             │
+             ▼
+  [8. Simpan State ke SQLite]
+             └──> Mencatat URL yang berhasil dikirim ke database untuk deduplikasi berikutnya.
+
+
+6. STRUKTUR DIREKTORI & PERAN MODUL
+--------------------------------------------------------------------------------
+src/research_radar/
+├── agent/
+│   ├── base.py                 : Interface abstrak HermesRuntime
+│   └── hermes_runtime.py       : HTTP adapter ke Hermes API server dengan retry & timeout
+├── llm/
+│   ├── base.py                 : Kontrak LLMProvider
+│   ├── gemini.py               : Provider resmi google-genai dengan RPM limiter & fallback
+│   └── router.py               : Routing model (Fast vs Reasoning workload)
+├── observability/
+│   ├── logging.py              : Structured JSON logging dengan redaksi secret/token
+│   └── tracing.py              : Pencatatan metrik eksekusi (durasi, token, error rate)
+├── telegram/
+│   ├── authorization.py        : Fail-closed allowlist user ID
+│   ├── bot.py                  : Konstruksi aplikasi Telegram bot
+│   ├── formatter.py            : Formatting HTML & pemecahan pesan aman (safe chunking)
+│   ├── handlers.py             : Router perintah Telegram (/research, /repos, dll.)
+│   └── publisher.py            : Pengirim proaktif digest ke user terotorisasi
+├── tools/
+│   ├── arxiv.py                : Client API arXiv (Atom XML parser, rate limiter)
+│   ├── github.py               : Client GitHub API (Search, Repo Analyzer, README fetcher)
+│   ├── news.py                 : Parser RSS/Atom feeds
+│   ├── web.py                  : Client Brave Search API
+│   └── registry.py             : ToolRegistry penyedia instance tools terpusat
+├── utils/
+│   └── retry.py                : Helper bounded exponential backoff retry
+├── bootstrap.py                : Assembly Container & Dependency Injection
+├── config.py                   : Pydantic Settings pembaca environment (.env)
+├── digest.py                   : Engine digest (pengumpulan, ranking, sintesis AI)
+├── exceptions.py               : Hierarki error khusus aplikasi
+├── schemas.py                  : Model data Pydantic (SearchBatch, RepositoryResult, dll.)
+├── service.py                  : RadarService penghubung bisnis logic & tools
+├── state.py                    : SQLite storage untuk deduplikasi riwayat URL
+└── main.py                     : Entrypoint CLI utama (bot & digest)
+
+
+7. PRINSIP DESAIN & KEAMANAN SISTEM
+--------------------------------------------------------------------------------
+1. Evidence-First (Berbasis Bukti):
+   Setiap klaim yang disajikan kepada user wajib memiliki URL sumber primer asli.
+   Sistem dilarang mengarang metadata atau link palsu.
+
+2. Graceful Partial Degradation (Ketahanan Terhadap Error):
+   Kegagalan satu sumber data (misal Brave search atau RSS down) tidak membatalkan
+   seluruh digest. Sumber lain tetap berjalan dan warning dicatat secara transparan.
+
+3. Zero Token Waste (Efisiensi Biaya & Komputasi):
+   Pencarian langsung (/repos, /papers, /web) tidak menggunakan LLM sama sekali.
+   Sintesis LLM hanya dipanggil saat digest atau riset berbasis natural language.
+
+4. Keamanan & Sanitasi:
+   - Akses bot bersifat fail-closed (user ID tak dikenal langsung ditolak).
+   - Log error tidak mengekspos token, API key, atau raw stack traces ke user.
+   - Database SQLite hanya menyimpan hash/URL yang sudah dikirim, bukan data rahasia.
+
+================================================================================
+Dibuat untuk: Project Autonomous AI Research Radar
+Format      : TXT / Plaintext Reference
+================================================================================
+

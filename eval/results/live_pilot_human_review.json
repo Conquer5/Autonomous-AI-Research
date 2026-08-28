@@ -1,0 +1,316 @@
+{
+  "evaluation_id": "live_20260828_092606",
+  "generated_at": "2026-08-28T09:26:06.068353+00:00",
+  "total_cases_for_review": 8,
+  "cases": [
+    {
+      "case_id": "agents_003",
+      "question": "Do multi-agent architectures consistently outperform single-agent systems?",
+      "category": "agents",
+      "difficulty": "CONTROVERSIAL",
+      "mode_A": {
+        "mode_name": "QUICK",
+        "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+        "safe_conclusion": "Ketiadaan data empiris.",
+        "sources": [],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      },
+      "mode_B": {
+        "mode_name": "DEEP",
+        "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+        "safe_conclusion": "Ketiadaan data empiris.",
+        "sources": [],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      }
+    },
+    {
+      "case_id": "agents_005",
+      "question": "How reliable are autonomous code-editing agents in large existing repositories?",
+      "category": "agents",
+      "difficulty": "HARD",
+      "mode_A": {
+        "mode_name": "QUICK",
+        "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+        "safe_conclusion": "Ketiadaan data empiris.",
+        "sources": [],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      },
+      "mode_B": {
+        "mode_name": "DEEP",
+        "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+        "safe_conclusion": "Ketiadaan data empiris.",
+        "sources": [],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      }
+    },
+    {
+      "case_id": "bench_001",
+      "question": "Does SWE-bench Verified address the issue of noisy test assertions?",
+      "category": "evaluation_benchmarks",
+      "difficulty": "MODERATE",
+      "mode_A": {
+        "mode_name": "QUICK",
+        "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+        "safe_conclusion": "Ketiadaan data empiris.",
+        "sources": [],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      },
+      "mode_B": {
+        "mode_name": "DEEP",
+        "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+        "safe_conclusion": "Ketiadaan data empiris.",
+        "sources": [],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      }
+    },
+    {
+      "case_id": "local_002",
+      "question": "vLLM vs Ollama: throughput and concurrency comparison for production serving.",
+      "category": "local_inference",
+      "difficulty": "MODERATE",
+      "mode_A": {
+        "mode_name": "QUICK",
+        "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+        "safe_conclusion": "Ketiadaan data empiris.",
+        "sources": [],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      },
+      "mode_B": {
+        "mode_name": "DEEP",
+        "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+        "safe_conclusion": "Ketiadaan data empiris.",
+        "sources": [],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      }
+    },
+    {
+      "case_id": "models_001",
+      "question": "Test-Time Compute vs Pretraining: what is empirical return on reasoning tokens?",
+      "category": "models_reasoning",
+      "difficulty": "CONTROVERSIAL",
+      "mode_A": {
+        "mode_name": "QUICK",
+        "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+        "safe_conclusion": "Ketiadaan data empiris.",
+        "sources": [],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      },
+      "mode_B": {
+        "mode_name": "DEEP",
+        "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+        "safe_conclusion": "Ketiadaan data empiris.",
+        "sources": [],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      }
+    },
+    {
+      "case_id": "models_003",
+      "question": "What is the parameter size of the Qwen 2.5 Coder flagship model?",
+      "category": "models_reasoning",
+      "difficulty": "EASY",
+      "mode_A": {
+        "mode_name": "QUICK",
+        "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+        "safe_conclusion": "Ketiadaan data empiris.",
+        "sources": [],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      },
+      "mode_B": {
+        "mode_name": "DEEP",
+        "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+        "safe_conclusion": "Ketiadaan data empiris.",
+        "sources": [],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      }
+    },
+    {
+      "case_id": "proto_001",
+      "question": "A2A vs MCP: How do emerging Agent communication protocols compare?",
+      "category": "agent_protocols",
+      "difficulty": "HARD",
+      "mode_A": {
+        "mode_name": "QUICK",
+        "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+        "safe_conclusion": "Ketiadaan data empiris.",
+        "sources": [],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      },
+      "mode_B": {
+        "mode_name": "DEEP",
+        "answer_snippet": "Analisis konsensus terhadap 5 sumber (Status: insufficient):\n• Temuan Utama:\n  - bytesbyankit/MCP-Server-Development-Framework: A comprehensive framework for developing Model Context Protocol (MCP) servers with TypeScript/Node.js. \n  - sachdev27/dell-powerstore-mcp-server: A Model Context Protocol (",
+        "safe_conclusion": "Bukti mendukung klaim utama secara konsisten.",
+        "sources": [
+          {
+            "title": "bytesbyankit/MCP-Server-Development-Framework",
+            "url": "https://github.com/bytesbyankit/MCP-Server-Development-Framework"
+          },
+          {
+            "title": "sachdev27/dell-powerstore-mcp-server",
+            "url": "https://github.com/sachdev27/dell-powerstore-mcp-server"
+          },
+          {
+            "title": "sachdev27/dell-unity-mcp-server",
+            "url": "https://github.com/sachdev27/dell-unity-mcp-server"
+          },
+          {
+            "title": "Raveendra-Pai/diameter-pdf-faq-ai-agent",
+            "url": "https://github.com/Raveendra-Pai/diameter-pdf-faq-ai-agent"
+          },
+          {
+            "title": "SevenDeadlyCommits/fast_api_scaffolder",
+            "url": "https://github.com/SevenDeadlyCommits/fast_api_scaffolder"
+          }
+        ],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      }
+    },
+    {
+      "case_id": "rag_004",
+      "question": "What is the default vector distance metric used in Qdrant?",
+      "category": "rag_retrieval",
+      "difficulty": "EASY",
+      "mode_A": {
+        "mode_name": "QUICK",
+        "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+        "safe_conclusion": "Ketiadaan data empiris.",
+        "sources": [],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      },
+      "mode_B": {
+        "mode_name": "DEEP",
+        "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+        "safe_conclusion": "Ketiadaan data empiris.",
+        "sources": [],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      }
+    }
+  ]
+}

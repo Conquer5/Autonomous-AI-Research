@@ -1,0 +1,14 @@
+[Unit]
+Description=Collect and send the Autonomous AI Research Radar digest
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/rafly-syahputra/Documents/Project Autonomous AI Research Radar
+ExecStart="/home/rafly-syahputra/Documents/Project Autonomous AI Research Radar/.venv/bin/research-radar" digest
+TimeoutStartSec=5min
+Nice=15
+CPUWeight=10
+IOWeight=10
+MemoryHigh=384M

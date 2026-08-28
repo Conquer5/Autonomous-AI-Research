@@ -1,0 +1,668 @@
+{
+  "schema_version": "1.0.0",
+  "created_at": "2026-08-28T00:00:00Z",
+  "dataset_name": "autonomous_ai_research_radar_eval_v1",
+  "cases": [
+    {
+      "id": "agents_001",
+      "question": "Is Model Context Protocol (MCP) becoming the standard for agent tooling?",
+      "category": "agents",
+      "difficulty": "HARD",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": true,
+        "likely_disagreement": true,
+        "requires_primary_sources": true,
+        "comparative": false,
+        "benchmark_oriented": false
+      },
+      "evaluation_tags": [
+        "mcp",
+        "agent-tooling",
+        "industry-standard"
+      ],
+      "description": "Assesses multi-vendor adoption and technical critique of MCP."
+    },
+    {
+      "id": "agents_002",
+      "question": "What are the key architectural differences between AutoGen and CrewAI?",
+      "category": "agents",
+      "difficulty": "MODERATE",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": false,
+        "likely_disagreement": false,
+        "requires_primary_sources": true,
+        "comparative": true,
+        "benchmark_oriented": false
+      },
+      "evaluation_tags": [
+        "framework-comparison",
+        "multi-agent",
+        "autogen",
+        "crewai"
+      ],
+      "description": "Comparative analysis of multi-agent execution graphs vs role-playing."
+    },
+    {
+      "id": "agents_003",
+      "question": "Do multi-agent architectures consistently outperform single-agent systems with reasoning?",
+      "category": "agents",
+      "difficulty": "CONTROVERSIAL",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": false,
+        "likely_disagreement": true,
+        "requires_primary_sources": false,
+        "comparative": false,
+        "benchmark_oriented": true
+      },
+      "evaluation_tags": [
+        "multi-agent-vs-single",
+        "cost-benefit",
+        "reasoning"
+      ],
+      "description": "Controversial empirical debate on coordination overhead vs accuracy."
+    },
+    {
+      "id": "agents_004",
+      "question": "What is the primary role of memory persistence in LangGraph agents?",
+      "category": "agents",
+      "difficulty": "EASY",
+      "characteristics": {
+        "requires_multiple_sources": false,
+        "requires_recent_evidence": false,
+        "likely_disagreement": false,
+        "requires_primary_sources": true,
+        "comparative": false,
+        "benchmark_oriented": false
+      },
+      "evaluation_tags": [
+        "langgraph",
+        "memory",
+        "checkpoints"
+      ],
+      "description": "Factual technical documentation lookup."
+    },
+    {
+      "id": "agents_005",
+      "question": "How reliable are autonomous code-editing agents in large existing repositories?",
+      "category": "agents",
+      "difficulty": "HARD",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": false,
+        "likely_disagreement": true,
+        "requires_primary_sources": false,
+        "comparative": false,
+        "benchmark_oriented": true
+      },
+      "evaluation_tags": [
+        "swe-bench",
+        "coding-agents",
+        "reliability"
+      ],
+      "description": "Evaluates benchmark scores vs developer productivity studies."
+    },
+    {
+      "id": "local_001",
+      "question": "What are the minimum VRAM requirements for running quantized DeepSeek-R1 locally?",
+      "category": "local_inference",
+      "difficulty": "MODERATE",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": false,
+        "likely_disagreement": false,
+        "requires_primary_sources": false,
+        "comparative": false,
+        "benchmark_oriented": true
+      },
+      "evaluation_tags": [
+        "deepseek",
+        "vram",
+        "quantization",
+        "gguf"
+      ],
+      "description": "Evaluates precision requirements across 4-bit, 8-bit, and full weights."
+    },
+    {
+      "id": "local_002",
+      "question": "vLLM vs Ollama: throughput and concurrency comparison for production serving.",
+      "category": "local_inference",
+      "difficulty": "MODERATE",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": false,
+        "likely_disagreement": false,
+        "requires_primary_sources": false,
+        "comparative": true,
+        "benchmark_oriented": true
+      },
+      "evaluation_tags": [
+        "vllm",
+        "ollama",
+        "throughput",
+        "pagedattention"
+      ],
+      "description": "Examines batching, PagedAttention, and developer UX tradeoffs."
+    },
+    {
+      "id": "local_003",
+      "question": "Does Speculative Decoding yield consistent speedups across small edge devices?",
+      "category": "local_inference",
+      "difficulty": "CONTROVERSIAL",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": false,
+        "likely_disagreement": true,
+        "requires_primary_sources": false,
+        "comparative": false,
+        "benchmark_oriented": true
+      },
+      "evaluation_tags": [
+        "speculative-decoding",
+        "edge-ai",
+        "latency"
+      ],
+      "description": "Investigates divergence between cloud GPU speedups and memory bandwidth bound edge CPUs."
+    },
+    {
+      "id": "local_004",
+      "question": "What quantization method is supported by llama.cpp for AMD GPUs?",
+      "category": "local_inference",
+      "difficulty": "EASY",
+      "characteristics": {
+        "requires_multiple_sources": false,
+        "requires_recent_evidence": false,
+        "likely_disagreement": false,
+        "requires_primary_sources": true,
+        "comparative": false,
+        "benchmark_oriented": false
+      },
+      "evaluation_tags": [
+        "llamacpp",
+        "rocm",
+        "amd"
+      ],
+      "description": "Direct hardware backend compatibility lookup."
+    },
+    {
+      "id": "local_005",
+      "question": "Is Apple Silicon unified memory competitive with discrete GPUs for 70B model inference?",
+      "category": "local_inference",
+      "difficulty": "HARD",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": false,
+        "likely_disagreement": true,
+        "requires_primary_sources": false,
+        "comparative": true,
+        "benchmark_oriented": true
+      },
+      "evaluation_tags": [
+        "apple-silicon",
+        "mac-studio",
+        "vram-bandwidth"
+      ],
+      "description": "Contrasts memory capacity advantages against raw compute FLOPS limits."
+    },
+    {
+      "id": "rag_001",
+      "question": "GraphRAG vs Hybrid Search: when does Knowledge Graph retrieval justify the indexing cost?",
+      "category": "rag_retrieval",
+      "difficulty": "HARD",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": false,
+        "likely_disagreement": true,
+        "requires_primary_sources": false,
+        "comparative": true,
+        "benchmark_oriented": true
+      },
+      "evaluation_tags": [
+        "graphrag",
+        "hybrid-search",
+        "bm25",
+        "indexing-cost"
+      ],
+      "description": "Evaluates global query synthesis benefits vs 100x indexing latency."
+    },
+    {
+      "id": "rag_002",
+      "question": "Does Late Chunking outperform traditional fixed-window chunking in retrieval benchmarks?",
+      "category": "rag_retrieval",
+      "difficulty": "MODERATE",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": true,
+        "likely_disagreement": false,
+        "requires_primary_sources": false,
+        "comparative": false,
+        "benchmark_oriented": true
+      },
+      "evaluation_tags": [
+        "late-chunking",
+        "embeddings",
+        "jina",
+        "retrieval-quality"
+      ],
+      "description": "Examines context-aware token embedding chunking vs semantic splitters."
+    },
+    {
+      "id": "rag_003",
+      "question": "Is Vector DB embedding search sufficient for precise factual question answering without reranking?",
+      "category": "rag_retrieval",
+      "difficulty": "CONTROVERSIAL",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": false,
+        "likely_disagreement": true,
+        "requires_primary_sources": true,
+        "comparative": false,
+        "benchmark_oriented": false
+      },
+      "evaluation_tags": [
+        "reranking",
+        "cross-encoders",
+        "precision",
+        "vector-search"
+      ],
+      "description": "Assesses precision degradation of raw cosine similarity vs cross-encoder rerankers."
+    },
+    {
+      "id": "rag_004",
+      "question": "What is the default vector distance metric used in Qdrant?",
+      "category": "rag_retrieval",
+      "difficulty": "EASY",
+      "characteristics": {
+        "requires_multiple_sources": false,
+        "requires_recent_evidence": false,
+        "likely_disagreement": false,
+        "requires_primary_sources": true,
+        "comparative": false,
+        "benchmark_oriented": false
+      },
+      "evaluation_tags": [
+        "qdrant",
+        "vector-db",
+        "distance-metrics"
+      ],
+      "description": "Basic documentation and configuration query."
+    },
+    {
+      "id": "eng_001",
+      "question": "DSPy vs Manual Few-Shot Prompting: does automatic prompt optimization generalize in production?",
+      "category": "ai_engineering",
+      "difficulty": "HARD",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": false,
+        "likely_disagreement": true,
+        "requires_primary_sources": false,
+        "comparative": true,
+        "benchmark_oriented": false
+      },
+      "evaluation_tags": [
+        "dspy",
+        "prompt-optimization",
+        "teleprompter",
+        "production-ai"
+      ],
+      "description": "Synthesizes academic claims with enterprise maintenance feedback."
+    },
+    {
+      "id": "eng_002",
+      "question": "What are the essential telemetry metrics for monitoring LLM drift and latency in production?",
+      "category": "ai_engineering",
+      "difficulty": "MODERATE",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": false,
+        "likely_disagreement": false,
+        "requires_primary_sources": true,
+        "comparative": false,
+        "benchmark_oriented": false
+      },
+      "evaluation_tags": [
+        "observability",
+        "opentelemetry",
+        "metrics",
+        "llm-drift"
+      ],
+      "description": "Industry best practices across OpenTelemetry, Langfuse, and Arize."
+    },
+    {
+      "id": "eng_003",
+      "question": "Are structured outputs natively guaranteed by schema-enforcing inference engines without retry loops?",
+      "category": "ai_engineering",
+      "difficulty": "MODERATE",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": false,
+        "likely_disagreement": false,
+        "requires_primary_sources": true,
+        "comparative": false,
+        "benchmark_oriented": false
+      },
+      "evaluation_tags": [
+        "structured-outputs",
+        "json-schema",
+        "guidance",
+        "outlines"
+      ],
+      "description": "Examines grammar-constrained sampling mechanisms in vLLM, SGLang, and Outlines."
+    },
+    {
+      "id": "eng_004",
+      "question": "How does semantic caching reduce LLM inference costs and latency?",
+      "category": "ai_engineering",
+      "difficulty": "EASY",
+      "characteristics": {
+        "requires_multiple_sources": false,
+        "requires_recent_evidence": false,
+        "likely_disagreement": false,
+        "requires_primary_sources": true,
+        "comparative": false,
+        "benchmark_oriented": false
+      },
+      "evaluation_tags": [
+        "semantic-cache",
+        "redis",
+        "gptcache",
+        "cost-reduction"
+      ],
+      "description": "Standard architectural pattern query."
+    },
+    {
+      "id": "models_001",
+      "question": "Test-Time Compute vs Pretraining Scaling: what is the empirical return on reasoning tokens?",
+      "category": "models_reasoning",
+      "difficulty": "CONTROVERSIAL",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": true,
+        "likely_disagreement": true,
+        "requires_primary_sources": false,
+        "comparative": false,
+        "benchmark_oriented": true
+      },
+      "evaluation_tags": [
+        "test-time-compute",
+        "scaling-laws",
+        "o1",
+        "r1",
+        "reasoning"
+      ],
+      "description": "Synthesizes scaling law revisions from OpenAI o1, DeepSeek-R1, and academic critiques."
+    },
+    {
+      "id": "models_002",
+      "question": "How does Mixture of Agents (MoA) compare with single frontier model reasoning?",
+      "category": "models_reasoning",
+      "difficulty": "HARD",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": false,
+        "likely_disagreement": false,
+        "requires_primary_sources": false,
+        "comparative": true,
+        "benchmark_oriented": true
+      },
+      "evaluation_tags": [
+        "mixture-of-agents",
+        "moa",
+        "ensemble",
+        "alpaca-eval"
+      ],
+      "description": "Examines layered model collaboration benchmarks against GPT-4o."
+    },
+    {
+      "id": "models_003",
+      "question": "What is the parameter size of the Qwen 2.5 Coder flagship model?",
+      "category": "models_reasoning",
+      "difficulty": "EASY",
+      "characteristics": {
+        "requires_multiple_sources": false,
+        "requires_recent_evidence": false,
+        "likely_disagreement": false,
+        "requires_primary_sources": true,
+        "comparative": false,
+        "benchmark_oriented": false
+      },
+      "evaluation_tags": [
+        "qwen",
+        "coding-models",
+        "model-specs"
+      ],
+      "description": "Factual model specification lookup."
+    },
+    {
+      "id": "models_004",
+      "question": "Do reasoning models hallucinate less on mathematical reasoning tasks than standard LLMs?",
+      "category": "models_reasoning",
+      "difficulty": "MODERATE",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": false,
+        "likely_disagreement": false,
+        "requires_primary_sources": false,
+        "comparative": false,
+        "benchmark_oriented": true
+      },
+      "evaluation_tags": [
+        "hallucination",
+        "math-benchmarks",
+        "gsm8k",
+        "math-500"
+      ],
+      "description": "Compares chain-of-thought verification against standard prompt generation."
+    },
+    {
+      "id": "proto_001",
+      "question": "A2A vs MCP: How do emerging Agent-to-Agent communication protocols compare with tool protocols?",
+      "category": "agent_protocols",
+      "difficulty": "HARD",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": true,
+        "likely_disagreement": false,
+        "requires_primary_sources": false,
+        "comparative": true,
+        "benchmark_oriented": false
+      },
+      "evaluation_tags": [
+        "a2a",
+        "mcp",
+        "agent-protocols",
+        "interoperability"
+      ],
+      "description": "Investigates transport, security, and message exchange formats across protocols."
+    },
+    {
+      "id": "proto_002",
+      "question": "What transport mechanisms are supported by the Model Context Protocol specification?",
+      "category": "agent_protocols",
+      "difficulty": "EASY",
+      "characteristics": {
+        "requires_multiple_sources": false,
+        "requires_recent_evidence": false,
+        "likely_disagreement": false,
+        "requires_primary_sources": true,
+        "comparative": false,
+        "benchmark_oriented": false
+      },
+      "evaluation_tags": [
+        "mcp-spec",
+        "stdio",
+        "sse",
+        "transport"
+      ],
+      "description": "Specification verification for stdio and Server-Sent Events (SSE)."
+    },
+    {
+      "id": "proto_003",
+      "question": "Is SSE or WebSockets preferred for long-running streaming agent tool execution?",
+      "category": "agent_protocols",
+      "difficulty": "MODERATE",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": false,
+        "likely_disagreement": false,
+        "requires_primary_sources": false,
+        "comparative": true,
+        "benchmark_oriented": false
+      },
+      "evaluation_tags": [
+        "sse",
+        "websockets",
+        "streaming",
+        "agent-ux"
+      ],
+      "description": "Tradeoff analysis between unidirectional SSE and full-duplex WebSockets."
+    },
+    {
+      "id": "proto_004",
+      "question": "How do agent authorization standards address delegation risks in multi-tool environments?",
+      "category": "agent_protocols",
+      "difficulty": "HARD",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": false,
+        "likely_disagreement": false,
+        "requires_primary_sources": true,
+        "comparative": false,
+        "benchmark_oriented": false
+      },
+      "evaluation_tags": [
+        "oauth",
+        "delegation",
+        "agent-security",
+        "least-privilege"
+      ],
+      "description": "Evaluates cryptographic tokens, scoped keys, and human-in-the-loop controls."
+    },
+    {
+      "id": "bench_001",
+      "question": "Does SWE-bench Verified address the issue of noisy or un-reproducible test assertions?",
+      "category": "evaluation_benchmarks",
+      "difficulty": "MODERATE",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": false,
+        "likely_disagreement": false,
+        "requires_primary_sources": true,
+        "comparative": false,
+        "benchmark_oriented": true
+      },
+      "evaluation_tags": [
+        "swe-bench",
+        "benchmark-noise",
+        "openai",
+        "evaluation"
+      ],
+      "description": "Evaluates human verification of SWE-bench test suites."
+    },
+    {
+      "id": "bench_002",
+      "question": "Is LLM-as-a-Judge susceptible to position and length bias in open-ended evaluations?",
+      "category": "evaluation_benchmarks",
+      "difficulty": "HARD",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": false,
+        "likely_disagreement": true,
+        "requires_primary_sources": false,
+        "comparative": false,
+        "benchmark_oriented": true
+      },
+      "evaluation_tags": [
+        "llm-as-judge",
+        "bias",
+        "mt-bench",
+        "chatarena"
+      ],
+      "description": "Analyzes self-enhancement, verbosity, and position bias across judge models."
+    },
+    {
+      "id": "bench_003",
+      "question": "What benchmark is widely accepted for evaluating agent web-browsing capabilities?",
+      "category": "evaluation_benchmarks",
+      "difficulty": "EASY",
+      "characteristics": {
+        "requires_multiple_sources": false,
+        "requires_recent_evidence": false,
+        "likely_disagreement": false,
+        "requires_primary_sources": true,
+        "comparative": false,
+        "benchmark_oriented": false
+      },
+      "evaluation_tags": [
+        "webarena",
+        "mind2web",
+        "browsing-benchmarks"
+      ],
+      "description": "Identifies standard web navigation benchmarks (WebArena, Mind2Web)."
+    },
+    {
+      "id": "bench_004",
+      "question": "Are synthetic benchmarks good predictors of real-world enterprise RAG performance?",
+      "category": "evaluation_benchmarks",
+      "difficulty": "CONTROVERSIAL",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": false,
+        "likely_disagreement": true,
+        "requires_primary_sources": false,
+        "comparative": false,
+        "benchmark_oriented": true
+      },
+      "evaluation_tags": [
+        "synthetic-data",
+        "rag-benchmarks",
+        "ragas",
+        "real-world-drift"
+      ],
+      "description": "Synthesizes academic RAGAS validation against production failure case studies."
+    },
+    {
+      "id": "bench_005",
+      "question": "How does GAIA benchmark evaluate multimodal multi-step tool use?",
+      "category": "evaluation_benchmarks",
+      "difficulty": "MODERATE",
+      "characteristics": {
+        "requires_multiple_sources": false,
+        "requires_recent_evidence": false,
+        "likely_disagreement": false,
+        "requires_primary_sources": true,
+        "comparative": false,
+        "benchmark_oriented": true
+      },
+      "evaluation_tags": [
+        "gaia",
+        "multimodal",
+        "general-assistants"
+      ],
+      "description": "Analyzes GAIA level 1-3 task design and evaluation methodology."
+    },
+    {
+      "id": "bench_006",
+      "question": "Do automated code review benchmarks reflect real-world bug detection accuracy?",
+      "category": "evaluation_benchmarks",
+      "difficulty": "HARD",
+      "characteristics": {
+        "requires_multiple_sources": true,
+        "requires_recent_evidence": false,
+        "likely_disagreement": true,
+        "requires_primary_sources": false,
+        "comparative": false,
+        "benchmark_oriented": true
+      },
+      "evaluation_tags": [
+        "code-review",
+        "defect-detection",
+        "benchmark-validity"
+      ],
+      "description": "Assesses synthetic injected bugs vs empirical code review studies."
+    }
+  ]
+}

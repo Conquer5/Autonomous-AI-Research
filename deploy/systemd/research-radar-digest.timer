@@ -1,0 +1,12 @@
+[Unit]
+Description=Run Research Radar after login and every morning
+
+[Timer]
+OnStartupSec=2min
+OnCalendar=*-*-* 07:30:00 Asia/Jakarta
+Persistent=true
+AccuracySec=1min
+Unit=research-radar-digest.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,3449 @@
+{
+  "schema_version": "1.0.0",
+  "evaluation_id": "eval_20260828_090827",
+  "generated_at": "2026-08-28T09:08:27.108367+00:00",
+  "dataset_version": "1.0.0",
+  "total_cases": 32,
+  "categories": [
+    "agent_protocols",
+    "agents",
+    "ai_engineering",
+    "evaluation_benchmarks",
+    "local_inference",
+    "models_reasoning",
+    "rag_retrieval"
+  ],
+  "quick_results": [
+    {
+      "case_id": "agents_001",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Is Model Context Protocol (MCP) becoming the standard for agent tooling?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk agents_001.",
+      "key_findings": [
+        "Temuan utama 1 untuk agents_001",
+        "Temuan utama 2 untuk agents_001"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.080967+00:00"
+    },
+    {
+      "case_id": "agents_002",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: What are the key architectural differences between AutoGen and CrewAI?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk agents_002.",
+      "key_findings": [
+        "Temuan utama 1 untuk agents_002",
+        "Temuan utama 2 untuk agents_002"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.082730+00:00"
+    },
+    {
+      "case_id": "agents_003",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Do multi-agent architectures consistently outperform single-agent systems with reasoning?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk agents_003.",
+      "key_findings": [
+        "Temuan utama 1 untuk agents_003",
+        "Temuan utama 2 untuk agents_003"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.085675+00:00"
+    },
+    {
+      "case_id": "agents_004",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: What is the primary role of memory persistence in LangGraph agents?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk agents_004.",
+      "key_findings": [
+        "Temuan utama 1 untuk agents_004",
+        "Temuan utama 2 untuk agents_004"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.086287+00:00"
+    },
+    {
+      "case_id": "agents_005",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: How reliable are autonomous code-editing agents in large existing repositories?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk agents_005.",
+      "key_findings": [
+        "Temuan utama 1 untuk agents_005",
+        "Temuan utama 2 untuk agents_005"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.086805+00:00"
+    },
+    {
+      "case_id": "local_001",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: What are the minimum VRAM requirements for running quantized DeepSeek-R1 locally?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk local_001.",
+      "key_findings": [
+        "Temuan utama 1 untuk local_001",
+        "Temuan utama 2 untuk local_001"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.087328+00:00"
+    },
+    {
+      "case_id": "local_002",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: vLLM vs Ollama: throughput and concurrency comparison for production serving.",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk local_002.",
+      "key_findings": [
+        "Temuan utama 1 untuk local_002",
+        "Temuan utama 2 untuk local_002"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.087944+00:00"
+    },
+    {
+      "case_id": "local_003",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Does Speculative Decoding yield consistent speedups across small edge devices?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk local_003.",
+      "key_findings": [
+        "Temuan utama 1 untuk local_003",
+        "Temuan utama 2 untuk local_003"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.088531+00:00"
+    },
+    {
+      "case_id": "local_004",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: What quantization method is supported by llama.cpp for AMD GPUs?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk local_004.",
+      "key_findings": [
+        "Temuan utama 1 untuk local_004",
+        "Temuan utama 2 untuk local_004"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.089072+00:00"
+    },
+    {
+      "case_id": "local_005",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Is Apple Silicon unified memory competitive with discrete GPUs for 70B model inference?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk local_005.",
+      "key_findings": [
+        "Temuan utama 1 untuk local_005",
+        "Temuan utama 2 untuk local_005"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.089593+00:00"
+    },
+    {
+      "case_id": "rag_001",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: GraphRAG vs Hybrid Search: when does Knowledge Graph retrieval justify the indexing cost?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk rag_001.",
+      "key_findings": [
+        "Temuan utama 1 untuk rag_001",
+        "Temuan utama 2 untuk rag_001"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.090069+00:00"
+    },
+    {
+      "case_id": "rag_002",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Does Late Chunking outperform traditional fixed-window chunking in retrieval benchmarks?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk rag_002.",
+      "key_findings": [
+        "Temuan utama 1 untuk rag_002",
+        "Temuan utama 2 untuk rag_002"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.090521+00:00"
+    },
+    {
+      "case_id": "rag_003",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Is Vector DB embedding search sufficient for precise factual question answering without reranking?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk rag_003.",
+      "key_findings": [
+        "Temuan utama 1 untuk rag_003",
+        "Temuan utama 2 untuk rag_003"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.090949+00:00"
+    },
+    {
+      "case_id": "rag_004",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: What is the default vector distance metric used in Qdrant?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk rag_004.",
+      "key_findings": [
+        "Temuan utama 1 untuk rag_004",
+        "Temuan utama 2 untuk rag_004"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.091942+00:00"
+    },
+    {
+      "case_id": "eng_001",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: DSPy vs Manual Few-Shot Prompting: does automatic prompt optimization generalize in production?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk eng_001.",
+      "key_findings": [
+        "Temuan utama 1 untuk eng_001",
+        "Temuan utama 2 untuk eng_001"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.092770+00:00"
+    },
+    {
+      "case_id": "eng_002",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: What are the essential telemetry metrics for monitoring LLM drift and latency in production?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk eng_002.",
+      "key_findings": [
+        "Temuan utama 1 untuk eng_002",
+        "Temuan utama 2 untuk eng_002"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.093219+00:00"
+    },
+    {
+      "case_id": "eng_003",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Are structured outputs natively guaranteed by schema-enforcing inference engines without retry loops?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk eng_003.",
+      "key_findings": [
+        "Temuan utama 1 untuk eng_003",
+        "Temuan utama 2 untuk eng_003"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.093659+00:00"
+    },
+    {
+      "case_id": "eng_004",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: How does semantic caching reduce LLM inference costs and latency?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk eng_004.",
+      "key_findings": [
+        "Temuan utama 1 untuk eng_004",
+        "Temuan utama 2 untuk eng_004"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.094103+00:00"
+    },
+    {
+      "case_id": "models_001",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Test-Time Compute vs Pretraining Scaling: what is the empirical return on reasoning tokens?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk models_001.",
+      "key_findings": [
+        "Temuan utama 1 untuk models_001",
+        "Temuan utama 2 untuk models_001"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.094564+00:00"
+    },
+    {
+      "case_id": "models_002",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: How does Mixture of Agents (MoA) compare with single frontier model reasoning?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk models_002.",
+      "key_findings": [
+        "Temuan utama 1 untuk models_002",
+        "Temuan utama 2 untuk models_002"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.095020+00:00"
+    },
+    {
+      "case_id": "models_003",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: What is the parameter size of the Qwen 2.5 Coder flagship model?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk models_003.",
+      "key_findings": [
+        "Temuan utama 1 untuk models_003",
+        "Temuan utama 2 untuk models_003"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.095405+00:00"
+    },
+    {
+      "case_id": "models_004",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Do reasoning models hallucinate less on mathematical reasoning tasks than standard LLMs?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk models_004.",
+      "key_findings": [
+        "Temuan utama 1 untuk models_004",
+        "Temuan utama 2 untuk models_004"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.095705+00:00"
+    },
+    {
+      "case_id": "proto_001",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: A2A vs MCP: How do emerging Agent-to-Agent communication protocols compare with tool protocols?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk proto_001.",
+      "key_findings": [
+        "Temuan utama 1 untuk proto_001",
+        "Temuan utama 2 untuk proto_001"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.095999+00:00"
+    },
+    {
+      "case_id": "proto_002",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: What transport mechanisms are supported by the Model Context Protocol specification?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk proto_002.",
+      "key_findings": [
+        "Temuan utama 1 untuk proto_002",
+        "Temuan utama 2 untuk proto_002"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.096264+00:00"
+    },
+    {
+      "case_id": "proto_003",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Is SSE or WebSockets preferred for long-running streaming agent tool execution?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk proto_003.",
+      "key_findings": [
+        "Temuan utama 1 untuk proto_003",
+        "Temuan utama 2 untuk proto_003"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.096499+00:00"
+    },
+    {
+      "case_id": "proto_004",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: How do agent authorization standards address delegation risks in multi-tool environments?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk proto_004.",
+      "key_findings": [
+        "Temuan utama 1 untuk proto_004",
+        "Temuan utama 2 untuk proto_004"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.096765+00:00"
+    },
+    {
+      "case_id": "bench_001",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Does SWE-bench Verified address the issue of noisy or un-reproducible test assertions?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk bench_001.",
+      "key_findings": [
+        "Temuan utama 1 untuk bench_001",
+        "Temuan utama 2 untuk bench_001"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.097024+00:00"
+    },
+    {
+      "case_id": "bench_002",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Is LLM-as-a-Judge susceptible to position and length bias in open-ended evaluations?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk bench_002.",
+      "key_findings": [
+        "Temuan utama 1 untuk bench_002",
+        "Temuan utama 2 untuk bench_002"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.097261+00:00"
+    },
+    {
+      "case_id": "bench_003",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: What benchmark is widely accepted for evaluating agent web-browsing capabilities?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk bench_003.",
+      "key_findings": [
+        "Temuan utama 1 untuk bench_003",
+        "Temuan utama 2 untuk bench_003"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.097500+00:00"
+    },
+    {
+      "case_id": "bench_004",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Are synthetic benchmarks good predictors of real-world enterprise RAG performance?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk bench_004.",
+      "key_findings": [
+        "Temuan utama 1 untuk bench_004",
+        "Temuan utama 2 untuk bench_004"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.097773+00:00"
+    },
+    {
+      "case_id": "bench_005",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: How does GAIA benchmark evaluate multimodal multi-step tool use?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk bench_005.",
+      "key_findings": [
+        "Temuan utama 1 untuk bench_005",
+        "Temuan utama 2 untuk bench_005"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.098027+00:00"
+    },
+    {
+      "case_id": "bench_006",
+      "mode": "QUICK",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 2,
+        "independent_source_count": 2,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 1,
+        "tool_calls": 1,
+        "queries": 0,
+        "llm_calls": 0,
+        "stop_reason": "enough_evidence",
+        "wall_time": 1.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Do automated code review benchmarks reflect real-world bug detection accuracy?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk bench_006.",
+      "key_findings": [
+        "Temuan utama 1 untuk bench_006",
+        "Temuan utama 2 untuk bench_006"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.098267+00:00"
+    }
+  ],
+  "deep_results": [
+    {
+      "case_id": "agents_001",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 1,
+        "consensus_level": "mixed",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "CONTRADICTION_FAILURE"
+        ]
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Is Model Context Protocol (MCP) becoming the standard for agent tooling?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk agents_001.",
+      "key_findings": [
+        "Temuan utama 1 untuk agents_001",
+        "Temuan utama 2 untuk agents_001"
+      ],
+      "dissenting_findings": [
+        "Studi independen menunjukkan batasan pada agents_001."
+      ],
+      "confidence": "medium",
+      "executed_at": "2026-08-28T09:08:27.081675+00:00"
+    },
+    {
+      "case_id": "agents_002",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: What are the key architectural differences between AutoGen and CrewAI?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk agents_002.",
+      "key_findings": [
+        "Temuan utama 1 untuk agents_002",
+        "Temuan utama 2 untuk agents_002"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.083645+00:00"
+    },
+    {
+      "case_id": "agents_003",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 1,
+        "consensus_level": "mixed",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "CONTRADICTION_FAILURE"
+        ]
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Do multi-agent architectures consistently outperform single-agent systems with reasoning?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk agents_003.",
+      "key_findings": [
+        "Temuan utama 1 untuk agents_003",
+        "Temuan utama 2 untuk agents_003"
+      ],
+      "dissenting_findings": [
+        "Studi independen menunjukkan batasan pada agents_003."
+      ],
+      "confidence": "medium",
+      "executed_at": "2026-08-28T09:08:27.085976+00:00"
+    },
+    {
+      "case_id": "agents_004",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: What is the primary role of memory persistence in LangGraph agents?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk agents_004.",
+      "key_findings": [
+        "Temuan utama 1 untuk agents_004",
+        "Temuan utama 2 untuk agents_004"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.086510+00:00"
+    },
+    {
+      "case_id": "agents_005",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 1,
+        "consensus_level": "mixed",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "CONTRADICTION_FAILURE"
+        ]
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: How reliable are autonomous code-editing agents in large existing repositories?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk agents_005.",
+      "key_findings": [
+        "Temuan utama 1 untuk agents_005",
+        "Temuan utama 2 untuk agents_005"
+      ],
+      "dissenting_findings": [
+        "Studi independen menunjukkan batasan pada agents_005."
+      ],
+      "confidence": "medium",
+      "executed_at": "2026-08-28T09:08:27.087031+00:00"
+    },
+    {
+      "case_id": "local_001",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: What are the minimum VRAM requirements for running quantized DeepSeek-R1 locally?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk local_001.",
+      "key_findings": [
+        "Temuan utama 1 untuk local_001",
+        "Temuan utama 2 untuk local_001"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.087541+00:00"
+    },
+    {
+      "case_id": "local_002",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: vLLM vs Ollama: throughput and concurrency comparison for production serving.",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk local_002.",
+      "key_findings": [
+        "Temuan utama 1 untuk local_002",
+        "Temuan utama 2 untuk local_002"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.088254+00:00"
+    },
+    {
+      "case_id": "local_003",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 1,
+        "consensus_level": "mixed",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "CONTRADICTION_FAILURE"
+        ]
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Does Speculative Decoding yield consistent speedups across small edge devices?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk local_003.",
+      "key_findings": [
+        "Temuan utama 1 untuk local_003",
+        "Temuan utama 2 untuk local_003"
+      ],
+      "dissenting_findings": [
+        "Studi independen menunjukkan batasan pada local_003."
+      ],
+      "confidence": "medium",
+      "executed_at": "2026-08-28T09:08:27.088798+00:00"
+    },
+    {
+      "case_id": "local_004",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: What quantization method is supported by llama.cpp for AMD GPUs?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk local_004.",
+      "key_findings": [
+        "Temuan utama 1 untuk local_004",
+        "Temuan utama 2 untuk local_004"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.089300+00:00"
+    },
+    {
+      "case_id": "local_005",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 1,
+        "consensus_level": "mixed",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "CONTRADICTION_FAILURE"
+        ]
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Is Apple Silicon unified memory competitive with discrete GPUs for 70B model inference?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk local_005.",
+      "key_findings": [
+        "Temuan utama 1 untuk local_005",
+        "Temuan utama 2 untuk local_005"
+      ],
+      "dissenting_findings": [
+        "Studi independen menunjukkan batasan pada local_005."
+      ],
+      "confidence": "medium",
+      "executed_at": "2026-08-28T09:08:27.089819+00:00"
+    },
+    {
+      "case_id": "rag_001",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 1,
+        "consensus_level": "mixed",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "CONTRADICTION_FAILURE"
+        ]
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: GraphRAG vs Hybrid Search: when does Knowledge Graph retrieval justify the indexing cost?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk rag_001.",
+      "key_findings": [
+        "Temuan utama 1 untuk rag_001",
+        "Temuan utama 2 untuk rag_001"
+      ],
+      "dissenting_findings": [
+        "Studi independen menunjukkan batasan pada rag_001."
+      ],
+      "confidence": "medium",
+      "executed_at": "2026-08-28T09:08:27.090258+00:00"
+    },
+    {
+      "case_id": "rag_002",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Does Late Chunking outperform traditional fixed-window chunking in retrieval benchmarks?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk rag_002.",
+      "key_findings": [
+        "Temuan utama 1 untuk rag_002",
+        "Temuan utama 2 untuk rag_002"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.090705+00:00"
+    },
+    {
+      "case_id": "rag_003",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 1,
+        "consensus_level": "mixed",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "CONTRADICTION_FAILURE"
+        ]
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Is Vector DB embedding search sufficient for precise factual question answering without reranking?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk rag_003.",
+      "key_findings": [
+        "Temuan utama 1 untuk rag_003",
+        "Temuan utama 2 untuk rag_003"
+      ],
+      "dissenting_findings": [
+        "Studi independen menunjukkan batasan pada rag_003."
+      ],
+      "confidence": "medium",
+      "executed_at": "2026-08-28T09:08:27.091658+00:00"
+    },
+    {
+      "case_id": "rag_004",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: What is the default vector distance metric used in Qdrant?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk rag_004.",
+      "key_findings": [
+        "Temuan utama 1 untuk rag_004",
+        "Temuan utama 2 untuk rag_004"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.092155+00:00"
+    },
+    {
+      "case_id": "eng_001",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 1,
+        "consensus_level": "mixed",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "CONTRADICTION_FAILURE"
+        ]
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: DSPy vs Manual Few-Shot Prompting: does automatic prompt optimization generalize in production?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk eng_001.",
+      "key_findings": [
+        "Temuan utama 1 untuk eng_001",
+        "Temuan utama 2 untuk eng_001"
+      ],
+      "dissenting_findings": [
+        "Studi independen menunjukkan batasan pada eng_001."
+      ],
+      "confidence": "medium",
+      "executed_at": "2026-08-28T09:08:27.092991+00:00"
+    },
+    {
+      "case_id": "eng_002",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: What are the essential telemetry metrics for monitoring LLM drift and latency in production?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk eng_002.",
+      "key_findings": [
+        "Temuan utama 1 untuk eng_002",
+        "Temuan utama 2 untuk eng_002"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.093438+00:00"
+    },
+    {
+      "case_id": "eng_003",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Are structured outputs natively guaranteed by schema-enforcing inference engines without retry loops?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk eng_003.",
+      "key_findings": [
+        "Temuan utama 1 untuk eng_003",
+        "Temuan utama 2 untuk eng_003"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.093878+00:00"
+    },
+    {
+      "case_id": "eng_004",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: How does semantic caching reduce LLM inference costs and latency?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk eng_004.",
+      "key_findings": [
+        "Temuan utama 1 untuk eng_004",
+        "Temuan utama 2 untuk eng_004"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.094352+00:00"
+    },
+    {
+      "case_id": "models_001",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 1,
+        "consensus_level": "mixed",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "CONTRADICTION_FAILURE"
+        ]
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Test-Time Compute vs Pretraining Scaling: what is the empirical return on reasoning tokens?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk models_001.",
+      "key_findings": [
+        "Temuan utama 1 untuk models_001",
+        "Temuan utama 2 untuk models_001"
+      ],
+      "dissenting_findings": [
+        "Studi independen menunjukkan batasan pada models_001."
+      ],
+      "confidence": "medium",
+      "executed_at": "2026-08-28T09:08:27.094766+00:00"
+    },
+    {
+      "case_id": "models_002",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: How does Mixture of Agents (MoA) compare with single frontier model reasoning?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk models_002.",
+      "key_findings": [
+        "Temuan utama 1 untuk models_002",
+        "Temuan utama 2 untuk models_002"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.095243+00:00"
+    },
+    {
+      "case_id": "models_003",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: What is the parameter size of the Qwen 2.5 Coder flagship model?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk models_003.",
+      "key_findings": [
+        "Temuan utama 1 untuk models_003",
+        "Temuan utama 2 untuk models_003"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.095516+00:00"
+    },
+    {
+      "case_id": "models_004",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Do reasoning models hallucinate less on mathematical reasoning tasks than standard LLMs?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk models_004.",
+      "key_findings": [
+        "Temuan utama 1 untuk models_004",
+        "Temuan utama 2 untuk models_004"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.095855+00:00"
+    },
+    {
+      "case_id": "proto_001",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: A2A vs MCP: How do emerging Agent-to-Agent communication protocols compare with tool protocols?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk proto_001.",
+      "key_findings": [
+        "Temuan utama 1 untuk proto_001",
+        "Temuan utama 2 untuk proto_001"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.096125+00:00"
+    },
+    {
+      "case_id": "proto_002",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: What transport mechanisms are supported by the Model Context Protocol specification?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk proto_002.",
+      "key_findings": [
+        "Temuan utama 1 untuk proto_002",
+        "Temuan utama 2 untuk proto_002"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.096372+00:00"
+    },
+    {
+      "case_id": "proto_003",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Is SSE or WebSockets preferred for long-running streaming agent tool execution?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk proto_003.",
+      "key_findings": [
+        "Temuan utama 1 untuk proto_003",
+        "Temuan utama 2 untuk proto_003"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.096614+00:00"
+    },
+    {
+      "case_id": "proto_004",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: How do agent authorization standards address delegation risks in multi-tool environments?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk proto_004.",
+      "key_findings": [
+        "Temuan utama 1 untuk proto_004",
+        "Temuan utama 2 untuk proto_004"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.096885+00:00"
+    },
+    {
+      "case_id": "bench_001",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Does SWE-bench Verified address the issue of noisy or un-reproducible test assertions?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk bench_001.",
+      "key_findings": [
+        "Temuan utama 1 untuk bench_001",
+        "Temuan utama 2 untuk bench_001"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.097133+00:00"
+    },
+    {
+      "case_id": "bench_002",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 1,
+        "consensus_level": "mixed",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "CONTRADICTION_FAILURE"
+        ]
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Is LLM-as-a-Judge susceptible to position and length bias in open-ended evaluations?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk bench_002.",
+      "key_findings": [
+        "Temuan utama 1 untuk bench_002",
+        "Temuan utama 2 untuk bench_002"
+      ],
+      "dissenting_findings": [
+        "Studi independen menunjukkan batasan pada bench_002."
+      ],
+      "confidence": "medium",
+      "executed_at": "2026-08-28T09:08:27.097369+00:00"
+    },
+    {
+      "case_id": "bench_003",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: What benchmark is widely accepted for evaluating agent web-browsing capabilities?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk bench_003.",
+      "key_findings": [
+        "Temuan utama 1 untuk bench_003",
+        "Temuan utama 2 untuk bench_003"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.097618+00:00"
+    },
+    {
+      "case_id": "bench_004",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 1,
+        "consensus_level": "mixed",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "CONTRADICTION_FAILURE"
+        ]
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Are synthetic benchmarks good predictors of real-world enterprise RAG performance?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk bench_004.",
+      "key_findings": [
+        "Temuan utama 1 untuk bench_004",
+        "Temuan utama 2 untuk bench_004"
+      ],
+      "dissenting_findings": [
+        "Studi independen menunjukkan batasan pada bench_004."
+      ],
+      "confidence": "medium",
+      "executed_at": "2026-08-28T09:08:27.097882+00:00"
+    },
+    {
+      "case_id": "bench_005",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "strong",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: How does GAIA benchmark evaluate multimodal multi-step tool use?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk bench_005.",
+      "key_findings": [
+        "Temuan utama 1 untuk bench_005",
+        "Temuan utama 2 untuk bench_005"
+      ],
+      "dissenting_findings": [],
+      "confidence": "high",
+      "executed_at": "2026-08-28T09:08:27.098140+00:00"
+    },
+    {
+      "case_id": "bench_006",
+      "mode": "DEEP",
+      "metrics": {
+        "supported_fact_count": 2,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "factual_claims_with_evidence": 2,
+        "total_factual_claims": 2,
+        "citation_coverage": 1.0,
+        "evidence_count": 5,
+        "independent_source_count": 5,
+        "source_type_count": 2,
+        "authoritative_source_count": 2,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 1,
+        "consensus_level": "mixed",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 0,
+        "llm_calls": 2,
+        "stop_reason": "enough_evidence",
+        "wall_time": 5.0,
+        "research_status": "completed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "CONTRADICTION_FAILURE"
+        ]
+      },
+      "answer_snippet": "Hasil sintesis riset terstruktur untuk: Do automated code review benchmarks reflect real-world bug detection accuracy?",
+      "safe_conclusion": "Disarankan evaluasi bertahap untuk bench_006.",
+      "key_findings": [
+        "Temuan utama 1 untuk bench_006",
+        "Temuan utama 2 untuk bench_006"
+      ],
+      "dissenting_findings": [
+        "Studi independen menunjukkan batasan pada bench_006."
+      ],
+      "confidence": "medium",
+      "executed_at": "2026-08-28T09:08:27.098374+00:00"
+    }
+  ],
+  "adversarial_results": [
+    {
+      "fixture_name": "official_vs_independent_benchmark",
+      "description": "Official documentation ('production ready') vs Independent stress test ('fails under load').",
+      "contradiction_detected": true,
+      "expected_contradiction_type": "direct_negation",
+      "actual_contradiction_type": "direct_negation",
+      "dissent_preserved": true,
+      "confidence_capped": true,
+      "safe_conclusion_avoids_universal": true,
+      "passed": true,
+      "details": {
+        "consensus_level": "mixed",
+        "contradictions_count": 1,
+        "dissent_count": 1
+      }
+    },
+    {
+      "fixture_name": "multi_paper_reproducibility",
+      "description": "Paper A (+15%), Paper B (unable to reproduce), Paper C (+4%).",
+      "contradiction_detected": true,
+      "expected_contradiction_type": "direct_negation",
+      "actual_contradiction_type": "direct_negation",
+      "dissent_preserved": true,
+      "confidence_capped": true,
+      "safe_conclusion_avoids_universal": true,
+      "passed": true,
+      "details": {
+        "consensus_level": "mixed",
+        "contradictions_count": 1,
+        "dissent_count": 1
+      }
+    },
+    {
+      "fixture_name": "syndicated_copycat_resilience",
+      "description": "3 syndicated secondary articles repeating vendor claim vs 1 controlled benchmark.",
+      "contradiction_detected": true,
+      "expected_contradiction_type": "numeric_conflict",
+      "actual_contradiction_type": "qualification",
+      "dissent_preserved": true,
+      "confidence_capped": true,
+      "safe_conclusion_avoids_universal": true,
+      "passed": true,
+      "details": {
+        "consensus_level": "mixed",
+        "not_inflated_to_strong": true
+      }
+    },
+    {
+      "fixture_name": "valid_version_evolution",
+      "description": "v1 unsupported vs v2 support added in release notes.",
+      "contradiction_detected": true,
+      "expected_contradiction_type": "version_conflict",
+      "actual_contradiction_type": "version_conflict",
+      "dissent_preserved": true,
+      "confidence_capped": false,
+      "safe_conclusion_avoids_universal": true,
+      "passed": true,
+      "details": {
+        "resolved_by_version": true,
+        "consensus_level": "moderate"
+      }
+    },
+    {
+      "fixture_name": "temporal_benchmark_discrepancy",
+      "description": "2025 benchmark (100 req/s) vs 2026 benchmark (55 req/s) - must NOT be auto-resolved.",
+      "contradiction_detected": true,
+      "expected_contradiction_type": "numeric_conflict",
+      "actual_contradiction_type": "numeric_conflict",
+      "dissent_preserved": false,
+      "confidence_capped": true,
+      "safe_conclusion_avoids_universal": true,
+      "passed": true,
+      "details": {
+        "resolved_by_version": false,
+        "consensus_level": "insufficient"
+      }
+    }
+  ],
+  "comparison": {
+    "total_cases": 32,
+    "quick_median_grounding": 1.0,
+    "deep_median_grounding": 1.0,
+    "quick_median_evidence": 2.0,
+    "deep_median_evidence": 5.0,
+    "quick_median_sources": 2.0,
+    "deep_median_sources": 5.0,
+    "quick_median_contradictions": 0.0,
+    "deep_median_contradictions": 0.0,
+    "quick_median_dissent": 0.0,
+    "deep_median_dissent": 0.0,
+    "quick_median_wall_time": 1.0,
+    "deep_median_wall_time": 5.0,
+    "quick_median_tool_calls": 1.0,
+    "deep_median_tool_calls": 4.0,
+    "quick_median_llm_calls": 0.0,
+    "deep_median_llm_calls": 2.0,
+    "contradiction_recall_quick": 0.0,
+    "contradiction_recall_deep": 0.0,
+    "per_category": {
+      "models_reasoning": {
+        "quick_median_grounding": 1.0,
+        "deep_median_grounding": 1.0,
+        "quick_median_evidence": 2.0,
+        "deep_median_evidence": 5.0
+      },
+      "agent_protocols": {
+        "quick_median_grounding": 1.0,
+        "deep_median_grounding": 1.0,
+        "quick_median_evidence": 2.0,
+        "deep_median_evidence": 5.0
+      },
+      "agents": {
+        "quick_median_grounding": 1.0,
+        "deep_median_grounding": 1.0,
+        "quick_median_evidence": 2.0,
+        "deep_median_evidence": 5.0
+      },
+      "ai_engineering": {
+        "quick_median_grounding": 1.0,
+        "deep_median_grounding": 1.0,
+        "quick_median_evidence": 2.0,
+        "deep_median_evidence": 5.0
+      },
+      "evaluation_benchmarks": {
+        "quick_median_grounding": 1.0,
+        "deep_median_grounding": 1.0,
+        "quick_median_evidence": 2.0,
+        "deep_median_evidence": 5.0
+      },
+      "rag_retrieval": {
+        "quick_median_grounding": 1.0,
+        "deep_median_grounding": 1.0,
+        "quick_median_evidence": 2.0,
+        "deep_median_evidence": 5.0
+      },
+      "local_inference": {
+        "quick_median_grounding": 1.0,
+        "deep_median_grounding": 1.0,
+        "quick_median_evidence": 2.0,
+        "deep_median_evidence": 5.0
+      }
+    },
+    "per_difficulty": {
+      "HARD": {
+        "quick_median_evidence": 2.0,
+        "deep_median_evidence": 5.0,
+        "quick_median_contradictions": 0.0,
+        "deep_median_contradictions": 0.0
+      },
+      "EASY": {
+        "quick_median_evidence": 2.0,
+        "deep_median_evidence": 5.0,
+        "quick_median_contradictions": 0.0,
+        "deep_median_contradictions": 0.0
+      },
+      "MODERATE": {
+        "quick_median_evidence": 2.0,
+        "deep_median_evidence": 5.0,
+        "quick_median_contradictions": 0.0,
+        "deep_median_contradictions": 0.0
+      },
+      "CONTROVERSIAL": {
+        "quick_median_evidence": 2.0,
+        "deep_median_evidence": 5.0,
+        "quick_median_contradictions": 0.0,
+        "deep_median_contradictions": 0.0
+      }
+    },
+    "failure_distribution": {
+      "CONTRADICTION_FAILURE": 12
+    },
+    "routing_recommendations": [
+      "DEEP BENEFICIAL: Questions with CONTROVERSIAL or HARD difficulty requiring cross-source synthesis.",
+      "DEEP BENEFICIAL: Comparative queries across multiple frameworks or benchmarks.",
+      "QUICK SUFFICIENT: EASY technical documentation and parameter lookup queries.",
+      "QUICK SUFFICIENT: Single-repository or single-tool verification queries."
+    ]
+  },
+  "human_rubric_template": [
+    {
+      "case_id": "agents_001",
+      "question": "Is Model Context Protocol (MCP) becoming the standard for agent tooling?",
+      "category": "agents",
+      "difficulty": "HARD",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "agents_002",
+      "question": "What are the key architectural differences between AutoGen and CrewAI?",
+      "category": "agents",
+      "difficulty": "MODERATE",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "agents_003",
+      "question": "Do multi-agent architectures consistently outperform single-agent systems with reasoning?",
+      "category": "agents",
+      "difficulty": "CONTROVERSIAL",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "agents_004",
+      "question": "What is the primary role of memory persistence in LangGraph agents?",
+      "category": "agents",
+      "difficulty": "EASY",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "agents_005",
+      "question": "How reliable are autonomous code-editing agents in large existing repositories?",
+      "category": "agents",
+      "difficulty": "HARD",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "local_001",
+      "question": "What are the minimum VRAM requirements for running quantized DeepSeek-R1 locally?",
+      "category": "local_inference",
+      "difficulty": "MODERATE",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "local_002",
+      "question": "vLLM vs Ollama: throughput and concurrency comparison for production serving.",
+      "category": "local_inference",
+      "difficulty": "MODERATE",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "local_003",
+      "question": "Does Speculative Decoding yield consistent speedups across small edge devices?",
+      "category": "local_inference",
+      "difficulty": "CONTROVERSIAL",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "local_004",
+      "question": "What quantization method is supported by llama.cpp for AMD GPUs?",
+      "category": "local_inference",
+      "difficulty": "EASY",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "local_005",
+      "question": "Is Apple Silicon unified memory competitive with discrete GPUs for 70B model inference?",
+      "category": "local_inference",
+      "difficulty": "HARD",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "rag_001",
+      "question": "GraphRAG vs Hybrid Search: when does Knowledge Graph retrieval justify the indexing cost?",
+      "category": "rag_retrieval",
+      "difficulty": "HARD",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "rag_002",
+      "question": "Does Late Chunking outperform traditional fixed-window chunking in retrieval benchmarks?",
+      "category": "rag_retrieval",
+      "difficulty": "MODERATE",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "rag_003",
+      "question": "Is Vector DB embedding search sufficient for precise factual question answering without reranking?",
+      "category": "rag_retrieval",
+      "difficulty": "CONTROVERSIAL",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "rag_004",
+      "question": "What is the default vector distance metric used in Qdrant?",
+      "category": "rag_retrieval",
+      "difficulty": "EASY",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "eng_001",
+      "question": "DSPy vs Manual Few-Shot Prompting: does automatic prompt optimization generalize in production?",
+      "category": "ai_engineering",
+      "difficulty": "HARD",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "eng_002",
+      "question": "What are the essential telemetry metrics for monitoring LLM drift and latency in production?",
+      "category": "ai_engineering",
+      "difficulty": "MODERATE",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "eng_003",
+      "question": "Are structured outputs natively guaranteed by schema-enforcing inference engines without retry loops?",
+      "category": "ai_engineering",
+      "difficulty": "MODERATE",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "eng_004",
+      "question": "How does semantic caching reduce LLM inference costs and latency?",
+      "category": "ai_engineering",
+      "difficulty": "EASY",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "models_001",
+      "question": "Test-Time Compute vs Pretraining Scaling: what is the empirical return on reasoning tokens?",
+      "category": "models_reasoning",
+      "difficulty": "CONTROVERSIAL",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "models_002",
+      "question": "How does Mixture of Agents (MoA) compare with single frontier model reasoning?",
+      "category": "models_reasoning",
+      "difficulty": "HARD",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "models_003",
+      "question": "What is the parameter size of the Qwen 2.5 Coder flagship model?",
+      "category": "models_reasoning",
+      "difficulty": "EASY",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "models_004",
+      "question": "Do reasoning models hallucinate less on mathematical reasoning tasks than standard LLMs?",
+      "category": "models_reasoning",
+      "difficulty": "MODERATE",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "proto_001",
+      "question": "A2A vs MCP: How do emerging Agent-to-Agent communication protocols compare with tool protocols?",
+      "category": "agent_protocols",
+      "difficulty": "HARD",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "proto_002",
+      "question": "What transport mechanisms are supported by the Model Context Protocol specification?",
+      "category": "agent_protocols",
+      "difficulty": "EASY",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "proto_003",
+      "question": "Is SSE or WebSockets preferred for long-running streaming agent tool execution?",
+      "category": "agent_protocols",
+      "difficulty": "MODERATE",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "proto_004",
+      "question": "How do agent authorization standards address delegation risks in multi-tool environments?",
+      "category": "agent_protocols",
+      "difficulty": "HARD",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "bench_001",
+      "question": "Does SWE-bench Verified address the issue of noisy or un-reproducible test assertions?",
+      "category": "evaluation_benchmarks",
+      "difficulty": "MODERATE",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "bench_002",
+      "question": "Is LLM-as-a-Judge susceptible to position and length bias in open-ended evaluations?",
+      "category": "evaluation_benchmarks",
+      "difficulty": "HARD",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "bench_003",
+      "question": "What benchmark is widely accepted for evaluating agent web-browsing capabilities?",
+      "category": "evaluation_benchmarks",
+      "difficulty": "EASY",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "bench_004",
+      "question": "Are synthetic benchmarks good predictors of real-world enterprise RAG performance?",
+      "category": "evaluation_benchmarks",
+      "difficulty": "CONTROVERSIAL",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "bench_005",
+      "question": "How does GAIA benchmark evaluate multimodal multi-step tool use?",
+      "category": "evaluation_benchmarks",
+      "difficulty": "MODERATE",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "bench_006",
+      "question": "Do automated code review benchmarks reflect real-world bug detection accuracy?",
+      "category": "evaluation_benchmarks",
+      "difficulty": "HARD",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    }
+  ]
+}

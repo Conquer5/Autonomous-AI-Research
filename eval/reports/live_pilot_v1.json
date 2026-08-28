@@ -1,0 +1,1210 @@
+{
+  "schema_version": "1.1.0",
+  "execution_type": "LIVE",
+  "evaluation_id": "live_20260828_092606",
+  "generated_at": "2026-08-28T09:26:06.068353+00:00",
+  "dataset_version": "1.1.0",
+  "total_cases": 8,
+  "total_runs": 16,
+  "categories": [
+    "agent_protocols",
+    "agents",
+    "evaluation_benchmarks",
+    "local_inference",
+    "models_reasoning",
+    "rag_retrieval"
+  ],
+  "quick_results": [
+    {
+      "execution_type": "LIVE",
+      "case_id": "agents_003",
+      "mode": "QUICK",
+      "metrics": {
+        "execution_type": "LIVE",
+        "supported_fact_count": 0,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": null,
+        "grounding_measured": false,
+        "factual_claims_with_evidence": 0,
+        "total_factual_claims": 0,
+        "citation_coverage": null,
+        "citations_measured": false,
+        "evidence_count": 0,
+        "independent_source_count": 0,
+        "source_type_count": 0,
+        "authoritative_source_count": 0,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "insufficient",
+        "iterations": 1,
+        "tool_calls": 2,
+        "queries": 2,
+        "llm_calls": 1,
+        "stop_reason": "max_iterations",
+        "wall_time": 22.32,
+        "tokens_measured": false,
+        "input_tokens": null,
+        "output_tokens": null,
+        "total_tokens": null,
+        "research_status": "failed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "RETRIEVAL_FAILURE"
+        ]
+      },
+      "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+      "safe_conclusion": "Ketiadaan data empiris.",
+      "key_findings": [
+        "Tidak ada repositori, paper, atau sumber web relevan yang ditemukan."
+      ],
+      "dissenting_findings": [],
+      "confidence": "low",
+      "evidence_sources": [],
+      "executed_at": "2026-08-28T09:24:20.784490+00:00"
+    },
+    {
+      "execution_type": "LIVE",
+      "case_id": "agents_005",
+      "mode": "QUICK",
+      "metrics": {
+        "execution_type": "LIVE",
+        "supported_fact_count": 0,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": null,
+        "grounding_measured": false,
+        "factual_claims_with_evidence": 0,
+        "total_factual_claims": 0,
+        "citation_coverage": null,
+        "citations_measured": false,
+        "evidence_count": 0,
+        "independent_source_count": 0,
+        "source_type_count": 0,
+        "authoritative_source_count": 0,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "insufficient",
+        "iterations": 1,
+        "tool_calls": 2,
+        "queries": 2,
+        "llm_calls": 1,
+        "stop_reason": "max_iterations",
+        "wall_time": 5.13,
+        "tokens_measured": false,
+        "input_tokens": null,
+        "output_tokens": null,
+        "total_tokens": null,
+        "research_status": "failed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "RETRIEVAL_FAILURE"
+        ]
+      },
+      "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+      "safe_conclusion": "Ketiadaan data empiris.",
+      "key_findings": [
+        "Tidak ada repositori, paper, atau sumber web relevan yang ditemukan."
+      ],
+      "dissenting_findings": [],
+      "confidence": "low",
+      "evidence_sources": [],
+      "executed_at": "2026-08-28T09:24:45.399032+00:00"
+    },
+    {
+      "execution_type": "LIVE",
+      "case_id": "local_002",
+      "mode": "QUICK",
+      "metrics": {
+        "execution_type": "LIVE",
+        "supported_fact_count": 0,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": null,
+        "grounding_measured": false,
+        "factual_claims_with_evidence": 0,
+        "total_factual_claims": 0,
+        "citation_coverage": null,
+        "citations_measured": false,
+        "evidence_count": 0,
+        "independent_source_count": 0,
+        "source_type_count": 0,
+        "authoritative_source_count": 0,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "insufficient",
+        "iterations": 1,
+        "tool_calls": 2,
+        "queries": 2,
+        "llm_calls": 1,
+        "stop_reason": "max_iterations",
+        "wall_time": 5.16,
+        "tokens_measured": false,
+        "input_tokens": null,
+        "output_tokens": null,
+        "total_tokens": null,
+        "research_status": "failed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "RETRIEVAL_FAILURE"
+        ]
+      },
+      "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+      "safe_conclusion": "Ketiadaan data empiris.",
+      "key_findings": [
+        "Tidak ada repositori, paper, atau sumber web relevan yang ditemukan."
+      ],
+      "dissenting_findings": [],
+      "confidence": "low",
+      "evidence_sources": [],
+      "executed_at": "2026-08-28T09:24:55.252631+00:00"
+    },
+    {
+      "execution_type": "LIVE",
+      "case_id": "rag_004",
+      "mode": "QUICK",
+      "metrics": {
+        "execution_type": "LIVE",
+        "supported_fact_count": 0,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": null,
+        "grounding_measured": false,
+        "factual_claims_with_evidence": 0,
+        "total_factual_claims": 0,
+        "citation_coverage": null,
+        "citations_measured": false,
+        "evidence_count": 0,
+        "independent_source_count": 0,
+        "source_type_count": 0,
+        "authoritative_source_count": 0,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "insufficient",
+        "iterations": 1,
+        "tool_calls": 2,
+        "queries": 2,
+        "llm_calls": 1,
+        "stop_reason": "max_iterations",
+        "wall_time": 4.48,
+        "tokens_measured": false,
+        "input_tokens": null,
+        "output_tokens": null,
+        "total_tokens": null,
+        "research_status": "failed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "RETRIEVAL_FAILURE"
+        ]
+      },
+      "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+      "safe_conclusion": "Ketiadaan data empiris.",
+      "key_findings": [
+        "Tidak ada repositori, paper, atau sumber web relevan yang ditemukan."
+      ],
+      "dissenting_findings": [],
+      "confidence": "low",
+      "evidence_sources": [],
+      "executed_at": "2026-08-28T09:25:05.652929+00:00"
+    },
+    {
+      "execution_type": "LIVE",
+      "case_id": "models_001",
+      "mode": "QUICK",
+      "metrics": {
+        "execution_type": "LIVE",
+        "supported_fact_count": 0,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": null,
+        "grounding_measured": false,
+        "factual_claims_with_evidence": 0,
+        "total_factual_claims": 0,
+        "citation_coverage": null,
+        "citations_measured": false,
+        "evidence_count": 0,
+        "independent_source_count": 0,
+        "source_type_count": 0,
+        "authoritative_source_count": 0,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "insufficient",
+        "iterations": 1,
+        "tool_calls": 2,
+        "queries": 2,
+        "llm_calls": 1,
+        "stop_reason": "max_iterations",
+        "wall_time": 5.11,
+        "tokens_measured": false,
+        "input_tokens": null,
+        "output_tokens": null,
+        "total_tokens": null,
+        "research_status": "failed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "RETRIEVAL_FAILURE"
+        ]
+      },
+      "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+      "safe_conclusion": "Ketiadaan data empiris.",
+      "key_findings": [
+        "Tidak ada repositori, paper, atau sumber web relevan yang ditemukan."
+      ],
+      "dissenting_findings": [],
+      "confidence": "low",
+      "evidence_sources": [],
+      "executed_at": "2026-08-28T09:25:15.237669+00:00"
+    },
+    {
+      "execution_type": "LIVE",
+      "case_id": "models_003",
+      "mode": "QUICK",
+      "metrics": {
+        "execution_type": "LIVE",
+        "supported_fact_count": 0,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": null,
+        "grounding_measured": false,
+        "factual_claims_with_evidence": 0,
+        "total_factual_claims": 0,
+        "citation_coverage": null,
+        "citations_measured": false,
+        "evidence_count": 0,
+        "independent_source_count": 0,
+        "source_type_count": 0,
+        "authoritative_source_count": 0,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "insufficient",
+        "iterations": 1,
+        "tool_calls": 2,
+        "queries": 2,
+        "llm_calls": 1,
+        "stop_reason": "max_iterations",
+        "wall_time": 4.97,
+        "tokens_measured": false,
+        "input_tokens": null,
+        "output_tokens": null,
+        "total_tokens": null,
+        "research_status": "failed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "RETRIEVAL_FAILURE"
+        ]
+      },
+      "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+      "safe_conclusion": "Ketiadaan data empiris.",
+      "key_findings": [
+        "Tidak ada repositori, paper, atau sumber web relevan yang ditemukan."
+      ],
+      "dissenting_findings": [],
+      "confidence": "low",
+      "evidence_sources": [],
+      "executed_at": "2026-08-28T09:25:25.475648+00:00"
+    },
+    {
+      "execution_type": "LIVE",
+      "case_id": "proto_001",
+      "mode": "QUICK",
+      "metrics": {
+        "execution_type": "LIVE",
+        "supported_fact_count": 0,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": null,
+        "grounding_measured": false,
+        "factual_claims_with_evidence": 0,
+        "total_factual_claims": 0,
+        "citation_coverage": null,
+        "citations_measured": false,
+        "evidence_count": 0,
+        "independent_source_count": 0,
+        "source_type_count": 0,
+        "authoritative_source_count": 0,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "insufficient",
+        "iterations": 1,
+        "tool_calls": 2,
+        "queries": 2,
+        "llm_calls": 1,
+        "stop_reason": "max_iterations",
+        "wall_time": 5.17,
+        "tokens_measured": false,
+        "input_tokens": null,
+        "output_tokens": null,
+        "total_tokens": null,
+        "research_status": "failed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "RETRIEVAL_FAILURE"
+        ]
+      },
+      "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+      "safe_conclusion": "Ketiadaan data empiris.",
+      "key_findings": [
+        "Tidak ada repositori, paper, atau sumber web relevan yang ditemukan."
+      ],
+      "dissenting_findings": [],
+      "confidence": "low",
+      "evidence_sources": [],
+      "executed_at": "2026-08-28T09:25:35.378189+00:00"
+    },
+    {
+      "execution_type": "LIVE",
+      "case_id": "bench_001",
+      "mode": "QUICK",
+      "metrics": {
+        "execution_type": "LIVE",
+        "supported_fact_count": 0,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": null,
+        "grounding_measured": false,
+        "factual_claims_with_evidence": 0,
+        "total_factual_claims": 0,
+        "citation_coverage": null,
+        "citations_measured": false,
+        "evidence_count": 0,
+        "independent_source_count": 0,
+        "source_type_count": 0,
+        "authoritative_source_count": 0,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "insufficient",
+        "iterations": 1,
+        "tool_calls": 2,
+        "queries": 2,
+        "llm_calls": 1,
+        "stop_reason": "max_iterations",
+        "wall_time": 7.78,
+        "tokens_measured": false,
+        "input_tokens": null,
+        "output_tokens": null,
+        "total_tokens": null,
+        "research_status": "failed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "RETRIEVAL_FAILURE"
+        ]
+      },
+      "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+      "safe_conclusion": "Ketiadaan data empiris.",
+      "key_findings": [
+        "Tidak ada repositori, paper, atau sumber web relevan yang ditemukan."
+      ],
+      "dissenting_findings": [],
+      "confidence": "low",
+      "evidence_sources": [],
+      "executed_at": "2026-08-28T09:25:53.175181+00:00"
+    }
+  ],
+  "deep_results": [
+    {
+      "execution_type": "LIVE",
+      "case_id": "agents_003",
+      "mode": "DEEP",
+      "metrics": {
+        "execution_type": "LIVE",
+        "supported_fact_count": 0,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": null,
+        "grounding_measured": false,
+        "factual_claims_with_evidence": 0,
+        "total_factual_claims": 0,
+        "citation_coverage": null,
+        "citations_measured": false,
+        "evidence_count": 0,
+        "independent_source_count": 0,
+        "source_type_count": 0,
+        "authoritative_source_count": 0,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "insufficient",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 4,
+        "llm_calls": 1,
+        "stop_reason": "no_new_evidence",
+        "wall_time": 2.29,
+        "tokens_measured": false,
+        "input_tokens": null,
+        "output_tokens": null,
+        "total_tokens": null,
+        "research_status": "failed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "RETRIEVAL_FAILURE"
+        ]
+      },
+      "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+      "safe_conclusion": "Ketiadaan data empiris.",
+      "key_findings": [
+        "Tidak ada repositori, paper, atau sumber web relevan yang ditemukan."
+      ],
+      "dissenting_findings": [],
+      "confidence": "low",
+      "evidence_sources": [],
+      "executed_at": "2026-08-28T09:24:43.109336+00:00"
+    },
+    {
+      "execution_type": "LIVE",
+      "case_id": "agents_005",
+      "mode": "DEEP",
+      "metrics": {
+        "execution_type": "LIVE",
+        "supported_fact_count": 0,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": null,
+        "grounding_measured": false,
+        "factual_claims_with_evidence": 0,
+        "total_factual_claims": 0,
+        "citation_coverage": null,
+        "citations_measured": false,
+        "evidence_count": 0,
+        "independent_source_count": 0,
+        "source_type_count": 0,
+        "authoritative_source_count": 0,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "insufficient",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 4,
+        "llm_calls": 1,
+        "stop_reason": "no_new_evidence",
+        "wall_time": 4.72,
+        "tokens_measured": false,
+        "input_tokens": null,
+        "output_tokens": null,
+        "total_tokens": null,
+        "research_status": "failed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "RETRIEVAL_FAILURE"
+        ]
+      },
+      "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+      "safe_conclusion": "Ketiadaan data empiris.",
+      "key_findings": [
+        "Tidak ada repositori, paper, atau sumber web relevan yang ditemukan."
+      ],
+      "dissenting_findings": [],
+      "confidence": "low",
+      "evidence_sources": [],
+      "executed_at": "2026-08-28T09:24:50.528103+00:00"
+    },
+    {
+      "execution_type": "LIVE",
+      "case_id": "local_002",
+      "mode": "DEEP",
+      "metrics": {
+        "execution_type": "LIVE",
+        "supported_fact_count": 0,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": null,
+        "grounding_measured": false,
+        "factual_claims_with_evidence": 0,
+        "total_factual_claims": 0,
+        "citation_coverage": null,
+        "citations_measured": false,
+        "evidence_count": 0,
+        "independent_source_count": 0,
+        "source_type_count": 0,
+        "authoritative_source_count": 0,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "insufficient",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 4,
+        "llm_calls": 1,
+        "stop_reason": "no_new_evidence",
+        "wall_time": 5.24,
+        "tokens_measured": false,
+        "input_tokens": null,
+        "output_tokens": null,
+        "total_tokens": null,
+        "research_status": "failed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "RETRIEVAL_FAILURE"
+        ]
+      },
+      "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+      "safe_conclusion": "Ketiadaan data empiris.",
+      "key_findings": [
+        "Tidak ada repositori, paper, atau sumber web relevan yang ditemukan."
+      ],
+      "dissenting_findings": [],
+      "confidence": "low",
+      "evidence_sources": [],
+      "executed_at": "2026-08-28T09:25:00.412009+00:00"
+    },
+    {
+      "execution_type": "LIVE",
+      "case_id": "rag_004",
+      "mode": "DEEP",
+      "metrics": {
+        "execution_type": "LIVE",
+        "supported_fact_count": 0,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": null,
+        "grounding_measured": false,
+        "factual_claims_with_evidence": 0,
+        "total_factual_claims": 0,
+        "citation_coverage": null,
+        "citations_measured": false,
+        "evidence_count": 0,
+        "independent_source_count": 0,
+        "source_type_count": 0,
+        "authoritative_source_count": 0,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "insufficient",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 4,
+        "llm_calls": 1,
+        "stop_reason": "no_new_evidence",
+        "wall_time": 5.1,
+        "tokens_measured": false,
+        "input_tokens": null,
+        "output_tokens": null,
+        "total_tokens": null,
+        "research_status": "failed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "RETRIEVAL_FAILURE"
+        ]
+      },
+      "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+      "safe_conclusion": "Ketiadaan data empiris.",
+      "key_findings": [
+        "Tidak ada repositori, paper, atau sumber web relevan yang ditemukan."
+      ],
+      "dissenting_findings": [],
+      "confidence": "low",
+      "evidence_sources": [],
+      "executed_at": "2026-08-28T09:25:10.132524+00:00"
+    },
+    {
+      "execution_type": "LIVE",
+      "case_id": "models_001",
+      "mode": "DEEP",
+      "metrics": {
+        "execution_type": "LIVE",
+        "supported_fact_count": 0,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": null,
+        "grounding_measured": false,
+        "factual_claims_with_evidence": 0,
+        "total_factual_claims": 0,
+        "citation_coverage": null,
+        "citations_measured": false,
+        "evidence_count": 0,
+        "independent_source_count": 0,
+        "source_type_count": 0,
+        "authoritative_source_count": 0,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "insufficient",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 4,
+        "llm_calls": 1,
+        "stop_reason": "no_new_evidence",
+        "wall_time": 5.12,
+        "tokens_measured": false,
+        "input_tokens": null,
+        "output_tokens": null,
+        "total_tokens": null,
+        "research_status": "failed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "RETRIEVAL_FAILURE"
+        ]
+      },
+      "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+      "safe_conclusion": "Ketiadaan data empiris.",
+      "key_findings": [
+        "Tidak ada repositori, paper, atau sumber web relevan yang ditemukan."
+      ],
+      "dissenting_findings": [],
+      "confidence": "low",
+      "evidence_sources": [],
+      "executed_at": "2026-08-28T09:25:20.351027+00:00"
+    },
+    {
+      "execution_type": "LIVE",
+      "case_id": "models_003",
+      "mode": "DEEP",
+      "metrics": {
+        "execution_type": "LIVE",
+        "supported_fact_count": 0,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": null,
+        "grounding_measured": false,
+        "factual_claims_with_evidence": 0,
+        "total_factual_claims": 0,
+        "citation_coverage": null,
+        "citations_measured": false,
+        "evidence_count": 0,
+        "independent_source_count": 0,
+        "source_type_count": 0,
+        "authoritative_source_count": 0,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "insufficient",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 4,
+        "llm_calls": 1,
+        "stop_reason": "no_new_evidence",
+        "wall_time": 4.93,
+        "tokens_measured": false,
+        "input_tokens": null,
+        "output_tokens": null,
+        "total_tokens": null,
+        "research_status": "failed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "RETRIEVAL_FAILURE"
+        ]
+      },
+      "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+      "safe_conclusion": "Ketiadaan data empiris.",
+      "key_findings": [
+        "Tidak ada repositori, paper, atau sumber web relevan yang ditemukan."
+      ],
+      "dissenting_findings": [],
+      "confidence": "low",
+      "evidence_sources": [],
+      "executed_at": "2026-08-28T09:25:30.449053+00:00"
+    },
+    {
+      "execution_type": "LIVE",
+      "case_id": "proto_001",
+      "mode": "DEEP",
+      "metrics": {
+        "execution_type": "LIVE",
+        "supported_fact_count": 4,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": 1.0,
+        "grounding_measured": true,
+        "factual_claims_with_evidence": 4,
+        "total_factual_claims": 4,
+        "citation_coverage": 1.0,
+        "citations_measured": true,
+        "evidence_count": 5,
+        "independent_source_count": 4,
+        "source_type_count": 1,
+        "authoritative_source_count": 0,
+        "claim_cluster_count": 5,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "insufficient",
+        "iterations": 2,
+        "tool_calls": 5,
+        "queries": 5,
+        "llm_calls": 3,
+        "stop_reason": "no_new_evidence",
+        "wall_time": 12.62,
+        "tokens_measured": false,
+        "input_tokens": null,
+        "output_tokens": null,
+        "total_tokens": null,
+        "research_status": "partial",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": []
+      },
+      "answer_snippet": "Analisis konsensus terhadap 5 sumber (Status: insufficient):\n• Temuan Utama:\n  - bytesbyankit/MCP-Server-Development-Framework: A comprehensive framework for developing Model Context Protocol (MCP) servers with TypeScript/Node.js. \n  - sachdev27/dell-powerstore-mcp-server: A Model Context Protocol (",
+      "safe_conclusion": "Bukti mendukung klaim utama secara konsisten.",
+      "key_findings": [
+        "bytesbyankit/MCP-Server-Development-Framework: A comprehensive framework for developing Model Context Protocol (MCP) servers with TypeScript/Node.js. ",
+        "sachdev27/dell-powerstore-mcp-server: A Model Context Protocol (MCP) server for Dell PowerStore that automatically generates tools from OpenAPI specif",
+        "sachdev27/dell-unity-mcp-server: A Model Context Protocol (MCP) server for Dell Unity storage arrays that automatically generates tools from OpenAPI s",
+        "Raveendra-Pai/diameter-pdf-faq-ai-agent: This project is a local AI documentation assistant for the Diameter protocol specification (PDF). It uses RAG"
+      ],
+      "dissenting_findings": [],
+      "confidence": "low",
+      "evidence_sources": [
+        {
+          "evidence_id": "5c2660d3f58e4fc5a52f06db5ae10e33",
+          "source_type": "github",
+          "title": "bytesbyankit/MCP-Server-Development-Framework",
+          "url": "https://github.com/bytesbyankit/MCP-Server-Development-Framework",
+          "description": "A comprehensive framework for developing Model Context Protocol (MCP) servers with TypeScript/Node.js. Includes project specifications, architectural guidelines, and development tools for building production-ready MCP implementations.",
+          "authority": "community",
+          "stars": 0
+        },
+        {
+          "evidence_id": "862ff656865e4af387ba1a3f5cfa6a65",
+          "source_type": "github",
+          "title": "sachdev27/dell-powerstore-mcp-server",
+          "url": "https://github.com/sachdev27/dell-powerstore-mcp-server",
+          "description": "A Model Context Protocol (MCP) server for Dell PowerStore that automatically generates tools from OpenAPI specifications with a credential-free architecture. Enables AI assistants like Claude and automation platforms like n8n to interact with PowerStore storage arrays.",
+          "authority": "community",
+          "stars": 0
+        },
+        {
+          "evidence_id": "dd90364fbe7b4fdeb961c5a81dc8ab72",
+          "source_type": "github",
+          "title": "sachdev27/dell-unity-mcp-server",
+          "url": "https://github.com/sachdev27/dell-unity-mcp-server",
+          "description": "A Model Context Protocol (MCP) server for Dell Unity storage arrays that automatically generates tools from OpenAPI specifications with a credential-free architecture. Enables AI assistants like Claude and automation platforms like n8n to interact with Unity storage systems.",
+          "authority": "community",
+          "stars": 0
+        },
+        {
+          "evidence_id": "6465dbbbef934f5395319f9e957b0985",
+          "source_type": "github",
+          "title": "Raveendra-Pai/diameter-pdf-faq-ai-agent",
+          "url": "https://github.com/Raveendra-Pai/diameter-pdf-faq-ai-agent",
+          "description": "This project is a local AI documentation assistant for the Diameter protocol specification (PDF). It uses RAG (Retrieval-Augmented Generation) to search relevant sections from the PDF using Chroma + FastEmbed, and generates accurate answers using Mistral running on Ollama. It also supports a scalable MCP (Model Context Protocol) architecture",
+          "authority": "community",
+          "stars": 0
+        },
+        {
+          "evidence_id": "f04b04c3455c4172906acc079e825528",
+          "source_type": "github",
+          "title": "SevenDeadlyCommits/fast_api_scaffolder",
+          "url": "https://github.com/SevenDeadlyCommits/fast_api_scaffolder",
+          "description": "FastAPI Scaffolder is a developer tool and AI system agent that transforms human- and machine-readable YAML architecture specifications into production-ready FastAPI applications.  It provides both a CLI interface for humans and a Model Context Protocol (MCP) server for AI agents (Gemini, Claude Desktop, Cursor, Windsurf, LangChain)",
+          "authority": "community",
+          "stars": 0
+        }
+      ],
+      "executed_at": "2026-08-28T09:25:40.552091+00:00"
+    },
+    {
+      "execution_type": "LIVE",
+      "case_id": "bench_001",
+      "mode": "DEEP",
+      "metrics": {
+        "execution_type": "LIVE",
+        "supported_fact_count": 0,
+        "unsupported_fact_count": 0,
+        "partially_supported_count": 0,
+        "grounding_rate": null,
+        "grounding_measured": false,
+        "factual_claims_with_evidence": 0,
+        "total_factual_claims": 0,
+        "citation_coverage": null,
+        "citations_measured": false,
+        "evidence_count": 0,
+        "independent_source_count": 0,
+        "source_type_count": 0,
+        "authoritative_source_count": 0,
+        "claim_cluster_count": 0,
+        "contradiction_count": 0,
+        "high_severity_contradiction_count": 0,
+        "dissent_count": 0,
+        "consensus_level": "insufficient",
+        "iterations": 2,
+        "tool_calls": 4,
+        "queries": 4,
+        "llm_calls": 1,
+        "stop_reason": "no_new_evidence",
+        "wall_time": 5.08,
+        "tokens_measured": false,
+        "input_tokens": null,
+        "output_tokens": null,
+        "total_tokens": null,
+        "research_status": "failed",
+        "fallback_used": false,
+        "collector_failures": 0,
+        "failure_tags": [
+          "RETRIEVAL_FAILURE"
+        ]
+      },
+      "answer_snippet": "Tidak ditemukan bukti memadai dari sumber terdaftar.",
+      "safe_conclusion": "Ketiadaan data empiris.",
+      "key_findings": [
+        "Tidak ada repositori, paper, atau sumber web relevan yang ditemukan."
+      ],
+      "dissenting_findings": [],
+      "confidence": "low",
+      "evidence_sources": [],
+      "executed_at": "2026-08-28T09:26:00.958084+00:00"
+    }
+  ],
+  "adversarial_results": [
+    {
+      "fixture_name": "official_vs_independent_benchmark",
+      "description": "Official docs vs Independent stress test ('fails under load').",
+      "contradiction_detected": true,
+      "expected_contradiction_type": "direct_negation",
+      "actual_contradiction_type": "direct_negation",
+      "dissent_preserved": true,
+      "confidence_capped": true,
+      "safe_conclusion_avoids_universal": true,
+      "passed": true,
+      "details": {
+        "consensus_level": "mixed",
+        "contradictions_count": 1,
+        "dissent_count": 1
+      }
+    },
+    {
+      "fixture_name": "multi_paper_reproducibility",
+      "description": "Paper A (+15%), Paper B (unable to reproduce), Paper C (+4%).",
+      "contradiction_detected": true,
+      "expected_contradiction_type": "direct_negation",
+      "actual_contradiction_type": "direct_negation",
+      "dissent_preserved": true,
+      "confidence_capped": true,
+      "safe_conclusion_avoids_universal": true,
+      "passed": true,
+      "details": {
+        "consensus_level": "mixed",
+        "contradictions_count": 1,
+        "dissent_count": 1
+      }
+    },
+    {
+      "fixture_name": "syndicated_copycat_resilience",
+      "description": "3 syndicated articles repeating vendor claim vs 1 controlled benchmark.",
+      "contradiction_detected": true,
+      "expected_contradiction_type": "numeric_conflict",
+      "actual_contradiction_type": "qualification",
+      "dissent_preserved": true,
+      "confidence_capped": true,
+      "safe_conclusion_avoids_universal": true,
+      "passed": true,
+      "details": {
+        "consensus_level": "mixed",
+        "not_inflated_to_strong": true
+      }
+    },
+    {
+      "fixture_name": "valid_version_evolution",
+      "description": "v1 unsupported vs v2 support added in release notes.",
+      "contradiction_detected": true,
+      "expected_contradiction_type": "version_conflict",
+      "actual_contradiction_type": "version_conflict",
+      "dissent_preserved": true,
+      "confidence_capped": false,
+      "safe_conclusion_avoids_universal": true,
+      "passed": true,
+      "details": {
+        "resolved_by_version": true,
+        "consensus_level": "moderate"
+      }
+    },
+    {
+      "fixture_name": "temporal_benchmark_discrepancy",
+      "description": "2025 benchmark vs 2026 benchmark - must NOT be auto-resolved.",
+      "contradiction_detected": true,
+      "expected_contradiction_type": "numeric_conflict",
+      "actual_contradiction_type": "numeric_conflict",
+      "dissent_preserved": false,
+      "confidence_capped": true,
+      "safe_conclusion_avoids_universal": true,
+      "passed": true,
+      "details": {
+        "resolved_by_version": false,
+        "consensus_level": "insufficient"
+      }
+    }
+  ],
+  "comparison": {
+    "execution_type": "LIVE",
+    "total_cases": 8,
+    "quick_median_grounding": null,
+    "deep_median_grounding": 1.0,
+    "quick_median_citations": null,
+    "deep_median_citations": 1.0,
+    "quick_median_evidence": 0.0,
+    "deep_median_evidence": 0.0,
+    "quick_median_sources": 0.0,
+    "deep_median_sources": 0.0,
+    "quick_median_contradictions": 0.0,
+    "deep_median_contradictions": 0.0,
+    "quick_median_dissent": 0.0,
+    "deep_median_dissent": 0.0,
+    "quick_median_wall_time": 5.145,
+    "deep_median_wall_time": 5.09,
+    "quick_median_tool_calls": 2.0,
+    "deep_median_tool_calls": 4.0,
+    "quick_median_llm_calls": 1.0,
+    "deep_median_llm_calls": 1.0,
+    "tokens_measured": false,
+    "quick_median_tokens": null,
+    "deep_median_tokens": null,
+    "gold_contradiction_recall_quick": 0.0,
+    "gold_contradiction_recall_deep": 0.0,
+    "contradictions_detected_quick": 0,
+    "contradictions_detected_deep": 0,
+    "per_category": {
+      "evaluation_benchmarks": {
+        "quick_median_grounding": null,
+        "deep_median_grounding": null,
+        "quick_median_evidence": 0.0,
+        "deep_median_evidence": 0.0
+      },
+      "agent_protocols": {
+        "quick_median_grounding": null,
+        "deep_median_grounding": 1.0,
+        "quick_median_evidence": 0.0,
+        "deep_median_evidence": 5.0
+      },
+      "rag_retrieval": {
+        "quick_median_grounding": null,
+        "deep_median_grounding": null,
+        "quick_median_evidence": 0.0,
+        "deep_median_evidence": 0.0
+      },
+      "local_inference": {
+        "quick_median_grounding": null,
+        "deep_median_grounding": null,
+        "quick_median_evidence": 0.0,
+        "deep_median_evidence": 0.0
+      },
+      "models_reasoning": {
+        "quick_median_grounding": null,
+        "deep_median_grounding": null,
+        "quick_median_evidence": 0.0,
+        "deep_median_evidence": 0.0
+      },
+      "agents": {
+        "quick_median_grounding": null,
+        "deep_median_grounding": null,
+        "quick_median_evidence": 0.0,
+        "deep_median_evidence": 0.0
+      }
+    },
+    "per_difficulty": {
+      "EASY": {
+        "quick_median_evidence": 0.0,
+        "deep_median_evidence": 0.0,
+        "quick_median_contradictions": 0.0,
+        "deep_median_contradictions": 0.0
+      },
+      "MODERATE": {
+        "quick_median_evidence": 0.0,
+        "deep_median_evidence": 0.0,
+        "quick_median_contradictions": 0.0,
+        "deep_median_contradictions": 0.0
+      },
+      "HARD": {
+        "quick_median_evidence": 0.0,
+        "deep_median_evidence": 2.5,
+        "quick_median_contradictions": 0.0,
+        "deep_median_contradictions": 0.0
+      },
+      "CONTROVERSIAL": {
+        "quick_median_evidence": 0.0,
+        "deep_median_evidence": 0.0,
+        "quick_median_contradictions": 0.0,
+        "deep_median_contradictions": 0.0
+      }
+    },
+    "failure_distribution": {
+      "RETRIEVAL_FAILURE": 15
+    },
+    "routing_recommendations": [
+      "EVIDENCE DEPTH: Evidence volume difference between QUICK and DEEP was modest.",
+      "CONTRADICTION DISCOVERY: QUICK and DEEP showed similar contradiction recall.",
+      "CALIBRATION: QUICK mode is recommended for EASY factual queries to conserve latency. DEEP mode is recommended for CONTROVERSIAL, HARD, or comparative queries."
+    ]
+  },
+  "human_rubric_template": [
+    {
+      "case_id": "agents_003",
+      "question": "Do multi-agent architectures consistently outperform single-agent systems?",
+      "category": "agents",
+      "difficulty": "CONTROVERSIAL",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "agents_005",
+      "question": "How reliable are autonomous code-editing agents in large existing repositories?",
+      "category": "agents",
+      "difficulty": "HARD",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "local_002",
+      "question": "vLLM vs Ollama: throughput and concurrency comparison for production serving.",
+      "category": "local_inference",
+      "difficulty": "MODERATE",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "rag_004",
+      "question": "What is the default vector distance metric used in Qdrant?",
+      "category": "rag_retrieval",
+      "difficulty": "EASY",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "models_001",
+      "question": "Test-Time Compute vs Pretraining: what is empirical return on reasoning tokens?",
+      "category": "models_reasoning",
+      "difficulty": "CONTROVERSIAL",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "models_003",
+      "question": "What is the parameter size of the Qwen 2.5 Coder flagship model?",
+      "category": "models_reasoning",
+      "difficulty": "EASY",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "proto_001",
+      "question": "A2A vs MCP: How do emerging Agent communication protocols compare?",
+      "category": "agent_protocols",
+      "difficulty": "HARD",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    },
+    {
+      "case_id": "bench_001",
+      "question": "Does SWE-bench Verified address the issue of noisy test assertions?",
+      "category": "evaluation_benchmarks",
+      "difficulty": "MODERATE",
+      "modes": [
+        "QUICK",
+        "DEEP"
+      ],
+      "rubric_fields": [
+        "relevance (0-2)",
+        "completeness (0-2)",
+        "evidence_quality (0-2)",
+        "conservativeness (0-2)",
+        "usefulness (0-2)",
+        "dissent_handling (0-2)"
+      ]
+    }
+  ]
+}

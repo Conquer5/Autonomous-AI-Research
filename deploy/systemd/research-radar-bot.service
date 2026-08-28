@@ -1,0 +1,20 @@
+[Unit]
+Description=Autonomous AI Research Radar Telegram bot
+Requires=hermes-gateway.service
+After=network-online.target hermes-gateway.service
+Wants=network-online.target
+PartOf=hermes-gateway.service
+
+[Service]
+Type=simple
+WorkingDirectory=/home/rafly-syahputra/Documents/Project Autonomous AI Research Radar
+ExecStart="/home/rafly-syahputra/Documents/Project Autonomous AI Research Radar/.venv/bin/research-radar" bot
+Restart=on-failure
+RestartSec=15s
+Nice=10
+CPUWeight=25
+IOWeight=25
+MemoryHigh=384M
+
+[Install]
+WantedBy=default.target
