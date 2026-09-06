@@ -296,10 +296,12 @@ RUN_LIVE_TESTS=1 python scripts/smoke.py all
 | `MAX_CONCURRENCY` | no | Per-source bound, default 3 |
 | `DIGEST_TOPICS` | no | Daftar fokus dipisahkan koma |
 | `DIGEST_SEARCH_QUERIES` | no | Query pendek GitHub/arXiv dipisahkan koma |
-| `DIGEST_ITEMS_PER_SOURCE` | no | Maksimum temuan tiap kategori, default 5 |
+| `DIGEST_ITEMS_PER_SOURCE` | no | Target awal tiap kategori, default 5; slot kosong diisi kategori lain |
+| `DIGEST_MAX_ITEMS` | no | Batas total digest, default 15 |
+| `DIGEST_NEWS_QUERIES` | no | Query khusus berita/rilis model; terpisah dari GitHub/arXiv |
 | `DIGEST_MIN_INTERVAL_HOURS` | no | Cooldown pengiriman, default 12 jam |
 | `DIGEST_STATE_PATH` | no | Lokasi SQLite deduplication state |
-| `NEWS_FEED_URLS` | no | RSS/Atom gratis, dipisahkan koma |
+| `NEWS_FEED_URLS` | no | RSS/Atom gratis, termasuk OpenAI dan pencarian Google News, dipisahkan koma |
 
 See [.env.example](.env.example) for the complete list and defaults.
 

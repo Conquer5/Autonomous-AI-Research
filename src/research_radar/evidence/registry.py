@@ -36,9 +36,10 @@ def _parse_datetime(val: Any) -> datetime | None:
             ts = float(val_str)
             return datetime.fromtimestamp(ts, tz=UTC)
         except ValueError:
-            return datetime.fromisoformat(val_str)
+            dt = datetime.fromisoformat(val_str)
+            return dt if dt.tzinfo is not None else dt.replace(tzinfo=UTC)
     if isinstance(val, datetime):
-        return val
+        return val if val.tzinfo is not None else val.replace(tzinfo=UTC)
     return None
 
 
@@ -479,15 +480,18 @@ class EvidenceRegistry:
             delivery_status=delivery_status,
         )
 
-    def has_been_delivered(self, evidence_id: str) -> bool:
+    def has_been_delivered(self, evidence_id: str, *, evidence_version: str | None = None) -> bool:
         """Check if evidence has ever been successfully delivered."""
         with contextlib.closing(self._connect()) as conn:
             cursor = conn.cursor()
-            cursor.execute(
-                "SELECT 1 FROM delivery_history "
-                "WHERE evidence_id = ? AND delivery_status = 'sent' LIMIT 1",
-                (evidence_id,),
+            query = (
+                "SELECT 1 FROM delivery_history WHERE evidence_id = ? AND delivery_status = 'sent'"
             )
+            params = [evidence_id]
+            if evidence_version is not None:
+                query += " AND evidence_version = ?"
+                params.append(evidence_version)
+            cursor.execute(query + " LIMIT 1", params)
             return cursor.fetchone() is not None
 
     def start_run(self, run: DigestRunRecord) -> None:
@@ -559,6 +563,17 @@ class EvidenceRegistry:
         now = datetime.now(UTC)
         expires_at = datetime.fromtimestamp(now.timestamp() + ttl_seconds, tz=UTC)
 
+        flock_acquired = False
+        if fcntl is not None and self._lock_fd is None:
+            try:
+                self.path.parent.mkdir(parents=True, exist_ok=True)
+                fd = os.open(self._lock_file, os.O_CREAT | os.O_RDWR, 0o600)
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                self._lock_fd = fd
+                flock_acquired = True
+            except (BlockingIOError, OSError):
+                return False
+
         with contextlib.closing(self._connect()) as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT locked_by, expires_at FROM digest_lock WHERE id = 1")
@@ -567,18 +582,8 @@ class EvidenceRegistry:
             if row:
                 current_owner = row["locked_by"]
                 current_expires = _parse_datetime(row["expires_at"]) or now
-                if current_owner != run_id and now <= current_expires:
-                    # Still locked by another unexpired run
-                    return False
-
-            # OS-level non-blocking flock
-            if fcntl is not None and self._lock_fd is None:
-                try:
-                    self.path.parent.mkdir(parents=True, exist_ok=True)
-                    fd = os.open(self._lock_file, os.O_CREAT | os.O_RDWR, 0o600)
-                    fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                    self._lock_fd = fd
-                except (BlockingIOError, OSError):
+                if current_owner != run_id and now <= current_expires and not flock_acquired:
+                    # Still locked by another active process
                     return False
 
             cursor.execute(

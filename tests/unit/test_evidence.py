@@ -242,3 +242,28 @@ def test_volatile_metrics_do_not_trigger_updated_version(tmp_path: Path) -> None
     # Must trigger UPDATED
     assert status2 == EvidenceStatus.UPDATED
     assert len(registry.get_versions(rec0.evidence_id)) == 2
+
+
+def test_acquire_lock_recovers_from_stale_db_lock(tmp_path: Path) -> None:
+    import fcntl
+    import os
+
+    db_path = tmp_path / "test_lock.sqlite3"
+    registry1 = EvidenceRegistry(db_path)
+
+    # 1. First process acquires lock
+    assert registry1.acquire_lock("run-old", ttl_seconds=600) is True
+
+    # 2. Simulate system reboot / SIGKILL: OS flock is closed, but DB row remains
+    if registry1._lock_fd is not None:
+        fcntl.flock(registry1._lock_fd, fcntl.LOCK_UN)
+        os.close(registry1._lock_fd)
+        registry1._lock_fd = None
+
+    # 3. New process on boot acquires lock with run-new
+    registry2 = EvidenceRegistry(db_path)
+    assert registry2.acquire_lock("run-new", ttl_seconds=600) is True
+
+    # Clean up
+    registry2.release_lock("run-new")
+

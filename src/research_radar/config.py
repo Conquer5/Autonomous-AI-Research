@@ -63,7 +63,14 @@ DEFAULT_GEMINI_FALLBACK_MODELS = (
     "gemini-3.1-flash-lite",
     "gemini-2.5-flash-lite",
 )
+DEFAULT_NEWS_QUERIES = (
+    "AI model release launch announcement",
+    "OpenAI GPT new model announcement",
+    "AI model release Anthropic Google DeepMind new lab",
+)
 DEFAULT_NEWS_FEEDS = (
+    "https://news.google.com/rss/search?q=AI+model+release+when:14d&hl=en-US&gl=US&ceid=US:en",
+    "https://openai.com/news/rss.xml",
     "https://deepmind.google/blog/rss.xml",
     "https://research.google/blog/rss/",
     "https://huggingface.co/blog/feed.xml",
@@ -116,7 +123,9 @@ class AppSettings(BaseSettings):
 
     digest_topics: CsvStrings = DEFAULT_DIGEST_TOPICS
     digest_search_queries: CsvStrings = DEFAULT_DIGEST_SEARCH_QUERIES
-    digest_items_per_source: int = Field(default=3, ge=1, le=10)
+    digest_items_per_source: int = Field(default=5, ge=1, le=10)
+    digest_max_items: int = Field(default=15, ge=1, le=30)
+    digest_news_queries: CsvStrings = DEFAULT_NEWS_QUERIES
     digest_repository_days: int = Field(default=30, ge=1, le=365)
     digest_paper_days: int = Field(default=30, ge=1, le=365)
     digest_news_days: int = Field(default=14, ge=1, le=90)

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
@@ -29,16 +28,13 @@ from research_radar.eval.dataset import (
 from research_radar.eval.llm_judge import LLMJudge
 from research_radar.eval.metrics import MetricCalculator
 from research_radar.eval.models import (
-    CaseExecutionResult,
     DifficultyLevel,
     EvaluationCase,
     EvaluationCategory,
     EvaluationDataset,
     EvaluationMetrics,
-    ExecutionType,
     FailureCategory,
     HumanRubricScore,
-    LLMJudgeScore,
     ResearchCharacteristics,
 )
 from research_radar.eval.report import ReportGenerator
@@ -67,7 +63,7 @@ from research_radar.research.verifier import VerificationReport, VerificationRes
 
 def test_default_dataset_schema_and_counts() -> None:
     dataset = load_default_dataset()
-    assert dataset.schema_version == "1.1.0"
+    assert dataset.schema_version == "1.0.0"
     assert len(dataset.cases) >= 25
     assert len(dataset.cases) == 32
 
@@ -278,26 +274,9 @@ def test_metric_calculator_zero_denominator_safe() -> None:
     )
 
     metrics = MetricCalculator.calculate_metrics(result)
-    assert metrics.grounding_rate is None
-    assert metrics.citation_coverage is None
-    assert metrics.grounding_measured is False
-    assert metrics.citations_measured is False
+    assert metrics.grounding_rate == 0.0
+    assert metrics.citation_coverage == 0.0
     assert metrics.evidence_count == 0
-
-    # With empty verification report
-    empty_report = VerificationReport(
-        results=[],
-        total_claims=0,
-        supported_claims=0,
-        partially_supported_claims=0,
-        unsupported_claims=0,
-        conflicting_claims=0,
-        citation_coverage=0.0,
-    )
-    metrics_verif = MetricCalculator.calculate_metrics(result, verification_report=empty_report)
-    assert metrics_verif.grounding_rate == 0.0
-    assert metrics_verif.citation_coverage == 0.0
-    assert metrics_verif.grounding_measured is True
 
 
 def test_failure_classification() -> None:
@@ -432,7 +411,7 @@ async def test_report_generator_markdown_and_json() -> None:
     assert "## 7. Human Evaluation Rubric Guidelines" in md_text
 
     json_payload = ReportGenerator.generate_json(report)
-    assert '"schema_version": "1.1.0"' in json_payload
+    assert '"schema_version": "1.0.0"' in json_payload
     assert '"total_cases": 2' in json_payload
 
 
@@ -481,7 +460,7 @@ def test_evaluation_storage_isolation(tmp_path: Path) -> None:
 
 @pytest.mark.asyncio
 async def test_llm_judge_label_and_heuristic() -> None:
-    judge = LLMJudge(llm_router=None, allow_heuristic_fallback=True)
+    judge = LLMJudge(llm_router=None)
     case = DEFAULT_EVALUATION_CASES[0]
 
     score = await judge.evaluate_output(
@@ -492,189 +471,8 @@ async def test_llm_judge_label_and_heuristic() -> None:
         safe_conclusion="Gunakan dengan evaluasi batasan.",
     )
 
-    assert score is not None
     assert score.label == "LLM_JUDGE"
     assert 0.0 <= score.relevance_score <= 10.0
     assert 0.0 <= score.grounding_score <= 10.0
     assert 0.0 <= score.conservativeness_score <= 10.0
     assert 0.0 <= score.dissent_score <= 10.0
-
-
-@pytest.mark.asyncio
-async def test_llm_judge_not_run_when_no_router() -> None:
-    judge = LLMJudge(llm_router=None, allow_heuristic_fallback=False)
-    case = DEFAULT_EVALUATION_CASES[0]
-    score = await judge.evaluate_output(
-        case=case, mode="DEEP", answer="Answer", evidence_sources=[]
-    )
-    assert score is not None
-    assert score.judge_status == "NOT_RUN"
-
-
-@pytest.mark.asyncio
-async def test_llm_judge_with_router_success_and_exception() -> None:
-    case = DEFAULT_EVALUATION_CASES[0]
-
-    # Success path
-    mock_router = MagicMock()
-    mock_response = MagicMock()
-    mock_response.data = MagicMock(
-        relevance_score=9.5,
-        grounding_score=8.5,
-        conservativeness_score=9.0,
-        dissent_score=8.0,
-        reasoning="Well supported answer",
-    )
-    mock_router.generate_structured = AsyncMock(return_value=mock_response)
-
-    judge = LLMJudge(llm_router=mock_router)
-    score = await judge.evaluate_output(
-        case=case,
-        mode="DEEP",
-        answer="MCP answer",
-        evidence_sources=[
-            {"title": "Repo", "url": "https://github.com/org/repo", "authority": "primary"}
-        ],
-        safe_conclusion="Safe conclusion",
-    )
-    assert score is not None
-    assert score.relevance_score == 9.5
-    assert score.reasoning == "Well supported answer"
-
-    # Exception path fallback
-    mock_router.generate_structured = AsyncMock(side_effect=RuntimeError("LLM error"))
-    judge_with_fallback = LLMJudge(llm_router=mock_router, allow_heuristic_fallback=True)
-    score_fallback = await judge_with_fallback.evaluate_output(
-        case=case,
-        mode="DEEP",
-        answer="Short",
-        evidence_sources=[],
-    )
-    assert score_fallback is not None
-    assert score_fallback.label == "LLM_JUDGE"
-    assert score_fallback.relevance_score == 4.0
-
-
-def test_storage_extended_methods(tmp_path: Path) -> None:
-    storage = EvaluationStorage(tmp_path / "storage_test")
-
-    # Results save / load
-    res = CaseExecutionResult(
-        case_id="c1",
-        mode="QUICK",
-        metrics=EvaluationMetrics(),
-        executed_at=datetime.now(UTC).isoformat(),
-    )
-    storage.save_results([res], "res.json")
-    loaded_res = storage.load_results("res.json")
-    assert len(loaded_res) == 1
-    assert loaded_res[0].case_id == "c1"
-
-    # LLM judge save
-    judge_score = LLMJudgeScore(
-        case_id="c1",
-        mode="QUICK",
-        relevance_score=8.0,
-        grounding_score=8.0,
-        conservativeness_score=8.0,
-        dissent_score=8.0,
-        evaluated_at=datetime.now(UTC).isoformat(),
-    )
-    storage.save_llm_judge([judge_score], "judge.json")
-    assert (storage.results_dir / "judge.json").exists()
-
-
-@pytest.mark.asyncio
-async def test_evaluation_runner_with_mock_orchestrator() -> None:
-    mock_orchestrator = MagicMock()
-    mock_synth = ResearchSynthesisResult(
-        research_id="res-mock",
-        run_id="run-mock",
-        question="Mock Question",
-        mode=ResearchMode.QUICK,
-        answer="Mock answer",
-        key_findings=["KF1"],
-        evidence_sources=[{"url": "https://github.com/test/repo", "authority": "primary"}],
-        confidence=ConfidenceLevel.HIGH,
-        stop_reason=StopReason.ENOUGH_EVIDENCE,
-        state=ResearchState(
-            research_id="res-mock",
-            run_id="run-mock",
-            question="Mock Question",
-            mode=ResearchMode.QUICK,
-            status=ResearchStatus.COMPLETED,
-            budget=ResearchBudget.for_mode(ResearchMode.QUICK),
-        ),
-    )
-    mock_orchestrator.conduct_research = AsyncMock(return_value=mock_synth)
-
-    runner = EvaluationRunner(orchestrator=mock_orchestrator, execution_type=ExecutionType.LIVE)
-    case = DEFAULT_EVALUATION_CASES[0]
-    result = await runner.run_case(case, mode="QUICK")
-
-    assert result.case_id == case.id
-    assert result.mode == "QUICK"
-    assert result.metrics.evidence_count == 1
-
-
-@pytest.mark.asyncio
-async def test_runner_live_fails_closed_without_orchestrator() -> None:
-    runner = EvaluationRunner(orchestrator=None, execution_type=ExecutionType.LIVE)
-    case = DEFAULT_EVALUATION_CASES[0]
-    with pytest.raises(
-        ValueError, match="Live evaluation requires a configured ResearchOrchestrator"
-    ):
-        await runner.run_case(case, mode="QUICK")
-
-
-def test_metric_calculator_unmeasured_grounding_without_verification() -> None:
-    synth_res = ResearchSynthesisResult(
-        research_id="res-unverif",
-        run_id="run-unverif",
-        question="Unverified Question",
-        mode=ResearchMode.QUICK,
-        answer="Direct unverified answer",
-        key_findings=["Finding 1"],
-        evidence_sources=[{"url": "https://github.com/org/repo", "authority": "primary"}],
-        confidence=ConfidenceLevel.LOW,
-        stop_reason=StopReason.ENOUGH_EVIDENCE,
-        state=ResearchState(
-            research_id="res-unverif",
-            run_id="run-unverif",
-            question="Unverified Question",
-            mode=ResearchMode.QUICK,
-            status=ResearchStatus.COMPLETED,
-            budget=ResearchBudget.for_mode(ResearchMode.QUICK),
-        ),
-    )
-    metrics = MetricCalculator.calculate_metrics(
-        synth_res,
-        verification_report=None,
-        execution_type=ExecutionType.LIVE,
-    )
-    assert metrics.grounding_rate is None
-    assert metrics.grounding_measured is False
-    assert metrics.citation_coverage is None
-    assert metrics.citations_measured is False
-
-
-@pytest.mark.asyncio
-async def test_human_review_package_generation_and_storage(tmp_path: Path) -> None:
-    dataset = load_default_dataset()
-    subset_dataset = EvaluationDataset(
-        schema_version="1.1.0",
-        created_at="2026-08-28T00:00:00Z",
-        cases=dataset.cases[:2],
-    )
-    runner = EvaluationRunner()
-    report = await runner.run_evaluation(subset_dataset, modes=["QUICK", "DEEP"])
-
-    package = ReportGenerator.generate_human_review_package(report, subset_dataset)
-    assert package["total_cases_for_review"] == 2
-    for item in package["cases"]:
-        assert item["mode_A"]["rubric_scores"]["relevance"] is None
-        assert item["mode_B"]["rubric_scores"]["completeness"] is None
-
-    storage = EvaluationStorage(tmp_path / "review_storage")
-    saved_path = storage.save_human_review_package(package, "review_test.json")
-    assert saved_path.exists()

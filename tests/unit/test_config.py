@@ -43,7 +43,8 @@ def test_low_resource_digest_and_gemini_defaults() -> None:
         "gemini-3.1-flash-lite",
         "gemini-2.5-flash-lite",
     )
-    assert settings.digest_items_per_source == 3
+    assert settings.digest_items_per_source == 5
+    assert settings.digest_max_items == 15
     assert settings.gemini_rpm_limit == 12
     assert settings.max_concurrency == 3
     assert "free open-source AI models and tools" in settings.digest_topics

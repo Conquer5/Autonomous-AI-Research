@@ -265,6 +265,11 @@ async def test_digest_content_aware_deduplication_allows_updated_content(tmp_pat
     third = await engine.generate()
     assert len(third.repositories) == 1
     assert third.repositories[0].description == "Version 2 major update with new features"
+    # An unsent revision remains eligible on subsequent runs.
+    retry = await engine.generate()
+    assert retry.evidence_urls() == third.evidence_urls()
+    await engine.record_sent(third)
+    assert not (await engine.generate()).repositories
 
 
 async def test_digest_resilience_on_partial_collector_failure(tmp_path: Path) -> None:
@@ -387,3 +392,134 @@ async def test_digest_force_resend_and_dry_run_semantics(tmp_path: Path) -> None
     # 3. Resend=True -> bypasses deduplication and resends
     digest3 = await engine.generate(force=True)
     assert len(digest3.repositories) == 1
+
+
+async def test_balanced_budget_backfill_and_unsent_candidates(tmp_path: Path) -> None:
+    settings = AppSettings(
+        _env_file=None,
+        digest_topics="AI",
+        digest_search_queries="AI",
+        digest_state_path=tmp_path / "balanced.sqlite3",
+    )
+    now = datetime.now(UTC)
+    repos = [
+        RepositoryResult(
+            full_name=f"lab/repo-{i}",
+            url=f"https://github.com/lab/repo-{i}",
+            stars=i,
+            forks=0,
+            created_at=now,
+            updated_at=now,
+        )
+        for i in range(20)
+    ]
+    papers = [
+        PaperResult(
+            arxiv_id=f"2609.{i:05d}",
+            title=f"AI paper {i}",
+            abstract="AI research",
+            authors=["Author"],
+            categories=["cs.AI"],
+            primary_category="cs.AI",
+            published_at=now,
+            updated_at=now,
+            url=f"https://arxiv.org/abs/2609.{i:05d}",
+        )
+        for i in range(20)
+    ]
+    news = [
+        NewsResult(title=f"Model release {i}", url=f"https://lab{i}.test/release", published_at=now)
+        for i in range(20)
+    ]
+    registry = ToolRegistry(
+        github_search=SimpleNamespace(
+            search=AsyncMock(
+                return_value=SearchBatch(query="AI", source=SourceType.GITHUB, items=repos)
+            )
+        ),
+        github_analyzer=MagicMock(),
+        arxiv_search=SimpleNamespace(
+            search=AsyncMock(
+                return_value=SearchBatch(query="AI", source=SourceType.ARXIV, items=papers)
+            )
+        ),
+        news_search=SimpleNamespace(
+            search=AsyncMock(
+                return_value=SearchBatch(query="AI", source=SourceType.NEWS, items=news)
+            )
+        ),
+    )
+    engine = DigestEngine(
+        settings=settings, tools=registry, store=DigestStore(settings.digest_state_path)
+    )
+    first = await engine.generate()
+    assert (len(first.news), len(first.repositories), len(first.papers)) == (5, 5, 5)
+    # A preview or failed send must not consume candidates.
+    preview_again = await engine.generate()
+    assert preview_again.evidence_urls() == first.evidence_urls()
+    await engine.record_sent(first)
+    second = await engine.generate()
+    assert len(second.evidence_urls()) == 15
+    assert set(second.evidence_urls()).isdisjoint(first.evidence_urls())
+    # Vacant paper/repo slots are reused for actual news.
+    registry.github_search.search.return_value.items = []
+    registry.arxiv_search.search.return_value.items = []
+    filled = await engine.generate(force=True)
+    assert len(filled.news) == 15
+    assert not filled.repositories and not filled.papers
+
+
+async def test_news_search_queries_and_repository_links_are_separate(tmp_path: Path) -> None:
+    from research_radar.schemas import WebResult
+
+    settings = AppSettings(
+        _env_file=None,
+        digest_search_queries="local LLM",
+        digest_state_path=tmp_path / "web.sqlite3",
+    )
+    registry = ToolRegistry(
+        github_search=SimpleNamespace(
+            search=AsyncMock(
+                return_value=SearchBatch(query="local LLM", source=SourceType.GITHUB, items=[])
+            )
+        ),
+        github_analyzer=MagicMock(),
+        arxiv_search=SimpleNamespace(
+            search=AsyncMock(
+                return_value=SearchBatch(query="local LLM", source=SourceType.ARXIV, items=[])
+            )
+        ),
+        web_search=SimpleNamespace(
+            search=AsyncMock(
+                return_value=SearchBatch(
+                    query="models",
+                    source=SourceType.WEB,
+                    items=[
+                        WebResult(
+                            description="Model news",
+                            title="Repo",
+                            url="https://github.com/lab/model",
+                        ),
+                        WebResult(
+                            description="Model news",
+                            title="Paper",
+                            url="https://arxiv.org/abs/2609.00001",
+                        ),
+                        WebResult(
+                            description="Model news",
+                            title="Model launch",
+                            url="https://lab.test/launch",
+                        ),
+                    ],
+                )
+            )
+        ),
+    )
+    engine = DigestEngine(
+        settings=settings, tools=registry, store=DigestStore(settings.digest_state_path)
+    )
+    result = await engine.generate()
+    assert [item.title for item in result.news] == ["Model launch"]
+    assert [call.args[0] for call in registry.web_search.search.await_args_list] == list(
+        settings.digest_news_queries
+    )

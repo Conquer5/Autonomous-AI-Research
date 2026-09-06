@@ -10,7 +10,7 @@ import xml.etree.ElementTree as ET
 from datetime import UTC, date, datetime
 from email.utils import parsedate_to_datetime
 from html.parser import HTMLParser
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlsplit
 
 import httpx
 from pydantic import HttpUrl
@@ -18,7 +18,7 @@ from pydantic import HttpUrl
 from research_radar.schemas import NewsResult, SearchBatch, SourceType
 
 logger = logging.getLogger(__name__)
-_WORD_PATTERN = re.compile(r"[a-z0-9][a-z0-9+.-]*", re.IGNORECASE)
+_WORD_PATTERN = re.compile(r"[a-z0-9]+", re.IGNORECASE)
 _IGNORED_TOPIC_WORDS = {
     "and",
     "for",
@@ -95,6 +95,28 @@ def _relevance(title: str, description: str, tokens: set[str]) -> float:
     return min(1.0, 0.15 + title_hits * 0.18 + body_hits * 0.06)
 
 
+def news_rank_key(item: NewsResult) -> tuple[datetime, float]:
+    # Fresh announcements must not lose to older keyword-heavy articles.
+    return (item.published_at or datetime.min.replace(tzinfo=UTC), item.relevance_score)
+
+
+def diverse_news(items: list[NewsResult]) -> list[NewsResult]:
+    """Interleave publishers, keeping the freshest articles first within each."""
+    publishers: dict[str, list[NewsResult]] = {}
+    for item in sorted(items, key=news_rank_key, reverse=True):
+        publisher = (urlsplit(str(item.url)).hostname or "").removeprefix("www.")
+        if publisher == "news.google.com":
+            publisher = (item.source_name or publisher).lower()
+        publishers.setdefault(publisher, []).append(item)
+    ordered: list[NewsResult] = []
+    while publishers:
+        for publisher in list(publishers):
+            ordered.append(publishers[publisher].pop(0))
+            if not publishers[publisher]:
+                del publishers[publisher]
+    return ordered
+
+
 def _entry_link(entry: ET.Element, feed_url: str) -> str:
     for item in entry:
         if _local_name(item.tag) != "link":
@@ -165,7 +187,7 @@ class RssNewsTool:
                     title=title,
                     url=HttpUrl(link),
                     description=description,
-                    source_name=source_name,
+                    source_name=_clean_markup(_child_text(entry, "source")) or source_name,
                     published_at=published_at,
                     relevance_score=relevance,
                 )
@@ -213,14 +235,7 @@ class RssNewsTool:
             previous = unique.get(key)
             if previous is None or item.relevance_score > previous.relevance_score:
                 unique[key] = item
-        ordered = sorted(
-            unique.values(),
-            key=lambda item: (
-                item.relevance_score,
-                item.published_at or datetime.min.replace(tzinfo=UTC),
-            ),
-            reverse=True,
-        )
+        ordered = diverse_news(list(unique.values()))
         return SearchBatch[NewsResult](
             query=", ".join(topics),
             source=SourceType.NEWS,

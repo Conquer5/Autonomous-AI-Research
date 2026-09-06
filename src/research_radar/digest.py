@@ -9,6 +9,7 @@ import re
 from collections.abc import Awaitable
 from datetime import UTC, date, datetime, timedelta
 from typing import Any
+from urllib.parse import urlsplit
 from uuid import uuid4
 
 from pydantic import BaseModel, Field
@@ -43,6 +44,7 @@ from research_radar.security.untrusted_content import (
     wrap_evidence_for_llm,
 )
 from research_radar.state import DigestStore
+from research_radar.tools.news import diverse_news
 from research_radar.tools.registry import ToolRegistry
 
 logger = logging.getLogger(__name__)
@@ -165,7 +167,9 @@ class DigestEngine:
     ]:
         topics = self.settings.digest_topics
         search_queries = self.settings.digest_search_queries
-        limit = self.settings.digest_items_per_source
+        limit = min(
+            50, max(self.settings.digest_max_items, self.settings.digest_items_per_source * 3)
+        )
         repository_after = date.today() - timedelta(days=self.settings.digest_repository_days)
         paper_after = date.today() - timedelta(days=self.settings.digest_paper_days)
         news_after = date.today() - timedelta(days=self.settings.digest_news_days)
@@ -195,21 +199,22 @@ class DigestEngine:
             labels.append(("RSS", ", ".join(topics)))
             calls.append(
                 self.tools.news_search.search(
-                    topics,
+                    (*topics, *self.settings.digest_news_queries),
                     published_after=news_after,
-                    limit=limit * 3,
+                    limit=limit,
                 )
             )
         if self.tools.web_search is not None:
-            labels.append(("Brave", ", ".join(topics)))
-            calls.append(
-                self.tools.web_search.search(
-                    " OR ".join(f'"{topic}"' for topic in topics),
-                    limit=min(20, limit * 2),
-                    start_date=news_after,
-                    end_date=date.today(),
+            for query in self.settings.digest_news_queries:
+                labels.append(("Brave", query))
+                calls.append(
+                    self.tools.web_search.search(
+                        query,
+                        limit=min(20, limit),
+                        start_date=news_after,
+                        end_date=date.today(),
+                    )
                 )
-            )
 
         responses: list[Any] = await asyncio.gather(*calls, return_exceptions=True)
         repositories: list[SearchBatch[RepositoryResult]] = []
@@ -273,6 +278,9 @@ class DigestEngine:
         title_keys: set[str] = set()
         for batch in news_batches:
             for item in batch.items:
+                host = (urlsplit(str(item.url)).hostname or "").removeprefix("www.")
+                if host in {"github.com", "arxiv.org", "export.arxiv.org"}:
+                    continue
                 title_key = " ".join(_WORD_PATTERN.findall(item.title.lower()))
                 url_key = _normalized_url(item.url)
                 if url_key in news_map or title_key in title_keys:
@@ -381,12 +389,14 @@ class DigestEngine:
         if force:
             allowed_urls = set(all_urls)
         elif self._evidence_registry is not None:
-            # Content-aware: allow NEW and UPDATED items
-            allowed_urls = {
-                url
-                for url, status in status_by_url.items()
-                if status in (EvidenceStatus.NEW, EvidenceStatus.UPDATED)
-            }
+            # Collection is not delivery: keep unsent candidates and unsent revisions.
+            allowed_urls = set()
+            for url in all_urls:
+                record = self._evidence_registry.get_by_url(url)
+                if record is not None and not self._evidence_registry.has_been_delivered(
+                    record.evidence_id, evidence_version=record.content_hash
+                ):
+                    allowed_urls.add(url)
         else:
             allowed_urls = await self.store.filter_unseen(all_urls)
 
@@ -396,7 +406,7 @@ class DigestEngine:
                 repo, source_quality=quality_by_url.get(_normalized_url(repo.url), 0.60)
             ),
             reverse=True,
-        )[:limit]
+        )
         candidate_papers = [
             item
             for url, item in paper_map.items()
@@ -418,15 +428,29 @@ class DigestEngine:
                 source_quality=quality_by_url.get(_normalized_url(item.url), 0.90),
             ),
             reverse=True,
-        )[:limit]
-        news = sorted(
-            (item for url, item in news_map.items() if url in allowed_urls),
-            key=lambda item: (
-                item.relevance_score,
-                item.published_at or datetime.min.replace(tzinfo=UTC),
-            ),
-            reverse=True,
-        )[:limit]
+        )
+        news = diverse_news([item for url, item in news_map.items() if url in allowed_urls])
+
+        # Reserve balanced slots, then reuse vacancies without exceeding the total cap.
+        pool_sizes = [len(news), len(repositories), len(papers)]
+        counts = [0, 0, 0]
+        budget = self.settings.digest_max_items
+        for target in (limit, budget):
+            while sum(counts) < budget:
+                progressed = False
+                for index, available in enumerate(pool_sizes):
+                    if counts[index] < min(target, available) and sum(counts) < budget:
+                        counts[index] += 1
+                        progressed = True
+                if not progressed:
+                    break
+        news = news[: counts[0]]
+        repositories = repositories[: counts[1]]
+        papers = papers[: counts[2]]
+        if not news:
+            warnings.append(
+                "Belum ada berita baru yang memenuhi filter; cek feed dan pencarian web."
+            )
 
         items_ranked = len(repositories) + len(papers) + len(news)
 
