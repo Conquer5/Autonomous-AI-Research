@@ -119,6 +119,7 @@ def build_container(settings: AppSettings, *, require_runtime: bool = True) -> A
         settings.news_feed_urls,
         timeout_seconds=settings.request_timeout_seconds,
         concurrency=settings.max_concurrency,
+        retry_policy=retry,
     )
     web = (
         BraveWebSearchTool(

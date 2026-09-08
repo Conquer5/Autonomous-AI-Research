@@ -10,19 +10,12 @@ from urllib.parse import urlparse
 
 import httpx
 
-from research_radar.exceptions import ExternalServiceError, InvalidResponseError
+from research_radar.evidence.canonicalizer import canonicalize_url
+from research_radar.retrieval import RetrievalFailure, observed_search, request_with_retry
 from research_radar.schemas import SearchBatch, SourceType, WebResult
-from research_radar.utils.retry import RetryPolicy, call_with_retry
+from research_radar.utils.retry import RetryPolicy
 
 logger = logging.getLogger(__name__)
-
-
-def _retryable(exc: Exception) -> bool:
-    if isinstance(exc, (httpx.TimeoutException, httpx.NetworkError)):
-        return True
-    if isinstance(exc, httpx.HTTPStatusError):
-        return exc.response.status_code == 429 or exc.response.status_code >= 500
-    return False
 
 
 def _parse_optional_datetime(value: str | None) -> datetime | None:
@@ -81,9 +74,11 @@ class BraveWebSearchTool:
         self.base_url = base_url
         self.retry_policy = retry_policy or RetryPolicy()
         self._semaphore = asyncio.Semaphore(concurrency)
+        self.timeout_seconds = timeout_seconds
         self._owns_client = client is None
         self._client = client or httpx.AsyncClient(timeout=httpx.Timeout(timeout_seconds))
 
+    @observed_search("web")
     async def search(
         self,
         query: str,
@@ -127,39 +122,28 @@ class BraveWebSearchTool:
             response.raise_for_status()
             return response
 
-        try:
-            response = await call_with_retry(
-                operation,
-                policy=self.retry_policy,
-                should_retry=_retryable,
-                on_retry=lambda exc, attempt: logger.warning(
-                    "Brave Search retry",
-                    extra={
-                        "event": "tool_retry",
-                        "tool": "web",
-                        "attempt": attempt,
-                        "error_type": type(exc).__name__,
-                    },
-                ),
-            )
-        except Exception as exc:
-            status_code = (
-                exc.response.status_code if isinstance(exc, httpx.HTTPStatusError) else None
-            )
-            raise ExternalServiceError(
-                "brave_search",
-                "Web search sedang tidak dapat diakses. Silakan coba lagi.",
-                status_code=status_code,
-                retryable=_retryable(exc),
-                detail=f"{type(exc).__name__}: {exc}",
-            ) from exc
-
-        try:
-            data = response.json()
-            raw_results = (data.get("web") or {}).get("results") or []
-            results = []
-            for item in raw_results:
+        response = await request_with_retry(
+            "web", operation, policy=self.retry_policy, timeout_seconds=self.timeout_seconds
+        )
+        if response.status_code == 204:
+            return SearchBatch[WebResult](query=query, source=SourceType.WEB, items=[])
+        data = response.json()
+        if not isinstance(data, dict):
+            raise TypeError("invalid Brave envelope")
+        web = data.get("web")
+        if web is None and isinstance(data.get("query"), dict):
+            raw_results = []
+        elif isinstance(web, dict) and isinstance(web.get("results"), list):
+            raw_results = web["results"]
+        else:
+            raise TypeError("Brave search envelope changed")
+        results = []
+        failures = []
+        for item in raw_results[:limit]:
+            try:
                 profile = item.get("profile") or {}
+                if not item["title"].strip():
+                    raise ValueError("missing title")
                 results.append(
                     WebResult(
                         title=item["title"],
@@ -172,19 +156,20 @@ class BraveWebSearchTool:
                         extra_snippets=(item.get("extra_snippets") or [])[:3],
                     )
                 )
-        except (ValueError, KeyError, TypeError) as exc:
-            raise InvalidResponseError(
-                "brave_search",
-                "Web search mengembalikan data yang tidak valid.",
-                detail=f"{type(exc).__name__}: {exc}",
-            ) from exc
-        query_meta = data.get("query") or {}
+            except (ValueError, KeyError, TypeError, AttributeError):
+                failures.append(
+                    RetrievalFailure(
+                        provider="web", failure_category="schema_drift", error_code="INVALID_ENTRY"
+                    )
+                )
         return SearchBatch[WebResult](
             query=query,
             source=SourceType.WEB,
-            items=results,
+            items=list({canonicalize_url(str(item.url)): item for item in results}.values()),
+            failures=failures,
+            warnings=["Invalid web entry skipped"] if failures else [],
             total_available=None,
-            partial=bool(query_meta.get("more_results_available")) and len(results) < limit,
+            partial=bool(failures),
         )
 
     async def aclose(self) -> None:

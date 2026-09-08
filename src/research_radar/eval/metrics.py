@@ -172,7 +172,7 @@ class MetricCalculator:
             "kendala" in u.lower() for u in result.uncertainties
         )
         collector_failures = sum(
-            1 for q in state.queries_executed if getattr(q, "status", "") == "failed"
+            1 for q in state.queries_executed if getattr(q, "status", "") in {"failed", "partial"}
         )
 
         metrics = EvaluationMetrics(
@@ -210,6 +210,19 @@ class MetricCalculator:
             research_status=research_status_str,
             fallback_used=fallback_used,
             collector_failures=collector_failures,
+            retrieval_attempts=sum(
+                op.attempts for q in state.queries_executed for op in q.operations
+            ),
+            retrieval_retries=sum(
+                op.retries for q in state.queries_executed for op in q.operations
+            ),
+            retrieval_latency_ms=sum(q.latency_ms for q in state.queries_executed),
+            nonempty_queries=sum(q.result_count > 0 for q in state.queries_executed),
+            empty_queries=sum(q.status == "empty" for q in state.queries_executed),
+            partial_queries=sum(q.status == "partial" for q in state.queries_executed),
+            provider_failure_categories=sorted(
+                {f.failure_category for f in state.provider_failures}
+            ),
         )
 
         # 7. Failure Tag Classification

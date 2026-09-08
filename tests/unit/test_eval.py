@@ -63,7 +63,7 @@ from research_radar.research.verifier import VerificationReport, VerificationRes
 
 def test_default_dataset_schema_and_counts() -> None:
     dataset = load_default_dataset()
-    assert dataset.schema_version == "1.0.0"
+    assert dataset.schema_version == "1.1.0"
     assert len(dataset.cases) >= 25
     assert len(dataset.cases) == 32
 
@@ -274,8 +274,10 @@ def test_metric_calculator_zero_denominator_safe() -> None:
     )
 
     metrics = MetricCalculator.calculate_metrics(result)
-    assert metrics.grounding_rate == 0.0
-    assert metrics.citation_coverage == 0.0
+    assert metrics.grounding_rate is None
+    assert not metrics.grounding_measured
+    assert metrics.citation_coverage is None
+    assert not metrics.citations_measured
     assert metrics.evidence_count == 0
 
 
@@ -411,7 +413,7 @@ async def test_report_generator_markdown_and_json() -> None:
     assert "## 7. Human Evaluation Rubric Guidelines" in md_text
 
     json_payload = ReportGenerator.generate_json(report)
-    assert '"schema_version": "1.0.0"' in json_payload
+    assert '"schema_version": "1.1.0"' in json_payload
     assert '"total_cases": 2' in json_payload
 
 

@@ -69,12 +69,18 @@ class RadarService:
     ) -> ResearchSynthesisResult:
         """Conduct bounded autonomous research using the research orchestrator."""
         if self.orchestrator is not None:
-            trace = await self.traces.start(uuid4().hex, str(user_id))
+            request_id = uuid4().hex
+            trace = await self.traces.start(request_id, str(user_id), run_id=request_id)
             try:
                 result = await self.orchestrator.conduct_research(
-                    question, user_id=user_id, mode=mode, budget=budget
+                    question, user_id=user_id, mode=mode, budget=budget, run_id=request_id
                 )
-                await self.traces.finish(trace.trace_id, TraceStatus.SUCCESS)
+                status = {
+                    "completed": TraceStatus.SUCCESS,
+                    "partial": TraceStatus.PARTIAL,
+                    "failed": TraceStatus.FAILED,
+                }[result.state.status.value]
+                await self.traces.finish(trace.trace_id, status)
                 return result
             except Exception as exc:
                 await self.traces.record_error(trace.trace_id, type(exc).__name__)

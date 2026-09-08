@@ -152,6 +152,13 @@ class EvaluationMetrics(BaseModel):
     research_status: str = "completed"
     fallback_used: bool = False
     collector_failures: int = 0
+    retrieval_attempts: int = 0
+    retrieval_retries: int = 0
+    retrieval_latency_ms: float = 0
+    nonempty_queries: int = 0
+    empty_queries: int = 0
+    partial_queries: int = 0
+    provider_failure_categories: list[str] = Field(default_factory=list)
 
     # Failure Taxonomy
     failure_tags: list[FailureCategory] = Field(default_factory=list)

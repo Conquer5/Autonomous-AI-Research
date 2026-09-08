@@ -1,0 +1,697 @@
+================================================================================
+AUTONOMOUS AI RESEARCH RADAR
+WORKFLOW SISTEM DAN RENCANA PENGEMBANGAN PROYEK
+================================================================================
+
+Tanggal pemetaan : 8 September 2026
+Versi aplikasi   : 0.2.0
+Lokasi proyek    : Project Autonomous AI Research Radar
+
+Dokumen ini menjelaskan alur kerja yang benar-benar terlihat pada source code
+saat ini dan rencana pengembangan yang disarankan. Dokumen fase lama tetap
+berguna sebagai riwayat, tetapi sebagian statusnya sudah tertinggal dari kode.
+
+
+1. TUJUAN PROYEK
+--------------------------------------------------------------------------------
+
+Autonomous AI Research Radar adalah mesin riset AI berbasis bukti yang:
+
+  1. menerima pertanyaan dan perintah melalui Telegram;
+  2. mencari bukti dari GitHub, arXiv, RSS/Atom, dan Brave Search opsional;
+  3. merencanakan riset dalam mode QUICK atau DEEP;
+  4. mendaftarkan serta mendeduplikasi bukti di SQLite;
+  5. membandingkan klaim, konsensus, kontradiksi, dan pandangan dissent;
+  6. menyintesis jawaban melalui Gemini atau fallback deterministik;
+  7. memverifikasi keterkaitan klaim dengan evidence ID;
+  8. mengirim hasil ringkas dan aman ke Telegram;
+  9. membuat digest terjadwal tentang perkembangan AI terbaru; dan
+ 10. mengevaluasi kualitas pipeline dengan dataset serta metrik terstruktur.
+
+Prinsip utamanya adalah evidence-first: fakta harus dapat ditelusuri ke sumber,
+inferensi harus diberi label, ketidakpastian tidak boleh disembunyikan, dan sistem
+tidak boleh membuat citation atau URL palsu.
+
+
+2. KOMPONEN DAN BATAS TANGGUNG JAWAB
+--------------------------------------------------------------------------------
+
+  Pengguna Telegram
+         |
+         v
+  Authorization fail-closed
+         |
+         v
+  Telegram Handlers
+         |
+         v
+  RadarService
+         |
+         +--------------------+----------------------+------------------+
+         |                    |                      |                  |
+         v                    v                      v                  v
+  ResearchOrchestrator   Direct Source Tools   DigestEngine       Hermes API
+         |                    |                      |                  |
+         +----------+---------+                      |                  v
+                    |                                |             Agent loop,
+                    v                                |             memory, skills
+              Evidence Registry <--------------------+
+                 (SQLite)
+                    |
+                    v
+       Consensus -> Synthesis -> Verification
+                    |
+                    v
+            Formatter -> Telegram
+
+Pembagian tanggung jawab:
+
+  - Telegram layer: otorisasi, parsing command, status typing, format HTML,
+    pemecahan pesan panjang, dan pesan error yang aman.
+  - RadarService: pintu masuk business logic serta execution trace.
+  - ResearchOrchestrator: planning, pencarian iteratif, gap detection, consensus,
+    synthesis, verification, confidence, dan persistence.
+  - ToolRegistry: menyediakan adapter GitHub, arXiv, RSS/news, serta Brave.
+  - Gemini/LLMRouter: structured output dan pemilihan workload model.
+  - Hermes: proses terpisah untuk percakapan agentic, memory, dan skills.
+  - EvidenceRegistry/ResearchStore: bukti, versi konten, delivery, digest run,
+    research run, dan histori query di SQLite.
+  - Observability: structured JSON log, redaksi secret, trace, latency, pemakaian
+    tool/runtime/LLM, retry, dan status error.
+
+
+3. ENTRY POINT DAN MODE OPERASI
+--------------------------------------------------------------------------------
+
+A. Bot Telegram interaktif
+
+   Perintah:
+     research-radar bot
+
+   Fungsi:
+     Menjalankan long polling Telegram dan melayani command maupun pesan natural
+     language. Mode ini membutuhkan token Telegram, allowlist user ID, dan kunci
+     Hermes saat startup bot.
+
+B. Digest satu kali
+
+   Perintah:
+     research-radar digest
+     research-radar digest --force
+     research-radar digest --resend
+     research-radar digest --dry-run
+
+   Arti opsi:
+     --force   : melewati cooldown jadwal, tetapi tetap menghormati deduplikasi.
+     --resend  : mengikutsertakan kembali evidence yang pernah dikirim.
+     --dry-run : mencetak hasil tanpa mengirim Telegram dan tanpa menandai delivery.
+
+C. Digest terjadwal
+
+   Unit systemd user pada deploy/systemd menjalankan digest setelah startup dan
+   setiap hari pukul 07.30 zona Asia/Jakarta. Cooldown default 12 jam mencegah
+   dua trigger berdekatan menghasilkan pengiriman ganda.
+
+D. Evaluasi dan smoke test
+
+   - Unit test berjalan tanpa network live.
+   - Integration test bersifat opt-in dan memerlukan credential.
+   - scripts/smoke.py memeriksa layanan yang dikonfigurasi.
+   - scripts/run_live_pilot.py menjalankan pilot QUICK versus DEEP dan menyimpan
+     laporan JSON/Markdown di folder eval/.
+
+
+4. WORKFLOW TELEGRAM UMUM
+--------------------------------------------------------------------------------
+
+  1. Telegram mengirim update.
+  2. Sistem membaca numeric user ID.
+  3. User ID diperiksa terhadap TELEGRAM_ALLOWED_USER_IDS.
+  4. Jika tidak terdaftar, akses ditolak tanpa menjalankan tool atau LLM.
+  5. Jika terdaftar, bot mengirim indikator "typing".
+  6. Handler memilih salah satu jalur berikut:
+
+       a. autonomous research;
+       b. direct source command;
+       c. digest;
+       d. Hermes utility (/memory dan /skills); atau
+       e. health/status.
+
+  7. Hasil dinormalisasi ke model Pydantic.
+  8. Formatter melakukan escaping HTML dan membagi pesan di bawah limit aman.
+  9. Jawaban dikirim ke Telegram.
+ 10. Error internal dicatat ke log, sedangkan user menerima pesan aman tanpa
+     credential, raw payload, stack trace, atau detail privat.
+
+Command yang tersedia:
+
+  /start
+  /help
+  /research <tujuan>
+  /deepresearch <tujuan>
+  /repos <query>
+  /papers <query>
+  /trending [query]
+  /web <query>
+  /analyze <owner/repo atau URL GitHub>
+  /digest
+  /weekly
+  /memory
+  /skills
+  /status
+
+Pesan natural language tanpa command mengikuti mode QUICK research.
+
+
+5. WORKFLOW AUTONOMOUS RESEARCH
+--------------------------------------------------------------------------------
+
+Perintah pemicu:
+
+  /research     -> mode QUICK
+  /deepresearch -> mode DEEP
+  pesan biasa   -> mode QUICK
+
+Alur lengkap:
+
+  Pertanyaan
+      |
+      v
+  [1] PLANNING
+      - ResearchPlanner memecah tujuan menjadi sub-pertanyaan.
+      - Planner memilih hanya tool yang diizinkan: github, arxiv, news, web.
+      - Bila Gemini tersedia, planning memakai structured output.
+      - Bila LLM gagal/tidak tersedia, digunakan plan deterministik.
+      |
+      v
+  [2] ITERATIVE SEARCH
+      - Query kosong, duplikat, atau tool di luar allowlist ditolak/dilewati.
+      - Setiap tool menghasilkan maksimal lima item per langkah.
+      - Kegagalan satu collector dicatat dan pipeline tetap berlanjut.
+      - Semua evidence dinormalisasi, diberi authority score, fingerprint, dan
+        evidence ID sebelum dipakai untuk jawaban.
+      |
+      v
+  [3] EVIDENCE SUFFICIENCY DAN GAP DETECTION
+      - Coverage sub-pertanyaan diperiksa dari evidence yang terkumpul.
+      - Knowledge gap diberi prioritas high/medium/low.
+      - Pada DEEP mode, gap dapat menghasilkan query follow-up baru.
+      - Berhenti jika bukti cukup, tidak ada bukti baru, information gain rendah,
+        atau salah satu budget habis.
+      |
+      v
+  [4] CONSENSUS DAN CONTRADICTION INTELLIGENCE
+      - Klaim diekstrak dari setiap evidence.
+      - Klaim dinormalisasi dan dikelompokkan berdasarkan proposisi.
+      - Sistem membedakan source independence agar salinan/sindikasi tidak
+        dihitung sebagai banyak dukungan independen.
+      - Kontradiksi, severity, perubahan versi/waktu, agreement, dan dissent
+        dimasukkan ke ConsensusReport.
+      |
+      v
+  [5] SYNTHESIS
+      - ConsensusSynthesizer membuat jawaban konservatif.
+      - Gemini digunakan bila tersedia dan budget mengizinkan.
+      - External content dibungkus sebagai data tidak tepercaya untuk mengurangi
+        risiko prompt injection.
+      - Jika LLM tidak ada/gagal, sistem memakai ringkasan deterministik.
+      |
+      v
+  [6] CLAIM VERIFICATION
+      - Evidence ID pada klaim harus ada di konteks run yang sama.
+      - Isi klaim dibandingkan secara deterministik dengan isi evidence.
+      - Status dapat berupa supported, partially supported, unsupported, atau
+        conflicting.
+      - Klaim faktual yang tidak didukung diturunkan menjadi interpretation.
+      |
+      v
+  [7] CONFIDENCE DAN FINALIZATION
+      - Confidence dihitung secara konservatif dari coverage, jumlah bukti,
+        keragaman sumber, authority, unsupported claim, gap prioritas tinggi,
+        serta kontradiksi yang belum selesai.
+      - Status akhir: completed, partial, atau failed.
+      - Stop reason dan uncertainty tetap ditampilkan agar hasil dapat diaudit.
+      |
+      v
+  [8] PERSISTENCE DAN DELIVERY
+      - Hasil research run dan histori query disimpan ke SQLite.
+      - Formatter menampilkan jawaban, confidence, consensus, temuan, gap,
+        uncertainty, dan link evidence.
+
+Budget default:
+
+  QUICK
+    - maksimum 1 iterasi
+    - maksimum 5 tool call
+    - maksimum 5 query
+    - maksimum 15 evidence
+    - maksimum 60 detik wall time
+    - maksimum 3 LLM call
+
+  DEEP
+    - maksimum 3 iterasi
+    - maksimum 12 tool call
+    - maksimum 10 query
+    - maksimum 30 evidence
+    - maksimum 180 detik wall time
+    - maksimum 8 LLM call
+
+Stop reason yang dicatat:
+
+  enough_evidence, max_iterations, max_tool_calls, max_queries, max_evidence,
+  max_llm_calls, time_budget_exhausted, no_new_evidence,
+  low_information_gain, atau failed.
+
+
+6. WORKFLOW DIRECT SOURCE COMMAND
+--------------------------------------------------------------------------------
+
+A. /repos <query>
+
+   Telegram -> RadarService -> GitHubSearchTool -> GitHub REST API
+   -> normalized repository results -> heuristic signals -> formatter -> Telegram
+
+B. /trending [query]
+
+   Sama seperti /repos, tetapi hanya mencari repository yang dibuat dalam tujuh
+   hari terakhir. Query default adalah "AI agent".
+
+C. /papers <query>
+
+   Telegram -> RadarService -> arXiv Atom API -> filter kategori/tanggal
+   -> normalized paper results -> formatter -> Telegram
+
+   Default pencarian membatasi paper pada 30 hari terakhir dan kategori
+   cs.AI, cs.LG, cs.CL, serta cs.SE.
+
+D. /web <query>
+
+   Telegram -> RadarService -> Brave Search API -> compact result
+   -> source-priority heuristic -> formatter -> Telegram
+
+   Command ini hanya aktif bila BRAVE_SEARCH_API_KEY tersedia.
+
+E. /analyze <repository>
+
+   Telegram -> GitHubRepositoryAnalyzer
+      -> metadata repository
+      -> README terbatas
+      -> latest release
+      -> recent commits
+      -> partial warnings bila sub-resource gagal
+      -> formatter -> Telegram
+
+Direct source command tidak membutuhkan synthesis LLM. Hasilnya lebih cepat dan
+lebih hemat, tetapi tetap harus dibaca sebagai hasil discovery, bukan otomatis
+sebagai kesimpulan ilmiah yang telah diverifikasi penuh.
+
+
+7. WORKFLOW AUTONOMOUS DIGEST
+--------------------------------------------------------------------------------
+
+  Systemd/manual trigger
+         |
+         v
+  Single-run lock
+         |
+         v
+  Cooldown check (kecuali --force)
+         |
+         v
+  Parallel bounded collection
+    +----+----------+----------+----------------+
+    |               |          |                |
+    v               v          v                v
+  GitHub          arXiv     RSS/Atom      Brave (opsional)
+    +---------------+----------+----------------+
+                    |
+                    v
+  Normalize URL + fingerprint + authority classification
+                    |
+                    v
+  Register NEW / UPDATED / DUPLICATE evidence in SQLite
+                    |
+                    v
+  Filter evidence yang sudah pernah dikirim
+  (--resend dapat mengikutsertakannya kembali)
+                    |
+                    v
+  Heuristic scoring + ranking + pembagian slot per kategori
+                    |
+                    v
+  Optional Gemini synthesis + deterministic claim verification
+                    |
+                    v
+  Telegram publish atau dry-run
+                    |
+                    v
+  Record delivery dan finish digest run
+
+Karakteristik penting:
+
+  - Maksimum total digest default 15 item.
+  - Target awal default lima item per sumber/kategori.
+  - Satu sumber gagal tidak membatalkan seluruh digest.
+  - Digest tetap dapat berjalan tanpa Gemini melalui fallback deterministik.
+  - Public GitHub, arXiv, dan RSS dapat digunakan tanpa GitHub/Brave credential,
+    walaupun rate limit dan cakupan bisa lebih rendah.
+  - SQLite menyimpan histori evidence/delivery agar item yang sama tidak terus
+    dikirim ulang.
+  - Lock mencegah dua proses digest berjalan bersamaan.
+
+
+8. WORKFLOW DATA DAN EVIDENCE
+--------------------------------------------------------------------------------
+
+Lifecycle evidence:
+
+  sumber eksternal
+      -> validasi schema
+      -> canonical URL
+      -> content fingerprint
+      -> source authority classification
+      -> register ke SQLite
+      -> status NEW / UPDATED / DUPLICATE
+      -> dipakai oleh research/digest
+      -> claim mengacu ke evidence ID
+      -> verification
+      -> delivery record
+
+Data penting yang disimpan:
+
+  - evidence dan canonical URL;
+  - hash/versi konten;
+  - source type dan authority;
+  - digest run dan statusnya;
+  - delivery record per versi evidence;
+  - research run, mode, confidence, consensus, dan stop reason;
+  - query yang dieksekusi per iterasi.
+
+Credential, raw secret, dan isi percakapan privat yang tidak relevan tidak boleh
+masuk ke output atau structured logs.
+
+
+9. WORKFLOW DEVELOPMENT DAN QUALITY GATE
+--------------------------------------------------------------------------------
+
+Siklus perubahan yang disarankan:
+
+  1. Baca AGENTS.md dan dokumentasi terkait.
+  2. Buat perubahan kecil dengan batas modul yang jelas.
+  3. Tambahkan/ubah unit test untuk perilaku baru dan failure path.
+  4. Jalankan formatter/linter.
+  5. Jalankan type checker.
+  6. Jalankan seluruh unit test tanpa network.
+  7. Bila credential tersedia, jalankan smoke/live integration secara opt-in.
+  8. Bandingkan metrik QUICK dan DEEP bila perubahan menyentuh orchestrator.
+  9. Perbarui README, arsitektur, workflow, dan status implementasi.
+ 10. Commit tanpa memasukkan .env, database lokal, token, atau hasil privat.
+
+Quality gate lokal:
+
+  .venv/bin/ruff check .
+  .venv/bin/ruff format --check .
+  .venv/bin/mypy src
+  .venv/bin/pytest
+
+Live verification (hanya jika credential operator tersedia):
+
+  RUN_LIVE_TESTS=1 .venv/bin/pytest -m live tests/integration
+  RUN_LIVE_TESTS=1 .venv/bin/python scripts/smoke.py all
+
+Aturan penerimaan perubahan:
+
+  - test yang relevan lulus;
+  - tidak ada secret di source, log, fixture, atau artefak;
+  - klaim baru mempunyai evidence/link yang benar;
+  - kegagalan satu provider tidak merusak seluruh workflow bila provider itu
+    bersifat opsional;
+  - budget dan concurrency tetap bounded;
+  - dokumentasi menggambarkan perilaku source code aktual.
+
+
+10. STATUS IMPLEMENTASI SAAT INI
+--------------------------------------------------------------------------------
+
+SUDAH TERSEDIA DI SOURCE CODE:
+
+  [x] Telegram bot dan fail-closed allowlist
+  [x] Hermes HTTP sidecar adapter
+  [x] Gemini provider dan LLM router
+  [x] GitHub search dan repository analyzer
+  [x] arXiv search
+  [x] RSS/Atom news collector
+  [x] Brave web search opsional
+  [x] autonomous QUICK/DEEP research planner
+  [x] iterative search dan knowledge-gap detection
+  [x] bounded budgets dan explicit stop reasons
+  [x] evidence registry, content versioning, dan delivery deduplication
+  [x] claim extraction, clustering, consensus, contradiction, dan dissent
+  [x] deterministic post-synthesis claim verification
+  [x] SQLite research-run persistence
+  [x] autonomous digest dan systemd scheduling
+  [x] structured logging, redaction, retry, trace, dan safe error handling
+  [x] evaluation dataset, metrics, adversarial fixtures, dan live-pilot harness
+
+CATATAN VALIDASI:
+
+  - Laporan offline yang tersimpan menunjukkan 32 evaluation case dan seluruh
+    adversarial fixture berstatus PASS pada run tersebut.
+  - Laporan live pilot yang tersimpan menunjukkan retrieval failure pada banyak
+    case. Artinya keberadaan fitur tidak sama dengan kesiapan produksi.
+  - Perilaku live tetap bergantung pada credential, quota, model availability,
+    jaringan, dan service Hermes milik operator.
+  - README serta beberapa dokumen fase lama masih menyatakan Phase 3/4/8 belum
+    ada, sementara modulnya kini sudah terdapat di source. Sinkronisasi dokumen
+    menjadi pekerjaan prioritas.
+
+
+11. RENCANA PENGEMBANGAN YANG DISARANKAN
+--------------------------------------------------------------------------------
+
+Rencana berikut adalah rekomendasi berdasarkan source code, test, dan laporan
+evaluasi yang tersedia pada tanggal dokumen ini. Ini bukan klaim bahwa semua item
+sudah disetujui atau sedang dikerjakan.
+
+PRIORITAS 0 - BASELINE DAN SINKRONISASI DOKUMENTASI
+
+Tujuan:
+  Menetapkan satu baseline yang dapat dipercaya sebelum menambah fitur.
+
+Pekerjaan:
+  1. Jalankan ruff, mypy, pytest, dan pip check pada environment saat ini.
+  2. Perbarui README.md, docs/architecture.md, docs/tool-system.md, dan phase
+     status agar sesuai dengan orchestrator/consensus/eval terbaru.
+  3. Tetapkan nomor versi/release yang mencerminkan kemampuan aktual.
+  4. Dokumentasikan schema SQLite dan prosedur backup/migrasi.
+
+Acceptance gate:
+  Semua quality gate lulus dan tidak ada dokumen utama yang menyebut fitur yang
+  sudah ada sebagai "future work".
+
+PRIORITAS 1 - PERBAIKI RELIABILITAS RETRIEVAL LIVE
+
+Tujuan:
+  Mengatasi masalah terbesar yang terlihat pada live pilot: banyak run berakhir
+  tanpa evidence karena retrieval failure.
+
+Pekerjaan:
+  1. Klasifikasikan failure per provider: auth, quota, rate limit, timeout,
+     parsing, query quality, atau model availability.
+  2. Tambahkan preflight health check sebelum live evaluation/digest.
+  3. Rekam latency, retry count, HTTP status class, dan partial-result rate per
+     provider tanpa membocorkan payload sensitif.
+  4. Tingkatkan deterministic query fallback dan pengalihan ke sumber alternatif.
+  5. Tambahkan integration fixture untuk 429, timeout, schema drift, empty result,
+     dan provider unavailable.
+
+Acceptance gate:
+  Live pilot terkontrol menghasilkan evidence pada mayoritas case dan setiap
+  kegagalan dapat ditelusuri ke kategori yang jelas.
+
+PRIORITAS 2 - TINGKATKAN KUALITAS VERIFIKASI
+
+Tujuan:
+  Beralih dari verifikasi token-overlap menuju pemeriksaan isi sumber yang lebih
+  kuat tanpa menghilangkan fallback deterministik.
+
+Pekerjaan:
+  1. Tambahkan fetch isi halaman/dokumen secara terbatas setelah source dipilih.
+  2. Simpan kutipan pendek atau span pendukung untuk setiap factual claim.
+  3. Verifikasi tanggal, versi, dan konteks benchmark sebelum membandingkan angka.
+  4. Bedakan discovery snippet dari primary evidence pada output pengguna.
+  5. Tambahkan citation coverage dan unsupported-claim gate sebelum delivery.
+
+Acceptance gate:
+  Setiap factual claim penting mempunyai evidence ID, URL, dan potongan dukungan;
+  klaim yang gagal diverifikasi tidak ditampilkan sebagai fakta.
+
+PRIORITAS 3 - KALIBRASI QUICK VS DEEP
+
+Tujuan:
+  Memastikan biaya tambahan DEEP benar-benar menghasilkan kualitas lebih baik.
+
+Pekerjaan:
+  1. Jalankan ulang dataset dengan retrieval yang sehat.
+  2. Lengkapi human review packet dan simpan skor rubric.
+  3. Aktifkan LLM judge hanya sebagai sinyal tambahan, bukan satu-satunya hakim.
+  4. Kalibrasi threshold coverage, information gain, confidence, consensus, dan
+     stop reason berdasarkan hasil evaluasi.
+  5. Tambahkan automatic routing: pertanyaan mudah -> QUICK; komparatif,
+     kontroversial, atau multi-sumber -> DEEP.
+
+Acceptance gate:
+  Ada benchmark yang menunjukkan kapan DEEP unggul dan kapan QUICK sudah cukup,
+  disertai latency, tool call, LLM call, grounding, dan human rubric.
+
+PRIORITAS 4 - OBSERVABILITY DAN OPERASIONAL
+
+Tujuan:
+  Membuat service mudah dipantau dan dipulihkan saat berjalan terus-menerus.
+
+Pekerjaan:
+  1. Tambahkan persistent metrics dan correlation ID lintas Telegram, research,
+     digest, provider, dan Hermes.
+  2. Tambahkan health/readiness check serta alert untuk digest yang gagal/tidak
+     terkirim.
+  3. Rekonsiliasi token usage Hermes dan direct Gemini.
+  4. Tambahkan pricing table berversi sebelum menampilkan estimasi biaya.
+  5. Tambahkan retention/cleanup policy untuk log, evidence, dan evaluation data.
+
+Acceptance gate:
+  Operator dapat mengetahui apakah sistem sehat, kapan run terakhir berhasil,
+  alasan sebuah run gagal, dan konsumsi sumber daya tanpa membaca raw stack trace.
+
+PRIORITAS 5 - MEMORY, CACHE, DAN CONTEXT MANAGEMENT
+
+Tujuan:
+  Mengurangi query/biaya berulang sambil menjaga data research tetap dapat diaudit.
+
+Pekerjaan:
+  1. Definisikan batas tegas antara conversational memory Hermes dan research
+     memory aplikasi.
+  2. Tambahkan cache ber-TTL berdasarkan canonical query dan evidence version.
+  3. Tambahkan retrieval terhadap research run lama yang relevan.
+  4. Implementasikan context budgeting dan progressive source disclosure.
+  5. Tambahkan compaction tanpa membuang citation lineage.
+
+Acceptance gate:
+  Query berulang menggunakan bukti valid yang masih segar, versi lama tetap dapat
+  diaudit, dan tidak ada kebocoran memory antar-user.
+
+PRIORITAS 6 - DEPLOYMENT DAN SECURITY HARDENING
+
+Tujuan:
+  Menyiapkan deployment yang reproducible dan aman.
+
+Pekerjaan:
+  1. Pin dependency dan dokumentasikan upgrade policy.
+  2. Tambahkan graceful shutdown dan recovery test.
+  3. Pertahankan Hermes di loopback/private network dengan bearer auth kuat.
+  4. Audit SSRF, malicious URLs, prompt injection, log injection, dan database
+     migration rollback.
+  5. Buat Docker/Compose hanya setelah kebutuhan isolasi Hermes dan persistence
+     volume ditetapkan dengan jelas.
+  6. Tambahkan backup serta restore drill untuk SQLite.
+
+Acceptance gate:
+  Fresh deployment dapat direproduksi, secret tidak masuk image/log, restart tidak
+  merusak state, dan security regression tests lulus.
+
+PRIORITAS 7 - CONTROLLED LEARNING DAN VERSIONED SKILLS
+
+Tujuan:
+  Memungkinkan peningkatan strategi riset tanpa self-modification yang tidak
+  terkontrol.
+
+Pekerjaan:
+  1. Simpan prompt/skill sebagai artefak berversi dan dapat di-review.
+  2. Kandidat perubahan harus lulus offline eval serta adversarial eval.
+  3. Gunakan canary untuk perubahan planner, synthesis, dan source policy.
+  4. Sediakan rollback cepat ke versi skill/prompt sebelumnya.
+
+Acceptance gate:
+  Tidak ada perubahan strategi produksi tanpa diff, evaluasi, approval, versi,
+  dan jalur rollback.
+
+
+12. URUTAN EKSEKUSI RENCANA
+--------------------------------------------------------------------------------
+
+  P0 Baseline & docs
+       |
+       v
+  P1 Retrieval reliability
+       |
+       +----------------------+
+       |                      |
+       v                      v
+  P2 Verification       P4 Observability
+       |                      |
+       v                      |
+  P3 Calibration <------------+
+       |
+       v
+  P5 Memory/cache/context
+       |
+       v
+  P6 Deployment/security
+       |
+       v
+  P7 Controlled learning/skills
+
+P0 dan P1 sebaiknya diselesaikan dahulu. P2 dan P4 dapat dikerjakan paralel
+setelah failure taxonomy jelas. P3 membutuhkan retrieval serta observability yang
+sehat agar hasil benchmark dapat dipercaya. Memory, deployment, dan controlled
+learning dikerjakan setelah kualitas inti stabil.
+
+
+13. DEFINISI SELESAI UNTUK PROYEK VERSI PRODUKSI AWAL
+--------------------------------------------------------------------------------
+
+Versi produksi awal dianggap siap jika:
+
+  [ ] seluruh quality gate lokal lulus;
+  [ ] live provider smoke test lulus atau dependency opsional terdegradasi aman;
+  [ ] QUICK dan DEEP memiliki hasil kalibrasi yang dapat dibandingkan;
+  [ ] factual claim penting memiliki citation lineage yang valid;
+  [ ] contradiction dan dissent tidak disembunyikan;
+  [ ] Telegram authorization tetap fail-closed;
+  [ ] digest tidak mengirim duplikat dan aman terhadap concurrent run;
+  [ ] health, readiness, delivery failure, dan resource usage dapat dipantau;
+  [ ] backup/restore SQLite telah diuji;
+  [ ] deployment serta rollback terdokumentasi;
+  [ ] README, arsitektur, workflow, dan versi aplikasi konsisten.
+
+
+14. REFERENSI INTERNAL DAN RESMI
+--------------------------------------------------------------------------------
+
+Referensi internal:
+
+  README.md
+  docs/architecture.md
+  docs/autonomous-digest.md
+  docs/tool-system.md
+  docs/phase-1-plan.md
+  docs/phase-2-status.md
+  src/research_radar/main.py
+  src/research_radar/research/orchestrator.py
+  src/research_radar/consensus/
+  src/research_radar/evidence/
+  src/research_radar/eval/
+  eval/reports/evaluation_report_v1.md
+  eval/reports/live_pilot_v1.md
+
+Referensi resmi integrasi:
+
+  Hermes Agent       : https://hermes-agent.nousresearch.com/docs/
+  Google Gen AI SDK  : https://googleapis.github.io/python-genai/
+  Telegram Bot API   : https://core.telegram.org/bots/api
+  GitHub REST API    : https://docs.github.com/en/rest
+  arXiv API          : https://info.arxiv.org/help/api/basics.html
+  Brave Search API   : https://api-dashboard.search.brave.com/app/documentation/web-search
+
+================================================================================
+AKHIR DOKUMEN
+================================================================================

@@ -10,6 +10,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from research_radar.consensus.models import ConsensusLevel, ConsensusReport
 from research_radar.evidence.models import StructuredClaim
+from research_radar.retrieval import RetrievalFailure, RetrievalOperation
 
 
 class ResearchMode(StrEnum):
@@ -110,11 +111,16 @@ class EvidenceSufficiency(BaseModel):
 
 
 class QueryExecutionRecord(BaseModel):
+    call_id: str = Field(default_factory=lambda: uuid4().hex)
     tool: str
     query: str
     iteration: int
     result_count: int = 0
     new_evidence_count: int = 0
+    latency_ms: float = 0
+    failures: list[RetrievalFailure] = Field(default_factory=list)
+    operations: list[RetrievalOperation] = Field(default_factory=list)
+    fallback: bool = False
     status: str = "success"  # "success", "partial", "failed", "rejected"
 
 
@@ -140,6 +146,8 @@ class ResearchState(BaseModel):
     completed_at: datetime | None = None
     stop_reason: StopReason | None = None
     consensus_report: ConsensusReport | None = None
+    coverage: dict[str, int] = Field(default_factory=dict)
+    provider_failures: list[RetrievalFailure] = Field(default_factory=list)
 
 
 class StructuredSynthesisItem(BaseModel):

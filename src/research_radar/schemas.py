@@ -9,6 +9,8 @@ from uuid import uuid4
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl
 
+from research_radar.retrieval import RetrievalFailure
+
 
 class StrictModel(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -195,6 +197,7 @@ class SearchBatch(StrictModel, Generic[ItemT]):
     query: str
     source: SourceType
     items: list[ItemT]
+    failures: list[RetrievalFailure] = Field(default_factory=list)
     retrieved_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     total_available: int | None = Field(default=None, ge=0)
     partial: bool = False

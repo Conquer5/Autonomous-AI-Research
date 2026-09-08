@@ -111,7 +111,7 @@ class ResearchPlanner:
     async def plan(self, question: str, mode: ResearchMode) -> ResearchPlan:
         """Create a structured research plan with sub-questions and initial search steps."""
         if not question.strip():
-            return self._fallback_plan("AI Research", mode)
+            return self.fallback_plan("AI Research", mode)
 
         # Attempt structured planning via LLM if available
         if self.llm_router is not None:
@@ -120,10 +120,10 @@ class ResearchPlanner:
             except Exception as exc:
                 logger.warning(
                     "LLM research planning failed; using deterministic fallback",
-                    extra={"event": "planner_fallback", "error": str(exc)},
+                    extra={"event": "planner_fallback", "error_type": type(exc).__name__},
                 )
 
-        return self._fallback_plan(question, mode)
+        return self.fallback_plan(question, mode)
 
     async def _plan_with_llm(self, question: str, mode: ResearchMode) -> ResearchPlan:
         from research_radar.llm.base import LLMRequest
@@ -175,7 +175,7 @@ class ResearchPlanner:
                 )
 
         if not sanitized_steps:
-            return self._fallback_plan(question, mode)
+            return self.fallback_plan(question, mode)
 
         return ResearchPlan(
             objective=plan.objective or question,
@@ -184,7 +184,7 @@ class ResearchPlanner:
             success_criteria=plan.success_criteria or ["Sufficient technical evidence collected"],
         )
 
-    def _fallback_plan(self, question: str, mode: ResearchMode) -> ResearchPlan:
+    def fallback_plan(self, question: str, mode: ResearchMode) -> ResearchPlan:
         """Deterministic plan when LLM is unavailable or unconfigured."""
         keywords = _extract_keywords(question)
         query_str = " ".join(keywords[:4]) if keywords else question
@@ -377,3 +377,9 @@ def _make_query(text: str, context_type: str) -> str:
     if context_type == "overview":
         return f"{base} overview"
     return base
+
+
+def fallback_query(query: str) -> str:
+    """One conservative relaxation: retain the first two distinctive terms."""
+    terms = _extract_keywords(query)
+    return " ".join(dict.fromkeys(terms)) if len(terms) <= 2 else " ".join(terms[:2])

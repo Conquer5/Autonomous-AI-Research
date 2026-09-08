@@ -105,11 +105,13 @@ class ConsensusSynthesizer:
 
         lines.append("• Temuan Utama:\n" + "\n".join(f"  - {f}" for f in findings))
 
-        safe_conclusion = (
-            "Bukti menunjukkan dukungan moderat dengan beberapa kualifikasi pada skala produksi."
-            if consensus_report.overall_consensus.value in ("mixed", "moderate")
-            else "Bukti mendukung klaim utama secara konsisten."
-        )
+        safe_conclusion = {
+            "strong": "Sumber yang terkumpul konsisten; generalisasi tetap memerlukan verifikasi.",
+            "moderate": "Dukungan sumber moderat dengan kualifikasi yang perlu diperiksa.",
+            "mixed": "Sumber berbeda pendapat; belum ada kesimpulan tunggal yang kuat.",
+            "weak": "Dukungan sumber lemah; bukti tambahan diperlukan.",
+            "insufficient": "Bukti belum cukup untuk menarik kesimpulan yang kuat.",
+        }[consensus_report.overall_consensus.value]
 
         return {
             "answer": "\n".join(lines),
@@ -209,6 +211,6 @@ class ConsensusSynthesizer:
         except Exception as exc:
             logger.warning(
                 "LLM consensus synthesis failed; falling back to deterministic synthesis",
-                extra={"event": "consensus_synthesis_fallback", "error": str(exc)},
+                extra={"event": "consensus_synthesis_fallback", "error_type": type(exc).__name__},
             )
             return self._synthesize_deterministic(question, evidence_items, consensus_report)

@@ -2,10 +2,15 @@
 
 from __future__ import annotations
 
+import argparse
 import asyncio
+import hashlib
+import json
 import logging
+import platform
 import sys
 import time
+from datetime import UTC, datetime
 from pathlib import Path
 
 from research_radar.agent.hermes_runtime import HermesHttpRuntime
@@ -18,6 +23,7 @@ from research_radar.eval.storage import EvaluationStorage
 from research_radar.evidence.registry import EvidenceRegistry
 from research_radar.llm.gemini import GeminiProvider
 from research_radar.llm.router import LLMRouter
+from research_radar.observability.logging import configure_logging
 from research_radar.research.orchestrator import ResearchOrchestrator
 from research_radar.research.planner import ResearchPlanner
 from research_radar.research.verifier import ClaimVerifier
@@ -28,10 +34,7 @@ from research_radar.tools.registry import ToolRegistry
 from research_radar.tools.web import BraveWebSearchTool
 from research_radar.utils.retry import RetryPolicy
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-)
+configure_logging()
 logger = logging.getLogger("live_pilot")
 
 
@@ -96,13 +99,47 @@ def _generate_human_review_markdown(package: dict) -> str:
     return "\n".join(lines)
 
 
+def _source_digest() -> str:
+    source_hash = hashlib.sha256()
+    for source in sorted(Path("src/research_radar").rglob("*.py")):
+        source_hash.update(str(source).encode())
+        source_hash.update(source.read_bytes())
+    return source_hash.hexdigest()
+
+
 async def main() -> int:
     settings = AppSettings()
     logger.info("Initializing isolated live pilot calibration harness...")
 
     # 1. Isolated Evaluation Database & Storage
-    eval_dir = Path("eval")
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=Path("eval") / "hardening" / datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ"),
+    )
+    eval_dir = parser.parse_args().output_dir
     storage = EvaluationStorage(eval_dir)
+    (eval_dir / "run_manifest.json").write_text(
+        json.dumps(
+            {
+                "python": platform.python_version(),
+                "source_sha256": _source_digest(),
+                "providers": {
+                    "github": True,
+                    "arxiv": True,
+                    "news": bool(settings.news_feed_urls),
+                    "web": bool(settings.brave_search_api_key),
+                    "gemini": bool(settings.gemini_api_key),
+                },
+                "request_timeout_seconds": settings.request_timeout_seconds,
+                "max_retries": settings.max_retries,
+                "arxiv_min_interval_seconds": settings.arxiv_min_interval_seconds,
+            },
+            indent=2,
+        )
+        + "\n"
+    )
     eval_db_path = eval_dir / "data" / "radar_eval.sqlite3"
     eval_db_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -162,6 +199,7 @@ async def main() -> int:
         settings.news_feed_urls,
         timeout_seconds=settings.request_timeout_seconds,
         concurrency=settings.max_concurrency,
+        retry_policy=retry,
     )
     web = (
         BraveWebSearchTool(

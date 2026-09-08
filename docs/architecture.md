@@ -1,5 +1,7 @@
 # Current Architecture (Phase 1–2 + Autonomous Digest)
 
+> Current reliability update (2026-09-08): the application now has bounded research orchestration, consensus/verification, evidence persistence, and retrieval diagnostics. See the [hardening report](retrieval-hardening.md) for current contracts, tests and live measurements. Phase 1–2 descriptions below are historical.
+
 ## Decision
 
 The application and Hermes Agent run as separate processes. The application

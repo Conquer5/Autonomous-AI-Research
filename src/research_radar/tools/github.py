@@ -12,7 +12,9 @@ from urllib.parse import urlparse
 
 import httpx
 
-from research_radar.exceptions import ExternalServiceError, InvalidResponseError
+from research_radar.evidence.canonicalizer import canonicalize_url
+from research_radar.exceptions import InvalidResponseError
+from research_radar.retrieval import RetrievalFailure, observed_search, request_with_retry
 from research_radar.schemas import (
     CommitInfo,
     ReleaseInfo,
@@ -22,18 +24,10 @@ from research_radar.schemas import (
     SearchBatch,
     SourceType,
 )
-from research_radar.utils.retry import RetryPolicy, call_with_retry
+from research_radar.utils.retry import RetryPolicy
 
 logger = logging.getLogger(__name__)
 _WORD_PATTERN = re.compile(r"[a-z0-9][a-z0-9_.+-]*", re.IGNORECASE)
-
-
-def _retryable(exc: Exception) -> bool:
-    if isinstance(exc, (httpx.TimeoutException, httpx.NetworkError)):
-        return True
-    if isinstance(exc, httpx.HTTPStatusError):
-        return exc.response.status_code == 429 or exc.response.status_code >= 500
-    return False
 
 
 def _parse_datetime(value: str | None) -> datetime | None:
@@ -127,6 +121,7 @@ class GitHubClient:
         self.base_url = base_url.rstrip("/")
         self.retry_policy = retry_policy or RetryPolicy()
         self._semaphore = asyncio.Semaphore(concurrency)
+        self.timeout_seconds = timeout_seconds
         self._owns_client = client is None
         self._client = client or httpx.AsyncClient(timeout=httpx.Timeout(timeout_seconds))
         self._headers = {
@@ -156,38 +151,9 @@ class GitHubClient:
             response.raise_for_status()
             return response
 
-        try:
-            return await call_with_retry(
-                operation,
-                policy=self.retry_policy,
-                should_retry=_retryable,
-                on_retry=lambda exc, attempt: logger.warning(
-                    "GitHub request retry",
-                    extra={
-                        "event": "tool_retry",
-                        "tool": "github",
-                        "attempt": attempt,
-                        "error_type": type(exc).__name__,
-                    },
-                ),
-            )
-        except Exception as exc:
-            status_code = (
-                exc.response.status_code if isinstance(exc, httpx.HTTPStatusError) else None
-            )
-            detail = f"{type(exc).__name__}: {exc}"
-            public = "GitHub sedang tidak dapat diakses. Silakan coba lagi."
-            if isinstance(exc, httpx.HTTPStatusError):
-                remaining = exc.response.headers.get("x-ratelimit-remaining")
-                if status_code == 403 and remaining == "0":
-                    public = "Batas permintaan GitHub tercapai. Coba lagi setelah reset."
-            raise ExternalServiceError(
-                "github",
-                public,
-                status_code=status_code,
-                retryable=_retryable(exc),
-                detail=detail,
-            ) from exc
+        return await request_with_retry(
+            "github", operation, policy=self.retry_policy, timeout_seconds=self.timeout_seconds
+        )
 
     async def aclose(self) -> None:
         if self._owns_client:
@@ -224,6 +190,7 @@ class GitHubSearchTool:
     def __init__(self, github: GitHubClient) -> None:
         self.github = github
 
+    @observed_search("github")
     async def search(
         self,
         query: str,
@@ -257,15 +224,27 @@ class GitHubSearchTool:
                 "per_page": limit,
             },
         )
-        try:
-            data = response.json()
-            repositories = [_repository_from_json(item) for item in data.get("items", [])]
-        except (ValueError, KeyError, TypeError) as exc:
-            raise InvalidResponseError(
-                "github",
-                "GitHub mengembalikan data repository yang tidak valid.",
-                detail=f"{type(exc).__name__}: {exc}",
-            ) from exc
+        if response.status_code == 204:
+            return SearchBatch[RepositoryResult](query=query, source=SourceType.GITHUB, items=[])
+        data = response.json()
+        if not isinstance(data, dict) or not isinstance(data.get("items"), list):
+            raise TypeError("repository search envelope changed")
+        repositories = []
+        failures = []
+        for item in data["items"][:limit]:
+            try:
+                repository = _repository_from_json(item)
+                if not repository.full_name.strip():
+                    raise ValueError("missing repository name")
+                repositories.append(repository)
+            except (ValueError, KeyError, TypeError, AttributeError):
+                failures.append(
+                    RetrievalFailure(
+                        provider="github",
+                        failure_category="schema_drift",
+                        error_code="INVALID_ENTRY",
+                    )
+                )
         scored = [
             repository.model_copy(
                 update={"signals": calculate_repository_signals(repository, query)}
@@ -275,9 +254,11 @@ class GitHubSearchTool:
         return SearchBatch[RepositoryResult](
             query=query,
             source=SourceType.GITHUB,
-            items=scored,
+            items=list({canonicalize_url(str(item.url)): item for item in scored}.values()),
+            failures=failures,
+            warnings=["Invalid repository entry skipped"] if failures else [],
             total_available=data.get("total_count"),
-            partial=data.get("incomplete_results", False),
+            partial=bool(data.get("incomplete_results", False) or failures),
         )
 
 
@@ -295,7 +276,7 @@ class GitHubRepositoryAnalyzer:
             raise InvalidResponseError(
                 "github",
                 "Metadata repository GitHub tidak valid.",
-                detail=f"{type(exc).__name__}: {exc}",
+                detail=type(exc).__name__,
             ) from exc
         return repository.model_copy(
             update={"signals": calculate_repository_signals(repository, repository.full_name)}

@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import html
 import logging
 import re
+import time
 import xml.etree.ElementTree as ET
 from datetime import UTC, date, datetime
 from email.utils import parsedate_to_datetime
@@ -15,7 +17,16 @@ from urllib.parse import urljoin, urlsplit
 import httpx
 from pydantic import HttpUrl
 
+from research_radar.evidence.canonicalizer import canonicalize_url
+from research_radar.retrieval import (
+    RetrievalFailure,
+    classify_failure,
+    observed_search,
+    operation_deadline,
+    request_with_retry,
+)
 from research_radar.schemas import NewsResult, SearchBatch, SourceType
+from research_radar.utils.retry import RetryPolicy
 
 logger = logging.getLogger(__name__)
 _WORD_PATTERN = re.compile(r"[a-z0-9]+", re.IGNORECASE)
@@ -140,21 +151,42 @@ class RssNewsTool:
         timeout_seconds: float = 30,
         concurrency: int = 3,
         client: httpx.AsyncClient | None = None,
+        retry_policy: RetryPolicy | None = None,
     ) -> None:
-        self.feed_urls = feed_urls
+        self.feed_urls = tuple(dict.fromkeys(feed_urls))
+        self.retry_policy = retry_policy or RetryPolicy()
+        self.timeout_seconds = timeout_seconds
         self._semaphore = asyncio.Semaphore(concurrency)
         self._owns_client = client is None
         self._client = client or httpx.AsyncClient(timeout=httpx.Timeout(timeout_seconds))
 
     async def _fetch(self, url: str) -> bytes:
-        async with self._semaphore:
-            response = await self._client.get(
-                url,
-                headers={"User-Agent": "autonomous-ai-research-radar/0.3"},
-                follow_redirects=True,
+        async def operation() -> httpx.Response:
+            async with self._semaphore:
+                response = await self._client.get(
+                    url,
+                    headers={"User-Agent": "autonomous-ai-research-radar/0.3"},
+                    follow_redirects=True,
+                )
+            response.raise_for_status()
+            return response
+
+        deadline = operation_deadline.get()
+        remaining = (
+            self.timeout_seconds
+            if deadline is None
+            else min(self.timeout_seconds, deadline - time.perf_counter())
+        )
+        # Finish each feed before the enclosing search deadline so healthy feeds survive.
+        async with asyncio.timeout(max(0, remaining * 0.9)):
+            response = await request_with_retry(
+                "news",
+                operation,
+                policy=self.retry_policy,
+                timeout_seconds=self.timeout_seconds,
+                resource_id=hashlib.sha256(url.encode()).hexdigest()[:16],
             )
-        response.raise_for_status()
-        return response.content
+        return response.content if response.status_code != 204 else b"<rss><channel/></rss>"
 
     @staticmethod
     def _parse_feed(
@@ -163,8 +195,11 @@ class RssNewsTool:
         *,
         tokens: set[str],
         published_after: date | None,
+        failures: list[RetrievalFailure] | None = None,
     ) -> list[NewsResult]:
         root = ET.fromstring(payload)
+        if _local_name(root.tag) not in {"rss", "feed", "rdf"}:
+            raise TypeError("unexpected feed root")
         parsed_channel = _child(root, "channel")
         channel = parsed_channel if parsed_channel is not None else root
         source_name = _clean_markup(_child_text(channel, "title")) or feed_url
@@ -178,14 +213,28 @@ class RssNewsTool:
                 _child_text(entry, "published", "pubdate", "updated", "date")
             )
             relevance = _relevance(title, description, tokens)
-            if not title or not link or (tokens and relevance <= 0.15):
+            try:
+                if not title or not link:
+                    raise ValueError("missing entry field")
+                valid_url = HttpUrl(link)
+            except ValueError:
+                if failures is not None:
+                    failures.append(
+                        RetrievalFailure(
+                            provider="news",
+                            failure_category="schema_drift",
+                            error_code="INVALID_ENTRY",
+                        )
+                    )
+                continue
+            if tokens and relevance <= 0.15:
                 continue
             if published_after and published_at and published_at.date() < published_after:
                 continue
             results.append(
                 NewsResult(
                     title=title,
-                    url=HttpUrl(link),
+                    url=valid_url,
                     description=description,
                     source_name=_clean_markup(_child_text(entry, "source")) or source_name,
                     published_at=published_at,
@@ -194,6 +243,7 @@ class RssNewsTool:
             )
         return results
 
+    @observed_search("news")
     async def search(
         self,
         topics: tuple[str, ...],
@@ -203,15 +253,23 @@ class RssNewsTool:
     ) -> SearchBatch[NewsResult]:
         if not 1 <= limit <= 50:
             raise ValueError("news result limit must be between 1 and 50")
+        if not self.feed_urls:
+            from research_radar.exceptions import ConfigurationError
+
+            raise ConfigurationError("No feeds configured")
         tokens = _topic_tokens(topics)
         responses = await asyncio.gather(
             *(self._fetch(url) for url in self.feed_urls), return_exceptions=True
         )
         warnings: list[str] = []
+        failures: list[RetrievalFailure] = []
         results: list[NewsResult] = []
         for url, response in zip(self.feed_urls, responses, strict=True):
             if isinstance(response, BaseException):
-                warnings.append(f"Feed gagal: {url} ({type(response).__name__})")
+                failure = classify_failure("news", response)
+                failure.operation = "feed:" + hashlib.sha256(url.encode()).hexdigest()[:16]
+                failures.append(failure)
+                warnings.append(f"Feed failed: {failure.failure_category}")
                 logger.warning(
                     "RSS feed failed",
                     extra={"event": "rss_feed_failed", "error_type": type(response).__name__},
@@ -224,14 +282,18 @@ class RssNewsTool:
                         url,
                         tokens=tokens,
                         published_after=published_after,
+                        failures=failures,
                     )
                 )
             except (ET.ParseError, TypeError, ValueError) as exc:
-                warnings.append(f"Feed tidak valid: {url} ({type(exc).__name__})")
+                failure = classify_failure("news", exc)
+                failure.operation = "feed:" + hashlib.sha256(url.encode()).hexdigest()[:16]
+                failures.append(failure)
+                warnings.append("Invalid feed skipped")
 
         unique: dict[str, NewsResult] = {}
         for item in results:
-            key = str(item.url).rstrip("/").lower()
+            key = canonicalize_url(str(item.url))
             previous = unique.get(key)
             if previous is None or item.relevance_score > previous.relevance_score:
                 unique[key] = item
@@ -241,7 +303,8 @@ class RssNewsTool:
             source=SourceType.NEWS,
             items=ordered[:limit],
             total_available=len(ordered),
-            partial=bool(warnings),
+            partial=bool(warnings or failures),
+            failures=failures,
             warnings=warnings,
         )
 

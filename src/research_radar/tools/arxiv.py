@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import re
 import time
 import xml.etree.ElementTree as ET
 from datetime import UTC, date, datetime
@@ -11,23 +12,16 @@ from datetime import UTC, date, datetime
 import httpx
 from pydantic import HttpUrl
 
-from research_radar.exceptions import ExternalServiceError, InvalidResponseError
+from research_radar.exceptions import InvalidResponseError
+from research_radar.retrieval import RetrievalFailure, observed_search, request_with_retry
 from research_radar.schemas import PaperResult, SearchBatch, SourceType
-from research_radar.utils.retry import RetryPolicy, call_with_retry
+from research_radar.utils.retry import RetryPolicy
 
 logger = logging.getLogger(__name__)
 ATOM = "{http://www.w3.org/2005/Atom}"
 ARXIV = "{http://arxiv.org/schemas/atom}"
 OPENSEARCH = "{http://a9.com/-/spec/opensearch/1.1/}"
 SUPPORTED_CATEGORIES = {"cs.AI", "cs.LG", "cs.CL", "cs.CV", "cs.SE", "cs.IR"}
-
-
-def _retryable(exc: Exception) -> bool:
-    if isinstance(exc, (httpx.TimeoutException, httpx.NetworkError)):
-        return True
-    if isinstance(exc, httpx.HTTPStatusError):
-        return exc.response.status_code == 429 or exc.response.status_code >= 500
-    return False
 
 
 def _clean_text(value: str | None) -> str:
@@ -53,6 +47,7 @@ class ArxivSearchTool:
         self.base_url = base_url
         self.min_interval_seconds = min_interval_seconds
         self.retry_policy = retry_policy or RetryPolicy()
+        self.timeout_seconds = timeout_seconds
         self._owns_client = client is None
         self._client = client or httpx.AsyncClient(timeout=httpx.Timeout(timeout_seconds))
         self._rate_lock = asyncio.Lock()
@@ -69,7 +64,10 @@ class ArxivSearchTool:
     @staticmethod
     def _query(query: str, categories: list[str] | None, published_after: date | None) -> str:
         escaped = query.strip().replace('"', "")
-        pieces = [f'all:"{escaped}"']
+        terms = re.findall(r"[\w.+-]+", escaped)[:12]
+        if not terms:
+            raise ValueError("arXiv query has no searchable terms")
+        pieces = ["(" + " AND ".join(f'all:"{term}"' for term in terms) + ")"]
         if categories:
             invalid = set(categories) - SUPPORTED_CATEGORIES
             if invalid:
@@ -82,6 +80,7 @@ class ArxivSearchTool:
             pieces.append(f"submittedDate:[{start} TO {end}]")
         return " AND ".join(pieces)
 
+    @observed_search("arxiv")
     async def search(
         self,
         query: str,
@@ -112,32 +111,11 @@ class ArxivSearchTool:
             response.raise_for_status()
             return response
 
-        try:
-            response = await call_with_retry(
-                operation,
-                policy=self.retry_policy,
-                should_retry=_retryable,
-                on_retry=lambda exc, attempt: logger.warning(
-                    "arXiv request retry",
-                    extra={
-                        "event": "tool_retry",
-                        "tool": "arxiv",
-                        "attempt": attempt,
-                        "error_type": type(exc).__name__,
-                    },
-                ),
-            )
-        except Exception as exc:
-            status_code = (
-                exc.response.status_code if isinstance(exc, httpx.HTTPStatusError) else None
-            )
-            raise ExternalServiceError(
-                "arxiv",
-                "arXiv sedang tidak dapat diakses. Silakan coba lagi.",
-                status_code=status_code,
-                retryable=_retryable(exc),
-                detail=f"{type(exc).__name__}: {exc}",
-            ) from exc
+        response = await request_with_retry(
+            "arxiv", operation, policy=self.retry_policy, timeout_seconds=self.timeout_seconds
+        )
+        if response.status_code == 204:
+            return SearchBatch[PaperResult](query=query, source=SourceType.ARXIV, items=[])
         return self._parse_feed(response.content, query, published_after)
 
     @staticmethod
@@ -151,10 +129,22 @@ class ArxivSearchTool:
                 "arxiv", "arXiv mengembalikan XML yang tidak valid.", detail=str(exc)
             ) from exc
 
+        if root.tag != f"{ATOM}feed":
+            raise TypeError("unexpected Atom root")
+        if any(
+            "api/errors" in (entry.findtext(f"{ATOM}id") or "")
+            for entry in root.findall(f"{ATOM}entry")
+        ):
+            raise ValueError("arXiv rejected query")
         total_element = root.find(f"{OPENSEARCH}totalResults")
-        total = (
-            int(total_element.text) if total_element is not None and total_element.text else None
-        )
+        try:
+            total = (
+                int(total_element.text)
+                if total_element is not None and total_element.text
+                else None
+            )
+        except ValueError as exc:
+            raise TypeError("invalid Atom totalResults") from exc
         papers: list[PaperResult] = []
         warnings: list[str] = []
         for entry in root.findall(f"{ATOM}entry"):
@@ -178,6 +168,8 @@ class ArxivSearchTool:
                 published = _parse_time(entry.findtext(f"{ATOM}published"))
                 if published_after and published.date() < published_after:
                     continue
+                if not _clean_text(entry.findtext(f"{ATOM}title")):
+                    raise ValueError("missing title")
                 papers.append(
                     PaperResult(
                         arxiv_id=arxiv_id,
@@ -206,7 +198,13 @@ class ArxivSearchTool:
         return SearchBatch[PaperResult](
             query=query,
             source=SourceType.ARXIV,
-            items=papers,
+            items=list({str(item.url): item for item in papers}.values()),
+            failures=[
+                RetrievalFailure(
+                    provider="arxiv", failure_category="schema_drift", error_code="INVALID_ENTRY"
+                )
+                for _ in warnings
+            ],
             total_available=total,
             partial=bool(warnings),
             warnings=warnings,

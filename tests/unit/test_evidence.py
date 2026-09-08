@@ -266,4 +266,3 @@ def test_acquire_lock_recovers_from_stale_db_lock(tmp_path: Path) -> None:
 
     # Clean up
     registry2.release_lock("run-new")
-

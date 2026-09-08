@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 from datetime import UTC, datetime
@@ -30,9 +31,10 @@ from research_radar.evidence.models import (
 )
 from research_radar.evidence.quality import classify_source_authority
 from research_radar.evidence.registry import EvidenceRegistry
+from research_radar.exceptions import ConfigurationError
 from research_radar.llm.base import LLMRequest
 from research_radar.llm.router import LLMRouter, Workload
-from research_radar.observability.logging import current_run_id
+from research_radar.observability.logging import current_run_id, redact_text
 from research_radar.research.models import (
     ConfidenceLevel,
     QueryExecutionRecord,
@@ -45,13 +47,22 @@ from research_radar.research.models import (
     StopReason,
 )
 from research_radar.research.persistence import ResearchStore
-from research_radar.research.planner import ResearchPlanner
+from research_radar.research.planner import ResearchPlanner, fallback_query
 from research_radar.research.verifier import ClaimVerifier, VerificationReport
+from research_radar.retrieval import (
+    RetrievalFailure,
+    classify_failure,
+    current_call_id,
+    current_iteration,
+    operation_deadline,
+    operation_sink,
+)
 from research_radar.security.untrusted_content import (
     EVIDENCE_BOUNDARY_INSTRUCTION,
     wrap_evidence_for_llm,
 )
 from research_radar.tools.registry import ToolRegistry
+from research_radar.utils.deadline import workflow_deadline
 
 logger = logging.getLogger(__name__)
 
@@ -117,10 +128,29 @@ class ResearchOrchestrator:
         user_id: int | None = None,
         mode: ResearchMode = ResearchMode.QUICK,
         budget: ResearchBudget | None = None,
+        run_id: str | None = None,
+    ) -> ResearchSynthesisResult:
+        token = current_run_id.set(run_id or uuid4().hex)
+        deadline_token = workflow_deadline.set(
+            perf_counter() + (budget or ResearchBudget.for_mode(mode)).max_wall_time_seconds
+        )
+        try:
+            return await self._conduct_research(question, user_id=user_id, mode=mode, budget=budget)
+        finally:
+            current_run_id.reset(token)
+            workflow_deadline.reset(deadline_token)
+
+    async def _conduct_research(
+        self,
+        question: str,
+        *,
+        user_id: int | None = None,
+        mode: ResearchMode = ResearchMode.QUICK,
+        budget: ResearchBudget | None = None,
     ) -> ResearchSynthesisResult:
         """Execute autonomous research with bounded iterations, gap detection, and verification."""
-        run_id = uuid4().hex
-        current_run_id.set(run_id)
+        run_id = current_run_id.get() or uuid4().hex
+        start_wall_time = perf_counter()
 
         active_budget = budget or ResearchBudget.for_mode(mode)
         state = ResearchState(
@@ -138,15 +168,24 @@ class ResearchOrchestrator:
                 "research_id": state.research_id,
                 "run_id": run_id,
                 "mode": mode.value,
-                "question": question,
+                "question_hash": __import__("hashlib").sha256(question.encode()).hexdigest()[:16],
             },
         )
 
         # 1. Planning Phase
-        plan = await self.planner.plan(question, mode)
+        deadline = start_wall_time + active_budget.max_wall_time_seconds
+        try:
+            if active_budget.max_llm_calls <= 0:
+                plan = ResearchPlanner().fallback_plan(question, mode)
+            else:
+                state.llm_calls += 1
+                async with asyncio.timeout(max(0, (deadline - perf_counter()) / 4)):
+                    plan = await self.planner.plan(question, mode)
+        except Exception as exc:
+            plan = ResearchPlanner().fallback_plan(question, mode)
+            state.uncertainties.append(f"Planning fallback: {type(exc).__name__}")
         state.plan = plan
         state.objective = plan.objective
-        state.llm_calls += 1
 
         logger.info(
             "Research plan generated",
@@ -159,10 +198,11 @@ class ResearchOrchestrator:
         )
 
         # 2. Iteration Loop
-        start_wall_time = perf_counter()
         pending_steps = list(plan.search_steps)
         collected_evidence: dict[str, dict[str, object]] = {}
         executed_query_keys: set[str] = set()
+        fallback_keys: set[str] = set()
+        unavailable: set[str] = set()
 
         while state.iterations < active_budget.max_iterations:
             state.iterations += 1
@@ -172,11 +212,6 @@ class ResearchOrchestrator:
             elapsed = perf_counter() - start_wall_time
             if elapsed > active_budget.max_wall_time_seconds:
                 state.stop_reason = StopReason.TIME_BUDGET_EXHAUSTED
-                break
-
-            # Check LLM call budget
-            if state.llm_calls >= active_budget.max_llm_calls:
-                state.stop_reason = StopReason.MAX_LLM_CALLS
                 break
 
             state.status = ResearchStatus.SEARCHING
@@ -192,6 +227,12 @@ class ResearchOrchestrator:
 
             # Execute search steps
             for step in pending_steps:
+                if perf_counter() >= deadline:
+                    state.stop_reason = StopReason.TIME_BUDGET_EXHAUSTED
+                    break
+                if len(collected_evidence) >= active_budget.max_evidence:
+                    state.stop_reason = StopReason.MAX_EVIDENCE
+                    break
                 # Check tool & query budget
                 if state.tool_calls >= active_budget.max_tool_calls:
                     state.stop_reason = StopReason.MAX_TOOL_CALLS
@@ -201,7 +242,7 @@ class ResearchOrchestrator:
                     break
 
                 tool_name = step.tool.lower().strip()
-                query_text = step.query.strip()
+                query_text = " ".join(step.query.split())
                 query_key = _normalize_query_key(tool_name, query_text)
 
                 # Enforce allowed tools boundary
@@ -225,23 +266,99 @@ class ResearchOrchestrator:
                     continue
                 executed_query_keys.add(query_key)
 
-                # Execute tool in Radar Core
-                new_ev, total_results, status_code = await self._execute_search_step(
-                    tool_name, query_text, collected_evidence
+                record = QueryExecutionRecord(
+                    tool=tool_name,
+                    query=redact_text(query_text),
+                    iteration=state.iterations,
+                    fallback=step.reason == "deterministic_fallback",
                 )
                 state.tool_calls += 1
-                iteration_new_evidence += new_ev
-
-                state.queries_executed.append(
-                    QueryExecutionRecord(
-                        tool=tool_name,
-                        query=query_text,
-                        iteration=state.iterations,
-                        result_count=total_results,
-                        new_evidence_count=new_ev,
-                        status=status_code,
-                    )
+                call_token = current_call_id.set(record.call_id)
+                sink_token = operation_sink.set(record.operations)
+                iteration_token = current_iteration.set(state.iterations)
+                call_started = perf_counter()
+                deadline_token = operation_deadline.set(
+                    min(deadline, call_started + self.settings.request_timeout_seconds)
                 )
+                try:
+                    async with asyncio.timeout(
+                        max(
+                            0, min(deadline - perf_counter(), self.settings.request_timeout_seconds)
+                        )
+                    ):
+                        new_ev, total_results, status_code = await self._execute_search_step(
+                            tool_name,
+                            query_text,
+                            collected_evidence,
+                            record=record,
+                            max_evidence=active_budget.max_evidence,
+                        )
+                except TimeoutError as exc:
+                    new_ev, total_results, status_code = 0, 0, "failed"
+                    record.failures.append(classify_failure(tool_name, exc))
+                    if perf_counter() >= deadline:
+                        state.stop_reason = StopReason.TIME_BUDGET_EXHAUSTED
+                finally:
+                    current_call_id.reset(call_token)
+                    operation_deadline.reset(deadline_token)
+                    operation_sink.reset(sink_token)
+                    current_iteration.reset(iteration_token)
+                record.latency_ms = (perf_counter() - call_started) * 1000
+                record.result_count = total_results
+                record.new_evidence_count = new_ev
+                record.status = status_code
+                iteration_new_evidence += new_ev
+                state.queries_executed.append(record)
+                state.provider_failures.extend(record.failures)
+                logger.info(
+                    "Research query finished",
+                    extra={
+                        "event": "research_query",
+                        "call_id": record.call_id,
+                        "provider": tool_name,
+                        "run_id": run_id,
+                        "iteration": state.iterations,
+                        "latency_ms": record.latency_ms,
+                        "result_count": total_results,
+                        "status": status_code,
+                        "failure_categories": [f.failure_category for f in record.failures],
+                        "fallback": record.fallback,
+                    },
+                )
+                categories = {f.failure_category for f in record.failures}
+                if categories - {"empty_result", "invalid_query", "query_quality_failure"}:
+                    unavailable.add(tool_name)
+                if total_results == 0 and not record.fallback:
+                    relaxed = fallback_query(query_text)
+                    query_problem = not categories or categories <= {
+                        "empty_result",
+                        "invalid_query",
+                        "query_quality_failure",
+                    }
+                    target = tool_name
+                    if not query_problem or relaxed.lower() == query_text.lower():
+                        target = next(
+                            (
+                                name
+                                for name in ("github", "arxiv", "news", "web")
+                                if name != tool_name
+                                and name not in unavailable
+                                and (name != "web" or self.tools.web_search is not None)
+                                and (name != "news" or self.tools.news_search is not None)
+                            ),
+                            "",
+                        )
+                    key = _normalize_query_key(target, relaxed)
+                    if (
+                        target
+                        and relaxed
+                        and key not in executed_query_keys
+                        and key not in fallback_keys
+                    ):
+                        fallback_keys.add(key)
+                        pending_steps.append(
+                            SearchStep(tool=target, query=relaxed, reason="deterministic_fallback")
+                        )
 
                 if len(collected_evidence) >= active_budget.max_evidence:
                     state.stop_reason = StopReason.MAX_EVIDENCE
@@ -251,6 +368,7 @@ class ResearchOrchestrator:
                 StopReason.MAX_TOOL_CALLS,
                 StopReason.MAX_QUERIES,
                 StopReason.MAX_EVIDENCE,
+                StopReason.TIME_BUDGET_EXHAUSTED,
             ):
                 break
 
@@ -315,19 +433,42 @@ class ResearchOrchestrator:
             else:
                 state.stop_reason = StopReason.MAX_ITERATIONS
 
+        state.evidence_ids = list(collected_evidence)
+        state.coverage = {
+            name: sum(item.get("source_type") == name for item in collected_evidence.values())
+            for name in sorted(ALLOWED_RESEARCH_TOOLS)
+        }
+        if not collected_evidence and state.stop_reason not in {
+            StopReason.TIME_BUDGET_EXHAUSTED,
+            StopReason.MAX_TOOL_CALLS,
+            StopReason.MAX_QUERIES,
+            StopReason.MAX_LLM_CALLS,
+        }:
+            state.stop_reason = StopReason.FAILED
+
         # 4. Consensus & Contradiction Intelligence Phase
         state.status = ResearchStatus.CONSENSUS
         consensus_report = ConsensusReport()
         if collected_evidence:
             try:
-                claims_extracted = await self.extractor.extract_claims(
-                    list(collected_evidence.values()),
-                    use_llm=(
-                        mode == ResearchMode.DEEP and state.llm_calls < active_budget.max_llm_calls
-                    ),
+                use_llm = (
+                    mode == ResearchMode.DEEP
+                    and self.llm_router is not None
+                    and state.llm_calls < active_budget.max_llm_calls
+                    and perf_counter() < deadline
                 )
-                if mode == ResearchMode.DEEP and self.llm_router is not None and claims_extracted:
+                if use_llm:
                     state.llm_calls += 1
+                try:
+                    async with asyncio.timeout(max(0, deadline - perf_counter())):
+                        claims_extracted = await self.extractor.extract_claims(
+                            list(collected_evidence.values()), use_llm=use_llm
+                        )
+                except TimeoutError:
+                    state.stop_reason = StopReason.TIME_BUDGET_EXHAUSTED
+                    claims_extracted = await self.extractor.extract_claims(
+                        list(collected_evidence.values()), use_llm=False
+                    )
                 clusters = self.clusterer.cluster_claims(claims_extracted)
                 contradictions = self.contradiction_detector.detect_contradictions(clusters)
                 consensus_report = self.consensus_engine.assess_consensus(clusters, contradictions)
@@ -335,22 +476,43 @@ class ResearchOrchestrator:
             except Exception as exc:
                 logger.warning(
                     "Consensus analysis encountered error; degrading gracefully",
-                    extra={"event": "consensus_analysis_error", "error": str(exc)},
+                    extra={"event": "consensus_analysis_error", "error_type": type(exc).__name__},
                 )
                 consensus_report = ConsensusReport()
                 state.consensus_report = consensus_report
 
         # 5. Synthesis Phase
         state.status = ResearchStatus.SYNTHESIZING
-        force_deterministic = state.llm_calls >= active_budget.max_llm_calls
-        synthesis_output, claims = await self.consensus_synthesizer.synthesize(
-            question,
-            list(collected_evidence.values()),
-            consensus_report,
-            force_deterministic=force_deterministic,
+        force_deterministic = (
+            state.llm_calls >= active_budget.max_llm_calls or perf_counter() >= deadline
         )
         if not force_deterministic and self.llm_router is not None and collected_evidence:
             state.llm_calls += 1
+        try:
+            if force_deterministic:
+                synthesis_output, claims = await self.consensus_synthesizer.synthesize(
+                    question,
+                    list(collected_evidence.values()),
+                    consensus_report,
+                    force_deterministic=True,
+                )
+            else:
+                async with asyncio.timeout(max(0, deadline - perf_counter())):
+                    synthesis_output, claims = await self.consensus_synthesizer.synthesize(
+                        question, list(collected_evidence.values()), consensus_report
+                    )
+        except Exception as exc:
+            if isinstance(exc, TimeoutError):
+                state.stop_reason = StopReason.TIME_BUDGET_EXHAUSTED
+            state.uncertainties.append(f"Synthesis fallback: {type(exc).__name__}")
+            synthesis_output, claims = await ConsensusSynthesizer().synthesize(
+                question,
+                list(collected_evidence.values()),
+                consensus_report,
+                force_deterministic=True,
+            )
+        if perf_counter() >= deadline:
+            state.stop_reason = StopReason.TIME_BUDGET_EXHAUSTED
 
         # 6. Verification Phase
         state.status = ResearchStatus.VERIFYING
@@ -368,7 +530,7 @@ class ResearchOrchestrator:
         verified_claims = self.claim_verifier.downgrade_unsupported_claims(claims, report)
 
         # 7. Finalize Result
-        if state.stop_reason == StopReason.ENOUGH_EVIDENCE:
+        if state.stop_reason == StopReason.ENOUGH_EVIDENCE and not state.provider_failures:
             state.status = ResearchStatus.COMPLETED
         elif not collected_evidence or state.stop_reason == StopReason.FAILED:
             state.status = ResearchStatus.FAILED
@@ -396,6 +558,27 @@ class ResearchOrchestrator:
             if isinstance(raw_uncertainties, list)
             else list(state.uncertainties)
         )
+        uncertainties_list.extend(u for u in state.uncertainties if u not in uncertainties_list)
+        if state.provider_failures:
+            details = ", ".join(
+                sorted({f"{f.provider}: {f.failure_category}" for f in state.provider_failures})
+            )
+            uncertainties_list.append(f"Cakupan sumber terbatas ({details}).")
+            answer_str += f"\nCakupan sumber terbatas ({details})."
+            confidence = (
+                ConfidenceLevel.LOW
+                if not collected_evidence
+                else min(
+                    confidence,
+                    ConfidenceLevel.MEDIUM,
+                    key=lambda c: {
+                        ConfidenceLevel.LOW: 0,
+                        ConfidenceLevel.MEDIUM: 1,
+                        ConfidenceLevel.HIGH: 2,
+                    }[c],
+                )
+            )
+        state.uncertainties = uncertainties_list
         raw_agreements = synthesis_output.get("agreements")
         agreements_list = (
             [str(a) for a in raw_agreements]
@@ -442,9 +625,13 @@ class ResearchOrchestrator:
         try:
             self.store.save_run(result)
         except Exception as exc:
+            result.uncertainties.append("Research run could not be persisted to SQLite.")
+            state.uncertainties = result.uncertainties
+            if state.status == ResearchStatus.COMPLETED:
+                state.status = ResearchStatus.PARTIAL
             logger.warning(
                 "Failed to persist research run to SQLite",
-                extra={"event": "research_save_failed", "error": str(exc)},
+                extra={"event": "research_save_failed", "error_type": type(exc).__name__},
             )
 
         return result
@@ -454,17 +641,34 @@ class ResearchOrchestrator:
         tool: str,
         query: str,
         collected_evidence: dict[str, dict[str, object]],
+        *,
+        record: QueryExecutionRecord | None = None,
+        max_evidence: int = 30,
     ) -> tuple[int, int, str]:
         """Execute a safe tool query and register collected evidence."""
         new_evidence_count = 0
         total_items = 0
         status_code = "success"
+        before_ids = set(collected_evidence)
 
         try:
             if tool == "github":
                 batch = await self.tools.github_search.search(query, limit=5)
                 total_items = len(batch.items)
+                if record is not None:
+                    record.failures.extend(batch.failures)
+                    if batch.partial and not batch.failures:
+                        record.failures.append(
+                            RetrievalFailure(
+                                provider=tool,
+                                failure_category="partial_response",
+                                error_code="INCOMPLETE_RESULTS",
+                            )
+                        )
+                status_code = "partial" if batch.partial else "success" if total_items else "empty"
                 for repo in batch.items:
+                    if len(collected_evidence) >= max_evidence:
+                        break
                     metadata = {
                         "description": repo.description or "",
                         "stars": repo.stars,
@@ -474,7 +678,7 @@ class ResearchOrchestrator:
                     fingerprint = content_fingerprint("github", metadata)
                     url_str = str(repo.url)
                     authority, score = classify_source_authority("github", url_str, metadata)
-                    record, status = self.evidence_registry.register(
+                    ev_record, status = self.evidence_registry.register(
                         url=url_str,
                         source_type="github",
                         title=repo.full_name,
@@ -486,11 +690,11 @@ class ResearchOrchestrator:
                     )
                     if status in (EvidenceStatus.NEW, EvidenceStatus.UPDATED):
                         new_evidence_count += 1
-                    collected_evidence[record.evidence_id] = {
-                        "evidence_id": record.evidence_id,
+                    collected_evidence[ev_record.evidence_id] = {
+                        "evidence_id": ev_record.evidence_id,
                         "source_type": "github",
                         "title": repo.full_name,
-                        "url": url_str,
+                        "url": ev_record.canonical_url,
                         "description": repo.description,
                         "authority": authority.value,
                         "stars": repo.stars,
@@ -499,7 +703,22 @@ class ResearchOrchestrator:
             elif tool == "arxiv":
                 batch_arxiv = await self.tools.arxiv_search.search(query, limit=5)
                 total_items = len(batch_arxiv.items)
+                if record is not None:
+                    record.failures.extend(batch_arxiv.failures)
+                    if batch_arxiv.partial and not batch_arxiv.failures:
+                        record.failures.append(
+                            RetrievalFailure(
+                                provider=tool,
+                                failure_category="partial_response",
+                                error_code="INCOMPLETE_RESULTS",
+                            )
+                        )
+                status_code = (
+                    "partial" if batch_arxiv.partial else "success" if total_items else "empty"
+                )
                 for paper in batch_arxiv.items:
+                    if len(collected_evidence) >= max_evidence:
+                        break
                     metadata = {
                         "title": paper.title,
                         "abstract": paper.abstract,
@@ -508,7 +727,7 @@ class ResearchOrchestrator:
                     fingerprint = content_fingerprint("arxiv", metadata)
                     url_str = str(paper.url)
                     authority, score = classify_source_authority("arxiv", url_str, metadata)
-                    record, status = self.evidence_registry.register(
+                    ev_record, status = self.evidence_registry.register(
                         url=url_str,
                         source_type="arxiv",
                         title=paper.title,
@@ -520,11 +739,11 @@ class ResearchOrchestrator:
                     )
                     if status in (EvidenceStatus.NEW, EvidenceStatus.UPDATED):
                         new_evidence_count += 1
-                    collected_evidence[record.evidence_id] = {
-                        "evidence_id": record.evidence_id,
+                    collected_evidence[ev_record.evidence_id] = {
+                        "evidence_id": ev_record.evidence_id,
                         "source_type": "arxiv",
                         "title": paper.title,
-                        "url": url_str,
+                        "url": ev_record.canonical_url,
                         "abstract": paper.abstract[:500],
                         "authority": authority.value,
                     }
@@ -532,12 +751,27 @@ class ResearchOrchestrator:
             elif tool == "web" and self.tools.web_search is not None:
                 batch_web = await self.tools.web_search.search(query, limit=5)
                 total_items = len(batch_web.items)
+                if record is not None:
+                    record.failures.extend(batch_web.failures)
+                    if batch_web.partial and not batch_web.failures:
+                        record.failures.append(
+                            RetrievalFailure(
+                                provider=tool,
+                                failure_category="partial_response",
+                                error_code="INCOMPLETE_RESULTS",
+                            )
+                        )
+                status_code = (
+                    "partial" if batch_web.partial else "success" if total_items else "empty"
+                )
                 for web_res in batch_web.items:
+                    if len(collected_evidence) >= max_evidence:
+                        break
                     metadata = {"title": web_res.title, "description": web_res.description}
                     fingerprint = content_fingerprint("web", metadata)
                     url_str = str(web_res.url)
                     authority, score = classify_source_authority("web", url_str, metadata)
-                    record, status = self.evidence_registry.register(
+                    ev_record, status = self.evidence_registry.register(
                         url=url_str,
                         source_type="web",
                         title=web_res.title,
@@ -548,11 +782,11 @@ class ResearchOrchestrator:
                     )
                     if status in (EvidenceStatus.NEW, EvidenceStatus.UPDATED):
                         new_evidence_count += 1
-                    collected_evidence[record.evidence_id] = {
-                        "evidence_id": record.evidence_id,
+                    collected_evidence[ev_record.evidence_id] = {
+                        "evidence_id": ev_record.evidence_id,
                         "source_type": "web",
                         "title": web_res.title,
-                        "url": url_str,
+                        "url": ev_record.canonical_url,
                         "description": web_res.description,
                         "authority": authority.value,
                     }
@@ -560,12 +794,27 @@ class ResearchOrchestrator:
             elif tool == "news" and self.tools.news_search is not None:
                 batch_news = await self.tools.news_search.search((query,), limit=5)
                 total_items = len(batch_news.items)
+                if record is not None:
+                    record.failures.extend(batch_news.failures)
+                    if batch_news.partial and not batch_news.failures:
+                        record.failures.append(
+                            RetrievalFailure(
+                                provider=tool,
+                                failure_category="partial_response",
+                                error_code="INCOMPLETE_RESULTS",
+                            )
+                        )
+                status_code = (
+                    "partial" if batch_news.partial else "success" if total_items else "empty"
+                )
                 for news_res in batch_news.items:
+                    if len(collected_evidence) >= max_evidence:
+                        break
                     metadata = {"title": news_res.title, "description": news_res.description}
                     fingerprint = content_fingerprint("news", metadata)
                     url_str = str(news_res.url)
                     authority, score = classify_source_authority("news", url_str, metadata)
-                    record, status = self.evidence_registry.register(
+                    ev_record, status = self.evidence_registry.register(
                         url=url_str,
                         source_type="news",
                         title=news_res.title,
@@ -576,22 +825,37 @@ class ResearchOrchestrator:
                     )
                     if status in (EvidenceStatus.NEW, EvidenceStatus.UPDATED):
                         new_evidence_count += 1
-                    collected_evidence[record.evidence_id] = {
-                        "evidence_id": record.evidence_id,
+                    collected_evidence[ev_record.evidence_id] = {
+                        "evidence_id": ev_record.evidence_id,
                         "source_type": "news",
                         "title": news_res.title,
-                        "url": url_str,
+                        "url": ev_record.canonical_url,
                         "description": news_res.description,
                         "authority": authority.value,
                     }
 
+            else:
+                raise ConfigurationError("Optional provider is not configured")
+            if record is not None and total_items == 0 and not record.failures:
+                record.failures.append(
+                    RetrievalFailure(
+                        provider=tool, failure_category="empty_result", error_code="EMPTY_RESULT"
+                    )
+                )
         except Exception as exc:
+            if record is not None:
+                record.failures.append(classify_failure(tool, exc))
             logger.warning(
                 "Collector step failed gracefully",
-                extra={"event": "research_collector_error", "tool": tool, "error": str(exc)},
+                extra={
+                    "event": "research_collector_error",
+                    "tool": tool,
+                    "failure_category": classify_failure(tool, exc).failure_category,
+                },
             )
             status_code = "failed"
 
+        new_evidence_count = len(set(collected_evidence) - before_ids)
         return new_evidence_count, total_items, status_code
 
     async def _synthesize(
@@ -700,7 +964,7 @@ class ResearchOrchestrator:
         except Exception as exc:
             logger.warning(
                 "LLM synthesis failed; falling back to deterministic summary",
-                extra={"event": "synthesis_fallback", "error": str(exc)},
+                extra={"event": "synthesis_fallback", "error_type": type(exc).__name__},
             )
             findings = [
                 (

@@ -1,0 +1,14 @@
+{
+  "python": "3.12.3",
+  "source_sha256": "630f2d6a7bc9f93f4b7b743e16d1b1fd4ce8ad0a7e968f709034194b7d4baaa1",
+  "providers": {
+    "github": true,
+    "arxiv": true,
+    "news": true,
+    "web": false,
+    "gemini": true
+  },
+  "request_timeout_seconds": 30.0,
+  "max_retries": 3,
+  "arxiv_min_interval_seconds": 3.0
+}

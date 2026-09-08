@@ -959,3 +959,217 @@ async def test_telegram_handlers_route_quick_and_deep_modes(tmp_path: Path) -> N
     deep_res = await service.research("Deep research question", user_id=123, mode=ResearchMode.DEEP)
     assert deep_res.mode == ResearchMode.DEEP
     assert deep_res.state.budget.max_iterations == 3
+
+
+@pytest.mark.parametrize(
+    "failed_tools", [("github",), ("github", "arxiv"), ("github", "arxiv", "web", "news")]
+)
+async def test_retrieval_failures_persist_coverage_and_partial_results(tmp_path, failed_tools):
+    import json
+
+    from research_radar.retrieval import RetrievalError, RetrievalFailure
+
+    settings = _mock_settings(tmp_path)
+    tools = _mock_tools()
+    for name in failed_tools:
+        tool = getattr(tools, "github_search" if name == "github" else f"{name}_search")
+        tool.search.side_effect = RetrievalError(
+            RetrievalFailure(
+                provider=name, failure_category="authentication_failure", error_code="HTTP_401"
+            )
+        )
+    planner = MagicMock()
+    planner.plan = AsyncMock(
+        return_value=ResearchPlan(
+            objective="agent",
+            sub_questions=["agent"],
+            search_steps=[
+                SearchStep(tool=name, query="agent") for name in ("github", "arxiv", "web", "news")
+            ],
+        )
+    )
+    planner.detect_gaps.return_value = EvidenceSufficiency(
+        sufficient=True, total_sub_questions=1, covered_sub_questions=["agent"]
+    )
+    registry = EvidenceRegistry(settings.digest_state_path)
+    orchestrator = ResearchOrchestrator(
+        settings=settings,
+        tools=tools,
+        evidence_registry=registry,
+        claim_verifier=ClaimVerifier(),
+        planner=planner,
+    )
+    result = await orchestrator.conduct_research("agent")
+    assert result.state.status == (
+        ResearchStatus.FAILED if len(failed_tools) == 4 else ResearchStatus.PARTIAL
+    )
+    assert result.state.evidence_ids == [e["evidence_id"] for e in result.evidence_sources]
+    assert result.state.tool_calls <= 5
+    assert "Cakupan sumber terbatas" in result.answer
+    saved = orchestrator.store.get_run(result.research_id)
+    diagnostics = json.loads(saved["diagnostics"])
+    assert len(diagnostics["provider_failures"]) >= len(failed_tools)
+    assert sum(diagnostics["coverage"].values()) == len(result.evidence_sources)
+    queries = orchestrator.store.get_queries(result.research_id)
+    assert any(json.loads(q["diagnostics"])["failures"] for q in queries)
+    if len(failed_tools) == 4:
+        assert result.stop_reason == StopReason.FAILED
+        assert saved["evidence_count"] == 0
+
+
+async def test_missing_optional_provider_is_failure_and_falls_back(tmp_path):
+    settings = _mock_settings(tmp_path)
+    tools = _mock_tools()
+    tools.web_search = None
+    planner = MagicMock()
+    planner.plan = AsyncMock(
+        return_value=ResearchPlan(
+            objective="agent", search_steps=[SearchStep(tool="web", query="agent")]
+        )
+    )
+    planner.detect_gaps.return_value = EvidenceSufficiency(sufficient=True)
+    orchestrator = ResearchOrchestrator(
+        settings=settings,
+        tools=tools,
+        evidence_registry=EvidenceRegistry(settings.digest_state_path),
+        claim_verifier=ClaimVerifier(),
+        planner=planner,
+    )
+    result = await orchestrator.conduct_research("agent")
+    assert result.state.queries_executed[0].status == "failed"
+    assert result.state.provider_failures[0].failure_category == "provider_unavailable"
+    assert result.state.queries_executed[1].fallback
+    assert result.state.queries_executed[1].tool == "github"
+    assert result.evidence_sources
+    assert result.state.status == ResearchStatus.PARTIAL
+
+
+async def test_empty_query_relaxation_is_bounded_and_registered(tmp_path):
+    settings = _mock_settings(tmp_path)
+    tools = _mock_tools()
+    good = tools.github_search.search.return_value
+    tools.github_search.search.side_effect = [
+        SearchBatch(query="agent local benchmark production", source=SourceType.GITHUB, items=[]),
+        good,
+    ]
+    planner = MagicMock()
+    planner.plan = AsyncMock(
+        return_value=ResearchPlan(
+            objective="agent",
+            search_steps=[SearchStep(tool="github", query="agent local benchmark production")],
+        )
+    )
+    planner.detect_gaps.return_value = EvidenceSufficiency(sufficient=True)
+    orchestrator = ResearchOrchestrator(
+        settings=settings,
+        tools=tools,
+        evidence_registry=EvidenceRegistry(settings.digest_state_path),
+        claim_verifier=ClaimVerifier(),
+        planner=planner,
+    )
+    result = await orchestrator.conduct_research("agent")
+    assert tools.github_search.search.await_args_list[1].args == ("agent local",)
+    assert result.state.tool_calls == 2
+    assert len(result.evidence_sources) == 1
+    assert result.state.queries_executed[1].fallback
+    assert result.state.queries_executed[0].failures[0].failure_category == "empty_result"
+
+
+async def test_slow_provider_cannot_exceed_workflow_deadline(tmp_path):
+    import asyncio
+    import time
+
+    from research_radar.observability.logging import current_run_id
+
+    settings = _mock_settings(tmp_path)
+    tools = _mock_tools()
+
+    async def slow(*args, **kwargs):
+        await asyncio.sleep(30)
+
+    tools.github_search.search.side_effect = slow
+    orchestrator = ResearchOrchestrator(
+        settings=settings,
+        tools=tools,
+        evidence_registry=EvidenceRegistry(settings.digest_state_path),
+        claim_verifier=ClaimVerifier(),
+    )
+    previous = current_run_id.get()
+    started = time.perf_counter()
+    result = await orchestrator.conduct_research(
+        "agent", budget=ResearchBudget(max_wall_time_seconds=0.05)
+    )
+    assert time.perf_counter() - started < 0.5
+    assert result.stop_reason == StopReason.TIME_BUDGET_EXHAUSTED
+    assert result.state.provider_failures[0].failure_category == "timeout"
+    assert result.state.status == ResearchStatus.FAILED
+    assert orchestrator.store.get_run(result.research_id)["stop_reason"] == "time_budget_exhausted"
+    assert current_run_id.get() == previous
+
+
+async def test_evidence_cap_counts_current_run_and_preserves_ids(tmp_path):
+    settings = _mock_settings(tmp_path)
+    tools = _mock_tools()
+    registry = EvidenceRegistry(settings.digest_state_path)
+    orchestrator = ResearchOrchestrator(
+        settings=settings, tools=tools, evidence_registry=registry, claim_verifier=ClaimVerifier()
+    )
+    budget = ResearchBudget(max_evidence=1)
+    first = await orchestrator.conduct_research("agent", budget=budget)
+    second = await orchestrator.conduct_research("agent", budget=budget)
+    assert len(first.state.evidence_ids) == 1
+    assert first.state.evidence_ids == second.state.evidence_ids
+    assert second.state.queries_executed[0].new_evidence_count == 1
+    assert orchestrator.store.get_run(second.research_id)["evidence_count"] == 1
+    assert all(set(c.evidence_ids) <= set(second.state.evidence_ids) for c in second.claims)
+
+
+async def test_partial_batch_and_synthesis_exception_keep_lineage(tmp_path):
+    settings = _mock_settings(tmp_path)
+    tools = _mock_tools()
+    tools.github_search.search.return_value.partial = True
+    tools.github_search.search.return_value.warnings = ["incomplete"]
+    synthesizer = MagicMock()
+    synthesizer.synthesize = AsyncMock(side_effect=RuntimeError("private response"))
+    orchestrator = ResearchOrchestrator(
+        settings=settings,
+        tools=tools,
+        evidence_registry=EvidenceRegistry(settings.digest_state_path),
+        claim_verifier=ClaimVerifier(),
+        consensus_synthesizer=synthesizer,
+    )
+    result = await orchestrator.conduct_research("agent")
+    assert result.evidence_sources
+    assert result.state.status == ResearchStatus.PARTIAL
+    assert result.state.provider_failures[0].failure_category == "partial_response"
+    assert "private response" not in result.model_dump_json()
+    assert all(set(c.evidence_ids) <= set(result.state.evidence_ids) for c in result.claims)
+
+
+async def test_sqlite_contention_does_not_outlive_budget_or_claim_persistence(tmp_path):
+    import sqlite3
+    import time
+
+    settings = _mock_settings(tmp_path)
+    tools = _mock_tools()
+    orchestrator = ResearchOrchestrator(
+        settings=settings,
+        tools=tools,
+        evidence_registry=EvidenceRegistry(settings.digest_state_path),
+        claim_verifier=ClaimVerifier(),
+    )
+    connection = sqlite3.connect(settings.digest_state_path)
+    connection.execute("BEGIN IMMEDIATE")
+    try:
+        started = time.perf_counter()
+        result = await orchestrator.conduct_research(
+            "agent", budget=ResearchBudget(max_wall_time_seconds=0.05)
+        )
+        assert time.perf_counter() - started < 0.5
+        assert result.state.status == ResearchStatus.FAILED
+        assert result.stop_reason == StopReason.TIME_BUDGET_EXHAUSTED
+        assert any(f.failure_category == "storage_failure" for f in result.state.provider_failures)
+        assert any("could not be persisted" in u for u in result.uncertainties)
+    finally:
+        connection.rollback()
+        connection.close()

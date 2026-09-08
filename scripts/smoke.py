@@ -9,9 +9,11 @@ import os
 from research_radar.agent.hermes_runtime import HermesHttpRuntime
 from research_radar.config import AppSettings
 from research_radar.llm.gemini import GeminiProvider
+from research_radar.retrieval import classify_failure
 from research_radar.schemas import LLMRequest
 from research_radar.tools.arxiv import ArxivSearchTool
 from research_radar.tools.github import GitHubClient, GitHubSearchTool
+from research_radar.tools.news import RssNewsTool
 from research_radar.tools.web import BraveWebSearchTool
 
 
@@ -45,7 +47,7 @@ async def smoke_hermes(settings: AppSettings) -> None:
     try:
         health = await runtime.health()
         if not health.healthy:
-            raise SystemExit(f"FAIL hermes health: {health.detail}")
+            raise RuntimeError("Hermes health failed")
         response = await runtime.run("Reply with exactly: hermes-ok", session_key="smoke:test")
         print(f"PASS hermes: model={response.model} latency_ms={response.latency_ms:.0f}")
     finally:
@@ -73,21 +75,40 @@ async def smoke_tools(settings: AppSettings) -> None:
         if settings.brave_search_api_key
         else None
     )
+    news = RssNewsTool(settings.news_feed_urls, timeout_seconds=settings.request_timeout_seconds)
+    failed = []
     try:
-        repositories = await GitHubSearchTool(github).search("AI agent", limit=1)
-        print(f"PASS github: results={len(repositories.items)}")
-        papers = await arxiv.search("AI agent", categories=["cs.AI"], limit=1)
-        print(f"PASS arxiv: results={len(papers.items)}")
-        if web is None:
-            print("SKIP web: BRAVE_SEARCH_API_KEY is not configured")
+        checks = [
+            ("github", lambda: GitHubSearchTool(github).search("AI agent", limit=1)),
+            ("arxiv", lambda: arxiv.search("AI agent", categories=["cs.AI"], limit=1)),
+            ("news", lambda: news.search(("AI", "agent", "model"), limit=3)),
+        ]
+        if web is not None:
+            checks.append(("web", lambda: web.search("AI agent", limit=1)))
         else:
-            web_results = await web.search("AI agent", limit=1)
-            print(f"PASS web: results={len(web_results.items)}")
+            print("SKIP web: BRAVE_SEARCH_API_KEY is not configured")
+        for name, check in checks:
+            try:
+                async with asyncio.timeout(60):
+                    batch = await check()
+                if not batch.items:
+                    failed.append(name)
+                    print(f"FAIL {name}: empty result")
+                else:
+                    print(f"PASS {name}: results={len(batch.items)} partial={batch.partial}")
+                for failure in batch.failures:
+                    print(f"DETAIL {name}: {failure.failure_category}")
+            except Exception as exc:
+                failed.append(name)
+                print(f"FAIL {name}: {classify_failure(name, exc).failure_category}")
     finally:
         await github.aclose()
         await arxiv.aclose()
+        await news.aclose()
         if web is not None:
             await web.aclose()
+    if failed:
+        raise RuntimeError("Some source checks failed")
 
 
 async def run(target: str) -> None:
@@ -95,12 +116,18 @@ async def run(target: str) -> None:
         print("SKIP live smoke: set RUN_LIVE_TESTS=1 to contact external services")
         return
     settings = AppSettings()
-    if target in {"gemini", "all"}:
-        await smoke_gemini(settings)
-    if target in {"hermes", "all"}:
-        await smoke_hermes(settings)
-    if target in {"tools", "all"}:
-        await smoke_tools(settings)
+    failed = []
+    for name, check in [("gemini", smoke_gemini), ("hermes", smoke_hermes), ("tools", smoke_tools)]:
+        if target not in {name, "all"}:
+            continue
+        try:
+            async with asyncio.timeout(180):
+                await check(settings)
+        except (Exception, SystemExit) as exc:
+            failed.append(name)
+            print(f"FAIL {name}: {type(exc).__name__}")
+    if failed:
+        raise SystemExit(1)
 
 
 def main() -> None:

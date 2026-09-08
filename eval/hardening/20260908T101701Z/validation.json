@@ -1,0 +1,40 @@
+{
+  "offline_tests": {
+    "passed": 227,
+    "skipped": 6
+  },
+  "live_integration": {
+    "passed": 5,
+    "skipped": 1,
+    "skip_reason": "Brave key absent"
+  },
+  "ruff_check": "PASS",
+  "ruff_format_check": "PASS",
+  "mypy": "PASS: 67 source files",
+  "pip_check": "PASS; cache directory warning only",
+  "offline_evaluation": {
+    "cases": 32,
+    "runs": 64,
+    "adversarial_passed": 5,
+    "adversarial_total": 5
+  },
+  "live_pilot": {
+    "runs": 16,
+    "budget_violations": 0,
+    "adversarial_passed": 5,
+    "persisted_runs": 16,
+    "persisted_queries": 81,
+    "evidence_references_checked": 189,
+    "canonical_url_and_id_check": "PASS",
+    "operation_correlation": "PASS",
+    "source_manifest_matches_final_code": true
+  },
+  "smoke": {
+    "gemini": "PASS",
+    "hermes": "PASS",
+    "github": "PASS",
+    "arxiv": "PASS",
+    "news": "PASS with 3 results and 1 isolated feed connection failure",
+    "web": "SKIP: key absent"
+  }
+}

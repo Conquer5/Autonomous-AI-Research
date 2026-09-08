@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import contextlib
+import json
 import sqlite3
 from datetime import UTC, datetime
 from pathlib import Path
@@ -11,6 +12,7 @@ from uuid import uuid4
 from research_radar.research.models import (
     ResearchSynthesisResult,
 )
+from research_radar.utils.deadline import bounded_timeout
 
 
 class ResearchStore:
@@ -22,7 +24,7 @@ class ResearchStore:
 
     def _connect(self) -> sqlite3.Connection:
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
-        conn = sqlite3.connect(self.db_path, timeout=30.0)
+        conn = sqlite3.connect(self.db_path, timeout=bounded_timeout(30.0))
         conn.row_factory = sqlite3.Row
         conn.execute("PRAGMA journal_mode=WAL")
         return conn
@@ -82,6 +84,10 @@ class ResearchStore:
                 "CREATE INDEX IF NOT EXISTS idx_research_queries_research "
                 "ON research_queries(research_id)"
             )
+            for table in ("research_runs", "research_queries"):
+                columns = {row["name"] for row in conn.execute(f"PRAGMA table_info({table})")}
+                if "diagnostics" not in columns:
+                    conn.execute(f"ALTER TABLE {table} ADD COLUMN diagnostics TEXT")
             conn.commit()
 
     def save_run(self, result: ResearchSynthesisResult) -> None:
@@ -154,6 +160,31 @@ class ResearchStore:
                     ),
                 )
 
+            conn.execute(
+                "UPDATE research_runs SET diagnostics = ? WHERE research_id = ?",
+                (
+                    json.dumps(
+                        {
+                            "coverage": state.coverage,
+                            "uncertainties": state.uncertainties,
+                            "provider_failures": [f.model_dump() for f in state.provider_failures],
+                        }
+                    ),
+                    state.research_id,
+                ),
+            )
+            for q in state.queries_executed:
+                conn.execute(
+                    "UPDATE research_queries SET diagnostics = ? WHERE research_id = ? "
+                    "AND tool = ? AND query = ? AND iteration = ?",
+                    (
+                        q.model_dump_json(exclude={"query"}),
+                        state.research_id,
+                        q.tool,
+                        q.query,
+                        q.iteration,
+                    ),
+                )
             conn.commit()
 
     def get_run(self, research_id: str) -> dict[str, object] | None:

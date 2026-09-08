@@ -1,5 +1,7 @@
 # Autonomous AI Research Radar
 
+> Current reliability update (2026-09-08): the application now has bounded research orchestration, consensus/verification, evidence persistence, and retrieval diagnostics. See the [hardening report](docs/retrieval-hardening.md) for current contracts, tests and live measurements. Phase 1–2 descriptions below are historical.
+
 Autonomous AI Research Radar adalah fondasi sistem riset AI berbasis bukti,
 bukan chatbot `prompt -> model -> jawaban`. Aplikasi menerima request dari
 Telegram, menggunakan Hermes Agent sebagai runtime agentic, Gemini sebagai

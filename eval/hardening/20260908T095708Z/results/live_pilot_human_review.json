@@ -1,0 +1,1123 @@
+{
+  "evaluation_id": "live_20260908_100146",
+  "generated_at": "2026-09-08T10:01:46.728884+00:00",
+  "total_cases_for_review": 8,
+  "cases": [
+    {
+      "case_id": "agents_003",
+      "question": "Do multi-agent architectures consistently outperform single-agent systems?",
+      "category": "agents",
+      "difficulty": "CONTROVERSIAL",
+      "mode_A": {
+        "mode_name": "QUICK",
+        "answer_snippet": "Analisis konsensus terhadap 10 sumber (Status: mixed):\n• Kesepakatan Sumber: aria_an_agentic_framework_for_autonomous_testing_of_infotainment_systems: ARIA - An Agentic Framework for Autonomous Testing of Infotainment Systems.; coskill_joint_reinforcement_learning_of_reasoning_and_meta_skill_agents_",
+        "safe_conclusion": "Sumber berbeda pendapat; belum ada kesimpulan tunggal yang kuat.",
+        "sources": [
+          {
+            "title": "A Structured Debate-Mixture-of-Agents Framework for Complex Clinical Diagnostic Decision Support",
+            "url": "https://arxiv.org/abs/2609.05069v1"
+          },
+          {
+            "title": "ARIA - An Agentic Framework for Autonomous Testing of Infotainment Systems",
+            "url": "https://arxiv.org/abs/2609.04913v1"
+          },
+          {
+            "title": "RefactorPlatform: An Open-Source Harness for Controlled Evaluation of Repository-Scale Refactoring Agents",
+            "url": "https://arxiv.org/abs/2609.04898v1"
+          },
+          {
+            "title": "CoSkill: Joint Reinforcement Learning of Reasoning and Meta-Skill Agents for Hierarchical Skill Evolution",
+            "url": "https://arxiv.org/abs/2609.04865v1"
+          },
+          {
+            "title": "MABPD: Multi-Agent Bias Probing & Detection via Structured Argument Debate",
+            "url": "https://arxiv.org/abs/2609.04841v1"
+          },
+          {
+            "title": "TauricResearch/TradingAgents",
+            "url": "https://github.com/TauricResearch/TradingAgents"
+          },
+          {
+            "title": "ruvnet/ruflo",
+            "url": "https://github.com/ruvnet/ruflo"
+          },
+          {
+            "title": "FoundationAgents/MetaGPT",
+            "url": "https://github.com/FoundationAgents/MetaGPT"
+          },
+          {
+            "title": "multica-ai/multica",
+            "url": "https://github.com/multica-ai/multica"
+          },
+          {
+            "title": "HKUDS/nanobot",
+            "url": "https://github.com/HKUDS/nanobot"
+          }
+        ],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      },
+      "mode_B": {
+        "mode_name": "DEEP",
+        "answer_snippet": "Analisis konsensus terhadap 16 sumber (Status: insufficient):\n• Temuan Utama:\n  - The Illusion of Agentic Complexity in README.md Generation: Evaluating Single-Agent vs. Multi-Agent RAG Systems: Large Language Models (LLMs) are incr\n  - Beyond LLM-Based Reasoning: Lightweight GNNs for Agent Failure ",
+        "safe_conclusion": "Bukti belum cukup untuk menarik kesimpulan yang kuat.",
+        "sources": [
+          {
+            "title": "The Illusion of Agentic Complexity in README.md Generation: Evaluating Single-Agent vs. Multi-Agent RAG Systems",
+            "url": "https://arxiv.org/abs/2606.30524v2"
+          },
+          {
+            "title": "Beyond LLM-Based Reasoning: Lightweight GNNs for Agent Failure Attribution",
+            "url": "https://arxiv.org/abs/2608.18575v1"
+          },
+          {
+            "title": "ASCon: A Direction-Aware Reciprocal Agent--Step Contextualization Model for Failure Attribution in Multi-Agent Systems",
+            "url": "https://arxiv.org/abs/2608.10646v1"
+          },
+          {
+            "title": "Mixture-of-Translators: Translating KV Caches Across Heterogeneous Large Language Models",
+            "url": "https://arxiv.org/abs/2607.28979v1"
+          },
+          {
+            "title": "AgentFAIR: A Multi-Agent Collaborative Framework for FAIRness Evaluation of Geospatial Datasets",
+            "url": "https://arxiv.org/abs/2607.15781v2"
+          },
+          {
+            "title": "From Naive RAG to Deep Agentic Retrieval: An Evolving Context Engineering Pipeline for Regulatory Compliance",
+            "url": "https://arxiv.org/abs/2607.24791v1"
+          },
+          {
+            "title": "bouob/agent-harness",
+            "url": "https://github.com/bouob/agent-harness"
+          },
+          {
+            "title": "haoranxu-research/Multi-Agent-Social-Simulation-Evaluation-Harness",
+            "url": "https://github.com/haoranxu-research/Multi-Agent-Social-Simulation-Evaluation-Harness"
+          },
+          {
+            "title": "Pankaj2512/Aegis-Agent-Evaluation-Guardrails-Harness",
+            "url": "https://github.com/Pankaj2512/Aegis-Agent-Evaluation-Guardrails-Harness"
+          },
+          {
+            "title": "SuperSuperCandice/pge-harness",
+            "url": "https://github.com/SuperSuperCandice/pge-harness"
+          },
+          {
+            "title": "jaygautam-creator/Aletheia",
+            "url": "https://github.com/jaygautam-creator/Aletheia"
+          },
+          {
+            "title": "marostcs/konzole",
+            "url": "https://github.com/marostcs/konzole"
+          },
+          {
+            "title": "whitefield-framework/tripple",
+            "url": "https://github.com/whitefield-framework/tripple"
+          },
+          {
+            "title": "bennetbill/Fleet-Management-Software-App",
+            "url": "https://github.com/bennetbill/Fleet-Management-Software-App"
+          },
+          {
+            "title": "maulanashalihin/hook-sync",
+            "url": "https://github.com/maulanashalihin/hook-sync"
+          },
+          {
+            "title": "PriyanshSharmaxx/AAAS-OMIP",
+            "url": "https://github.com/PriyanshSharmaxx/AAAS-OMIP"
+          }
+        ],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      }
+    },
+    {
+      "case_id": "agents_005",
+      "question": "How reliable are autonomous code-editing agents in large existing repositories?",
+      "category": "agents",
+      "difficulty": "HARD",
+      "mode_A": {
+        "mode_name": "QUICK",
+        "answer_snippet": "Analisis konsensus terhadap 10 sumber (Status: moderate):\n• Kesepakatan Sumber: beneath_the_diff_diagnosing_and_mitigating_algorithmic_mode_collapse_in_code_level_autonomous_research_loops: Beneath the Diff: Diagnosing and Mitigating Algorithmic Mode Collapse in Code-Level Autonomous Research Loops.",
+        "safe_conclusion": "Dukungan sumber moderat dengan kualifikasi yang perlu diperiksa.",
+        "sources": [
+          {
+            "title": "Beneath the Diff: Diagnosing and Mitigating Algorithmic Mode Collapse in Code-Level Autonomous Research Loops",
+            "url": "https://arxiv.org/abs/2609.00077v1"
+          },
+          {
+            "title": "From Agent Behaviour to Agent-Friendly Documentation: An Empirical Study of How Coding Agents Discover, Read, and Write Technical Documentation",
+            "url": "https://arxiv.org/abs/2608.20195v1"
+          },
+          {
+            "title": "DA-Studio: An Agentic System for End-to-End Data Analysis",
+            "url": "https://arxiv.org/abs/2606.31423v1"
+          },
+          {
+            "title": "Discovering Cooperative Pipelines: Autoresearch for Sequential Social Dilemmas",
+            "url": "https://arxiv.org/abs/2605.30003v1"
+          },
+          {
+            "title": "SaaSBench: Exploring the Boundaries of Coding Agents in Long-Horizon Enterprise SaaS Engineering",
+            "url": "https://arxiv.org/abs/2605.17526v1"
+          },
+          {
+            "title": "SWE-bench/experiments",
+            "url": "https://github.com/SWE-bench/experiments"
+          },
+          {
+            "title": "TokenRhythm/claw-swe-bench",
+            "url": "https://github.com/TokenRhythm/claw-swe-bench"
+          },
+          {
+            "title": "SWE-bench/sb-cli",
+            "url": "https://github.com/SWE-bench/sb-cli"
+          },
+          {
+            "title": "smallcloudai/refact-bench",
+            "url": "https://github.com/smallcloudai/refact-bench"
+          },
+          {
+            "title": "vieval-dev/vieval",
+            "url": "https://github.com/vieval-dev/vieval"
+          }
+        ],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      },
+      "mode_B": {
+        "mode_name": "DEEP",
+        "answer_snippet": "Analisis konsensus terhadap 20 sumber (Status: insufficient):\n• Temuan Utama:\n  - Beneath the Diff: Diagnosing and Mitigating Algorithmic Mode Collapse in Code-Level Autonomous Research Loops: Code-level autonomous research loops (A\n  - From Agent Behaviour to Agent-Friendly Documentation: An Empiri",
+        "safe_conclusion": "Bukti belum cukup untuk menarik kesimpulan yang kuat.",
+        "sources": [
+          {
+            "title": "Beneath the Diff: Diagnosing and Mitigating Algorithmic Mode Collapse in Code-Level Autonomous Research Loops",
+            "url": "https://arxiv.org/abs/2609.00077v1"
+          },
+          {
+            "title": "From Agent Behaviour to Agent-Friendly Documentation: An Empirical Study of How Coding Agents Discover, Read, and Write Technical Documentation",
+            "url": "https://arxiv.org/abs/2608.20195v1"
+          },
+          {
+            "title": "DA-Studio: An Agentic System for End-to-End Data Analysis",
+            "url": "https://arxiv.org/abs/2606.31423v1"
+          },
+          {
+            "title": "Discovering Cooperative Pipelines: Autoresearch for Sequential Social Dilemmas",
+            "url": "https://arxiv.org/abs/2605.30003v1"
+          },
+          {
+            "title": "SaaSBench: Exploring the Boundaries of Coding Agents in Long-Horizon Enterprise SaaS Engineering",
+            "url": "https://arxiv.org/abs/2605.17526v1"
+          },
+          {
+            "title": "SWE-bench/experiments",
+            "url": "https://github.com/SWE-bench/experiments"
+          },
+          {
+            "title": "TokenRhythm/claw-swe-bench",
+            "url": "https://github.com/TokenRhythm/claw-swe-bench"
+          },
+          {
+            "title": "SWE-bench/sb-cli",
+            "url": "https://github.com/SWE-bench/sb-cli"
+          },
+          {
+            "title": "smallcloudai/refact-bench",
+            "url": "https://github.com/smallcloudai/refact-bench"
+          },
+          {
+            "title": "vieval-dev/vieval",
+            "url": "https://github.com/vieval-dev/vieval"
+          },
+          {
+            "title": "A Semantic Model of Genetic Evidence: A Step Toward Bridging the Basic-Science-Clinic Gap",
+            "url": "https://arxiv.org/abs/2609.04509v1"
+          },
+          {
+            "title": "Investigating the Ability of Large Language Models to Analyze Recipes for Diabetes",
+            "url": "https://arxiv.org/abs/2609.03967v1"
+          },
+          {
+            "title": "Landmark-Based Discrimination of Injury-Associated Athlete-Sessions from Minute-Resolution Multimodal Football Monitoring Data",
+            "url": "https://arxiv.org/abs/2609.03790v1"
+          },
+          {
+            "title": "Lantern: Finding Committable Transactions via Back-Propagation on DAGs",
+            "url": "https://arxiv.org/abs/2609.03315v1"
+          },
+          {
+            "title": "Post-Training Ternarization of Qwen3-4B Capability, Effective Bit Budget, Storage Compression, and Deployment",
+            "url": "https://arxiv.org/abs/2609.01962v1"
+          },
+          {
+            "title": "sebastianruder/NLP-progress",
+            "url": "https://github.com/sebastianruder/NLP-progress"
+          },
+          {
+            "title": "first20hours/google-10000-english",
+            "url": "https://github.com/first20hours/google-10000-english"
+          },
+          {
+            "title": "oxequa/realize",
+            "url": "https://github.com/oxequa/realize"
+          },
+          {
+            "title": "interconnectit/Search-Replace-DB",
+            "url": "https://github.com/interconnectit/Search-Replace-DB"
+          },
+          {
+            "title": "ansible/ansible-lint",
+            "url": "https://github.com/ansible/ansible-lint"
+          }
+        ],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      }
+    },
+    {
+      "case_id": "bench_001",
+      "question": "Does SWE-bench Verified address the issue of noisy test assertions?",
+      "category": "evaluation_benchmarks",
+      "difficulty": "MODERATE",
+      "mode_A": {
+        "mode_name": "QUICK",
+        "answer_snippet": "Analisis konsensus terhadap 10 sumber (Status: mixed):\n• Kesepakatan Sumber: swe_agentmini_swe_agent: SWE-agent/mini-swe-agent.; autocoderoversgauto_code_rover: AutoCodeRoverSG/auto-code-rover.\n• Perbedaan Temuan: explore_more_drift_less_outcome_only_reinforcement_learning_can_suffice_for_long_horiz",
+        "safe_conclusion": "Sumber berbeda pendapat; belum ada kesimpulan tunggal yang kuat.",
+        "sources": [
+          {
+            "title": "SWE-agent/mini-swe-agent",
+            "url": "https://github.com/SWE-agent/mini-swe-agent"
+          },
+          {
+            "title": "AutoCodeRoverSG/auto-code-rover",
+            "url": "https://github.com/AutoCodeRoverSG/auto-code-rover"
+          },
+          {
+            "title": "augmentcode/augment-swebench-agent",
+            "url": "https://github.com/augmentcode/augment-swebench-agent"
+          },
+          {
+            "title": "china-qijizhifeng/agentic-harness-engineering",
+            "url": "https://github.com/china-qijizhifeng/agentic-harness-engineering"
+          },
+          {
+            "title": "JARVIS-Xs/SE-Agent",
+            "url": "https://github.com/JARVIS-Xs/SE-Agent"
+          },
+          {
+            "title": "What Does Multi-Harness RL Learn? Credit Assignment and Portability in Coding Agents",
+            "url": "https://arxiv.org/abs/2609.04518v1"
+          },
+          {
+            "title": "EarlyEval: Cheaper Agent Evaluation via Early Outcome Prediction",
+            "url": "https://arxiv.org/abs/2609.02783v1"
+          },
+          {
+            "title": "Explore More, Drift Less: Outcome-Only Reinforcement Learning Can Suffice for Long-Horizon Interactive Agents",
+            "url": "https://arxiv.org/abs/2609.01245v1"
+          },
+          {
+            "title": "A^2Agent: Action-Aware Reinforcement Learning for Repository-Level Code Localization Agents",
+            "url": "https://arxiv.org/abs/2608.29831v1"
+          },
+          {
+            "title": "Cost-Effective Repository Exploration for Agentic Issue Localization",
+            "url": "https://arxiv.org/abs/2608.29675v1"
+          }
+        ],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      },
+      "mode_B": {
+        "mode_name": "DEEP",
+        "answer_snippet": "Analisis konsensus terhadap 15 sumber (Status: insufficient):\n• Temuan Utama:\n  - What Does Multi-Harness RL Learn? Credit Assignment and Portability in Coding Agents: Agent reinforcement learning (RL) increasingly runs through full\n  - EarlyEval: Cheaper Agent Evaluation via Early Outcome Predictio",
+        "safe_conclusion": "Bukti belum cukup untuk menarik kesimpulan yang kuat.",
+        "sources": [
+          {
+            "title": "What Does Multi-Harness RL Learn? Credit Assignment and Portability in Coding Agents",
+            "url": "https://arxiv.org/abs/2609.04518v1"
+          },
+          {
+            "title": "EarlyEval: Cheaper Agent Evaluation via Early Outcome Prediction",
+            "url": "https://arxiv.org/abs/2609.02783v1"
+          },
+          {
+            "title": "Explore More, Drift Less: Outcome-Only Reinforcement Learning Can Suffice for Long-Horizon Interactive Agents",
+            "url": "https://arxiv.org/abs/2609.01245v1"
+          },
+          {
+            "title": "A^2Agent: Action-Aware Reinforcement Learning for Repository-Level Code Localization Agents",
+            "url": "https://arxiv.org/abs/2608.29831v1"
+          },
+          {
+            "title": "Cost-Effective Repository Exploration for Agentic Issue Localization",
+            "url": "https://arxiv.org/abs/2608.29675v1"
+          },
+          {
+            "title": "justin-napolitano/SWE-bench_Verified",
+            "url": "https://github.com/justin-napolitano/SWE-bench_Verified"
+          },
+          {
+            "title": "openJiuwen: Beyond Static Harnesses for Long-Horizon Coding Agents",
+            "url": "https://arxiv.org/abs/2608.27969v1"
+          },
+          {
+            "title": "Same Model, Different Harness: Different Coding-Agent Results",
+            "url": "https://arxiv.org/abs/2608.26218v1"
+          },
+          {
+            "title": "A Jagged Frontier: Evaluating Robustness of Code Agents to Semantics-Preserving Transformations",
+            "url": "https://arxiv.org/abs/2608.18389v1"
+          },
+          {
+            "title": "Kozuchi Agent: A Language-Agnostic Open-Weight Agent for Software Repair",
+            "url": "https://arxiv.org/abs/2608.15579v1"
+          },
+          {
+            "title": "quenhus/uBlock-Origin-dev-filter",
+            "url": "https://github.com/quenhus/uBlock-Origin-dev-filter"
+          },
+          {
+            "title": "tkaczmarzyk/specification-arg-resolver",
+            "url": "https://github.com/tkaczmarzyk/specification-arg-resolver"
+          },
+          {
+            "title": "chrisneagu/FTC-Skystone-Dark-Angels-Romania-2020",
+            "url": "https://github.com/chrisneagu/FTC-Skystone-Dark-Angels-Romania-2020"
+          },
+          {
+            "title": "openmessaging/specification",
+            "url": "https://github.com/openmessaging/specification"
+          },
+          {
+            "title": "fortesinformatica/fortesreport-ce",
+            "url": "https://github.com/fortesinformatica/fortesreport-ce"
+          }
+        ],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      }
+    },
+    {
+      "case_id": "local_002",
+      "question": "vLLM vs Ollama: throughput and concurrency comparison for production serving.",
+      "category": "local_inference",
+      "difficulty": "MODERATE",
+      "mode_A": {
+        "mode_name": "QUICK",
+        "answer_snippet": "Analisis konsensus terhadap 8 sumber (Status: insufficient):\n• Temuan Utama:\n  - aruanurag/llm-inference-lab: A hands-on repository documenting my journey into LLM inference, serving systems, and LLMOps. Includes experiments, bench\n  - susmitsingh01/vllm-serving-performance-lab: A Colab-driven perfo",
+        "safe_conclusion": "Bukti belum cukup untuk menarik kesimpulan yang kuat.",
+        "sources": [
+          {
+            "title": "aruanurag/llm-inference-lab",
+            "url": "https://github.com/aruanurag/llm-inference-lab"
+          },
+          {
+            "title": "susmitsingh01/vllm-serving-performance-lab",
+            "url": "https://github.com/susmitsingh01/vllm-serving-performance-lab"
+          },
+          {
+            "title": "ankitsharma285/DepthPruning-vLLM",
+            "url": "https://github.com/ankitsharma285/DepthPruning-vLLM"
+          },
+          {
+            "title": "intel/ipex-llm",
+            "url": "https://github.com/intel/ipex-llm"
+          },
+          {
+            "title": "tencentmusic/cube-studio",
+            "url": "https://github.com/tencentmusic/cube-studio"
+          },
+          {
+            "title": "lemony-ai/cascadeflow",
+            "url": "https://github.com/lemony-ai/cascadeflow"
+          },
+          {
+            "title": "data-infra/cube-studio",
+            "url": "https://github.com/data-infra/cube-studio"
+          },
+          {
+            "title": "ovg-project/kvcached",
+            "url": "https://github.com/ovg-project/kvcached"
+          }
+        ],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      },
+      "mode_B": {
+        "mode_name": "DEEP",
+        "answer_snippet": "Analisis konsensus terhadap 18 sumber (Status: insufficient):\n• Temuan Utama:\n  - Comparative Analysis of Large Language Model Inference Serving Systems: A Performance Study of vLLM and HuggingFace TGI: The deployment of Large Langu\n  - Rethinking Key-Value Cache Compression Techniques for Large Lan",
+        "safe_conclusion": "Bukti belum cukup untuk menarik kesimpulan yang kuat.",
+        "sources": [
+          {
+            "title": "Comparative Analysis of Large Language Model Inference Serving Systems: A Performance Study of vLLM and HuggingFace TGI",
+            "url": "https://arxiv.org/abs/2511.17593v1"
+          },
+          {
+            "title": "Rethinking Key-Value Cache Compression Techniques for Large Language Model Serving",
+            "url": "https://arxiv.org/abs/2503.24000v1"
+          },
+          {
+            "title": "KV-Compress: Paged KV-Cache Compression with Variable Compression Rates per Attention Head",
+            "url": "https://arxiv.org/abs/2410.00161v2"
+          },
+          {
+            "title": "intel/ipex-llm",
+            "url": "https://github.com/intel/ipex-llm"
+          },
+          {
+            "title": "tencentmusic/cube-studio",
+            "url": "https://github.com/tencentmusic/cube-studio"
+          },
+          {
+            "title": "lemony-ai/cascadeflow",
+            "url": "https://github.com/lemony-ai/cascadeflow"
+          },
+          {
+            "title": "data-infra/cube-studio",
+            "url": "https://github.com/data-infra/cube-studio"
+          },
+          {
+            "title": "ovg-project/kvcached",
+            "url": "https://github.com/ovg-project/kvcached"
+          },
+          {
+            "title": "SemiAnalysisAI/InferenceX",
+            "url": "https://github.com/SemiAnalysisAI/InferenceX"
+          },
+          {
+            "title": "waybarrios/vllm-mlx",
+            "url": "https://github.com/waybarrios/vllm-mlx"
+          },
+          {
+            "title": "mudler/vllm.cpp",
+            "url": "https://github.com/mudler/vllm.cpp"
+          },
+          {
+            "title": "amitshekhariitbhu/llm-inference-engineering",
+            "url": "https://github.com/amitshekhariitbhu/llm-inference-engineering"
+          },
+          {
+            "title": "lumia431/photon_infer",
+            "url": "https://github.com/lumia431/photon_infer"
+          },
+          {
+            "title": "jasontaylordev/CleanArchitecture",
+            "url": "https://github.com/jasontaylordev/CleanArchitecture"
+          },
+          {
+            "title": "ardalis/CleanArchitecture",
+            "url": "https://github.com/ardalis/CleanArchitecture"
+          },
+          {
+            "title": "abpframework/abp",
+            "url": "https://github.com/abpframework/abp"
+          },
+          {
+            "title": "DataDog/glommio",
+            "url": "https://github.com/DataDog/glommio"
+          },
+          {
+            "title": "aspnetrun/run-aspnetcore-microservices",
+            "url": "https://github.com/aspnetrun/run-aspnetcore-microservices"
+          }
+        ],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      }
+    },
+    {
+      "case_id": "models_001",
+      "question": "Test-Time Compute vs Pretraining: what is empirical return on reasoning tokens?",
+      "category": "models_reasoning",
+      "difficulty": "CONTROVERSIAL",
+      "mode_A": {
+        "mode_name": "QUICK",
+        "answer_snippet": "Analisis konsensus terhadap 6 sumber (Status: moderate):\n• Kesepakatan Sumber: when_llm_meets_tree_search_a_systematic_view_of_inference_as_search_in_large_language_models: When LLM Meets Tree Search: A Systematic View of Inference as Search in Large Language Models.; milanpeter_77coursework_binomia",
+        "safe_conclusion": "Dukungan sumber moderat dengan kualifikasi yang perlu diperiksa.",
+        "sources": [
+          {
+            "title": "When LLM Meets Tree Search: A Systematic View of Inference as Search in Large Language Models",
+            "url": "https://arxiv.org/abs/2608.30395v1"
+          },
+          {
+            "title": "Ru-Yan/Sharpe-LSTM-Investment-Model",
+            "url": "https://github.com/Ru-Yan/Sharpe-LSTM-Investment-Model"
+          },
+          {
+            "title": "Milanpeter-77/Coursework-Binomial-Tree-Black-Scholes-Model",
+            "url": "https://github.com/Milanpeter-77/Coursework-Binomial-Tree-Black-Scholes-Model"
+          },
+          {
+            "title": "caganco/trailingedge",
+            "url": "https://github.com/caganco/trailingedge"
+          },
+          {
+            "title": "dexin-peng/Fama-Macbeth-1973-Risk-Return-and-Equilibrium-Empirical-Tests-reproduce",
+            "url": "https://github.com/dexin-peng/Fama-Macbeth-1973-Risk-Return-and-Equilibrium-Empirical-Tests-reproduce"
+          },
+          {
+            "title": "Joe-creates777/rates-vs-equity-returns",
+            "url": "https://github.com/Joe-creates777/rates-vs-equity-returns"
+          }
+        ],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      },
+      "mode_B": {
+        "mode_name": "DEEP",
+        "answer_snippet": "Analisis konsensus terhadap 15 sumber (Status: insufficient):\n• Temuan Utama:\n  - How to Speculate about Uncertainty in Agentic Coding? A Draft-Model Gate Method: LLM agents deployed for software engineering fail expensively: they a\n  - Choosing the Right Language Mode at Inference Time for Multilin",
+        "safe_conclusion": "Bukti belum cukup untuk menarik kesimpulan yang kuat.",
+        "sources": [
+          {
+            "title": "How to Speculate about Uncertainty in Agentic Coding? A Draft-Model Gate Method",
+            "url": "https://arxiv.org/abs/2609.05274v1"
+          },
+          {
+            "title": "Choosing the Right Language Mode at Inference Time for Multilingual Reliability",
+            "url": "https://arxiv.org/abs/2609.04653v1"
+          },
+          {
+            "title": "Continual Field-Adaptive Models (CFAMs) for Post-Deployment Physical AI",
+            "url": "https://arxiv.org/abs/2609.04552v1"
+          },
+          {
+            "title": "Rethinking Indirect Prompt Injection as a Test-Time Search Problem",
+            "url": "https://arxiv.org/abs/2609.04495v1"
+          },
+          {
+            "title": "A Removal Based Approach to Improve LLM Faithfulness at Test-Time",
+            "url": "https://arxiv.org/abs/2609.04343v1"
+          },
+          {
+            "title": "Ru-Yan/Sharpe-LSTM-Investment-Model",
+            "url": "https://github.com/Ru-Yan/Sharpe-LSTM-Investment-Model"
+          },
+          {
+            "title": "Milanpeter-77/Coursework-Binomial-Tree-Black-Scholes-Model",
+            "url": "https://github.com/Milanpeter-77/Coursework-Binomial-Tree-Black-Scholes-Model"
+          },
+          {
+            "title": "caganco/trailingedge",
+            "url": "https://github.com/caganco/trailingedge"
+          },
+          {
+            "title": "dexin-peng/Fama-Macbeth-1973-Risk-Return-and-Equilibrium-Empirical-Tests-reproduce",
+            "url": "https://github.com/dexin-peng/Fama-Macbeth-1973-Risk-Return-and-Equilibrium-Empirical-Tests-reproduce"
+          },
+          {
+            "title": "Joe-creates777/rates-vs-equity-returns",
+            "url": "https://github.com/Joe-creates777/rates-vs-equity-returns"
+          },
+          {
+            "title": "eloqdata/eloqkv",
+            "url": "https://github.com/eloqdata/eloqkv"
+          },
+          {
+            "title": "joanhey/AdapterMan",
+            "url": "https://github.com/joanhey/AdapterMan"
+          },
+          {
+            "title": "Azure/Security-Copilot",
+            "url": "https://github.com/Azure/Security-Copilot"
+          },
+          {
+            "title": "open-source-labs/SeeQR",
+            "url": "https://github.com/open-source-labs/SeeQR"
+          },
+          {
+            "title": "OpenVisualCloud/SVT-HEVC",
+            "url": "https://github.com/OpenVisualCloud/SVT-HEVC"
+          }
+        ],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      }
+    },
+    {
+      "case_id": "models_003",
+      "question": "What is the parameter size of the Qwen 2.5 Coder flagship model?",
+      "category": "models_reasoning",
+      "difficulty": "EASY",
+      "mode_A": {
+        "mode_name": "QUICK",
+        "answer_snippet": "Analisis konsensus terhadap 10 sumber (Status: weak):\n• Kesepakatan Sumber: miromindaimiromind_m1: MiroMindAI/MiroMind-M1.; chi_shan0707tinylora_grpo_coder: Chi-Shan0707/TinyLoRA-GRPO-Coder.\n• Temuan Utama:\n  - QwenLM/Qwen2.5-Omni: Qwen2.5-Omni is an end-to-end multimodal model by Qwen team at Aliba",
+        "safe_conclusion": "Dukungan sumber lemah; bukti tambahan diperlukan.",
+        "sources": [
+          {
+            "title": "QwenLM/Qwen2.5-Omni",
+            "url": "https://github.com/QwenLM/Qwen2.5-Omni"
+          },
+          {
+            "title": "QwenLM/Qwen2.5-Math",
+            "url": "https://github.com/QwenLM/Qwen2.5-Math"
+          },
+          {
+            "title": "jhqxxx/aha",
+            "url": "https://github.com/jhqxxx/aha"
+          },
+          {
+            "title": "cfahlgren1/qwen-2.5-code-interpreter",
+            "url": "https://github.com/cfahlgren1/qwen-2.5-code-interpreter"
+          },
+          {
+            "title": "MiroMindAI/MiroMind-M1",
+            "url": "https://github.com/MiroMindAI/MiroMind-M1"
+          },
+          {
+            "title": "Chi-Shan0707/TinyLoRA-GRPO-Coder",
+            "url": "https://github.com/Chi-Shan0707/TinyLoRA-GRPO-Coder"
+          },
+          {
+            "title": "hanXen/vllm-qwen2.5-coder-tool-parser",
+            "url": "https://github.com/hanXen/vllm-qwen2.5-coder-tool-parser"
+          },
+          {
+            "title": "ParvThakar/QwenCoder",
+            "url": "https://github.com/ParvThakar/QwenCoder"
+          },
+          {
+            "title": "bunyaminergen/Qwen2.5-Coder-1.5B-Instruct-Reasoning",
+            "url": "https://github.com/bunyaminergen/Qwen2.5-Coder-1.5B-Instruct-Reasoning"
+          },
+          {
+            "title": "cmndcntrlcyber/code-trainer-pipeline",
+            "url": "https://github.com/cmndcntrlcyber/code-trainer-pipeline"
+          }
+        ],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      },
+      "mode_B": {
+        "mode_name": "DEEP",
+        "answer_snippet": "Analisis konsensus terhadap 10 sumber (Status: insufficient):\n• Temuan Utama:\n  - QwenLM/Qwen2.5-Omni: Qwen2.5-Omni is an end-to-end multimodal model by Qwen team at Alibaba Cloud, capable of understanding text, audio, vision, video\n  - QwenLM/Qwen2.5-Math: A series of math-specific large language m",
+        "safe_conclusion": "Bukti belum cukup untuk menarik kesimpulan yang kuat.",
+        "sources": [
+          {
+            "title": "QwenLM/Qwen2.5-Omni",
+            "url": "https://github.com/QwenLM/Qwen2.5-Omni"
+          },
+          {
+            "title": "QwenLM/Qwen2.5-Math",
+            "url": "https://github.com/QwenLM/Qwen2.5-Math"
+          },
+          {
+            "title": "jhqxxx/aha",
+            "url": "https://github.com/jhqxxx/aha"
+          },
+          {
+            "title": "cfahlgren1/qwen-2.5-code-interpreter",
+            "url": "https://github.com/cfahlgren1/qwen-2.5-code-interpreter"
+          },
+          {
+            "title": "MiroMindAI/MiroMind-M1",
+            "url": "https://github.com/MiroMindAI/MiroMind-M1"
+          },
+          {
+            "title": "Chi-Shan0707/TinyLoRA-GRPO-Coder",
+            "url": "https://github.com/Chi-Shan0707/TinyLoRA-GRPO-Coder"
+          },
+          {
+            "title": "hanXen/vllm-qwen2.5-coder-tool-parser",
+            "url": "https://github.com/hanXen/vllm-qwen2.5-coder-tool-parser"
+          },
+          {
+            "title": "ParvThakar/QwenCoder",
+            "url": "https://github.com/ParvThakar/QwenCoder"
+          },
+          {
+            "title": "bunyaminergen/Qwen2.5-Coder-1.5B-Instruct-Reasoning",
+            "url": "https://github.com/bunyaminergen/Qwen2.5-Coder-1.5B-Instruct-Reasoning"
+          },
+          {
+            "title": "cmndcntrlcyber/code-trainer-pipeline",
+            "url": "https://github.com/cmndcntrlcyber/code-trainer-pipeline"
+          }
+        ],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      }
+    },
+    {
+      "case_id": "proto_001",
+      "question": "A2A vs MCP: How do emerging Agent communication protocols compare?",
+      "category": "agent_protocols",
+      "difficulty": "HARD",
+      "mode_A": {
+        "mode_name": "QUICK",
+        "answer_snippet": "Analisis konsensus terhadap 10 sumber (Status: moderate):\n• Kesepakatan Sumber: internet_courtinternet_court_skill: internet-court/internet-court-skill.; google_agentic_commercea2a_x402: google-agentic-commerce/a2a-x402.\n• Temuan Utama:\n  - internet-court/internet-court-skill: The trust layer for ag",
+        "safe_conclusion": "Dukungan sumber moderat dengan kualifikasi yang perlu diperiksa.",
+        "sources": [
+          {
+            "title": "internet-court/internet-court-skill",
+            "url": "https://github.com/internet-court/internet-court-skill"
+          },
+          {
+            "title": "themanojdesai/python-a2a",
+            "url": "https://github.com/themanojdesai/python-a2a"
+          },
+          {
+            "title": "isekOS/ISEK",
+            "url": "https://github.com/isekOS/ISEK"
+          },
+          {
+            "title": "google-agentic-commerce/a2a-x402",
+            "url": "https://github.com/google-agentic-commerce/a2a-x402"
+          },
+          {
+            "title": "win4r/openclaw-a2a-gateway",
+            "url": "https://github.com/win4r/openclaw-a2a-gateway"
+          },
+          {
+            "title": "modelcontextprotocol/servers",
+            "url": "https://github.com/modelcontextprotocol/servers"
+          },
+          {
+            "title": "modelcontextprotocol/python-sdk",
+            "url": "https://github.com/modelcontextprotocol/python-sdk"
+          },
+          {
+            "title": "microsoft/mcp-for-beginners",
+            "url": "https://github.com/microsoft/mcp-for-beginners"
+          },
+          {
+            "title": "modelcontextprotocol/typescript-sdk",
+            "url": "https://github.com/modelcontextprotocol/typescript-sdk"
+          },
+          {
+            "title": "hangwin/mcp-chrome",
+            "url": "https://github.com/hangwin/mcp-chrome"
+          }
+        ],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      },
+      "mode_B": {
+        "mode_name": "DEEP",
+        "answer_snippet": "Analisis konsensus terhadap 20 sumber (Status: insufficient):\n• Temuan Utama:\n  - nso-india/esankhyiki-mcp: This repository consists of Source Code for Model Context Protocol (MCP) Pilot Project being undertaken by Ministry of Stati\n  - oschina/mcp-gitee: mcp-gitee is a Model Context Protocol (MCP) ",
+        "safe_conclusion": "Bukti belum cukup untuk menarik kesimpulan yang kuat.",
+        "sources": [
+          {
+            "title": "nso-india/esankhyiki-mcp",
+            "url": "https://github.com/nso-india/esankhyiki-mcp"
+          },
+          {
+            "title": "oschina/mcp-gitee",
+            "url": "https://github.com/oschina/mcp-gitee"
+          },
+          {
+            "title": "modelcontextprotocol/experimental-ext-interceptors",
+            "url": "https://github.com/modelcontextprotocol/experimental-ext-interceptors"
+          },
+          {
+            "title": "sawa-zen/simple-nodejs-mcp-client",
+            "url": "https://github.com/sawa-zen/simple-nodejs-mcp-client"
+          },
+          {
+            "title": "LiusDev/nestjs-mcp-server-langchainjs-demo",
+            "url": "https://github.com/LiusDev/nestjs-mcp-server-langchainjs-demo"
+          },
+          {
+            "title": "A Semantic-Aware Multiple Access Scheme Leveraging Spatial Redundancy for Uplink-Dominant Network Services",
+            "url": "https://arxiv.org/abs/2609.03559v1"
+          },
+          {
+            "title": "Test-Time Collaborative Classification over Multi-Agent Networks",
+            "url": "https://arxiv.org/abs/2608.24787v1"
+          },
+          {
+            "title": "AI Agent Communications in AI-Native 6G Network: Status, Challenges and Opportunities",
+            "url": "https://arxiv.org/abs/2607.18138v1"
+          },
+          {
+            "title": "Cognitive Cells: A Compositional Framework for Populations of Small Language Models",
+            "url": "https://arxiv.org/abs/2608.28606v1"
+          },
+          {
+            "title": "HyphaeDB: A Living Knowledge Topology for Agent-First Memory",
+            "url": "https://arxiv.org/abs/2606.28781v1"
+          },
+          {
+            "title": "diegosouzapw/OmniRoute",
+            "url": "https://github.com/diegosouzapw/OmniRoute"
+          },
+          {
+            "title": "liyupi/ai-guide",
+            "url": "https://github.com/liyupi/ai-guide"
+          },
+          {
+            "title": "EvoMap/evolver",
+            "url": "https://github.com/EvoMap/evolver"
+          },
+          {
+            "title": "google/adk-go",
+            "url": "https://github.com/google/adk-go"
+          },
+          {
+            "title": "SolaceLabs/solace-agent-mesh",
+            "url": "https://github.com/SolaceLabs/solace-agent-mesh"
+          },
+          {
+            "title": "HyperDbg/HyperDbg",
+            "url": "https://github.com/HyperDbg/HyperDbg"
+          },
+          {
+            "title": "cisagov/ScubaGear",
+            "url": "https://github.com/cisagov/ScubaGear"
+          },
+          {
+            "title": "yueliu1999/Awesome-Jailbreak-on-LLMs",
+            "url": "https://github.com/yueliu1999/Awesome-Jailbreak-on-LLMs"
+          },
+          {
+            "title": "AndroidVTS/android-vts",
+            "url": "https://github.com/AndroidVTS/android-vts"
+          },
+          {
+            "title": "JLospinoso/gargoyle",
+            "url": "https://github.com/JLospinoso/gargoyle"
+          }
+        ],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      }
+    },
+    {
+      "case_id": "rag_004",
+      "question": "What is the default vector distance metric used in Qdrant?",
+      "category": "rag_retrieval",
+      "difficulty": "EASY",
+      "mode_A": {
+        "mode_name": "QUICK",
+        "answer_snippet": "Analisis konsensus terhadap 10 sumber (Status: insufficient):\n• Pandangan Dissent: Dissent (artjacksecond_brain - evaluation_accuracy): Local-first RAG assistant: answers only from your own notes/docs/code, every claim cited, graded by an eval harness.\n• Temuan Utama:\n  - AVANT-ICONIC/context-accord",
+        "safe_conclusion": "Bukti belum cukup untuk menarik kesimpulan yang kuat.",
+        "sources": [
+          {
+            "title": "AVANT-ICONIC/context-accordion",
+            "url": "https://github.com/AVANT-ICONIC/context-accordion"
+          },
+          {
+            "title": "bravado-solutions/ai-saas-multi-tenant-repo",
+            "url": "https://github.com/bravado-solutions/ai-saas-multi-tenant-repo"
+          },
+          {
+            "title": "ArtJack/second-brain",
+            "url": "https://github.com/ArtJack/second-brain"
+          },
+          {
+            "title": "MuhammadMurtuzaZafar/Qdrant-MCP-Server",
+            "url": "https://github.com/MuhammadMurtuzaZafar/Qdrant-MCP-Server"
+          },
+          {
+            "title": "oldrebelmind/pydantic-agent",
+            "url": "https://github.com/oldrebelmind/pydantic-agent"
+          },
+          {
+            "title": "qdrant/qdrant-rag-eval",
+            "url": "https://github.com/qdrant/qdrant-rag-eval"
+          },
+          {
+            "title": "menloparklab/langchain-cohere-qdrant-retrieval",
+            "url": "https://github.com/menloparklab/langchain-cohere-qdrant-retrieval"
+          },
+          {
+            "title": "ddprrt/shuttle-qdrant-openai",
+            "url": "https://github.com/ddprrt/shuttle-qdrant-openai"
+          },
+          {
+            "title": "pranshuchaurasia/image-indexing-and-retrival-with-qdrant",
+            "url": "https://github.com/pranshuchaurasia/image-indexing-and-retrival-with-qdrant"
+          },
+          {
+            "title": "blaxel-templates/template-sales-kpi-reporter",
+            "url": "https://github.com/blaxel-templates/template-sales-kpi-reporter"
+          }
+        ],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      },
+      "mode_B": {
+        "mode_name": "DEEP",
+        "answer_snippet": "Analisis konsensus terhadap 15 sumber (Status: insufficient):\n• Temuan Utama:\n  - AVANT-ICONIC/context-accordion: Token-efficient, layered context delivery for AI agents. Four memory tiers (Identity, Session, Experience, Archive) — \n  - bravado-solutions/ai-saas-multi-tenant-repo: This repo provides",
+        "safe_conclusion": "Bukti belum cukup untuk menarik kesimpulan yang kuat.",
+        "sources": [
+          {
+            "title": "AVANT-ICONIC/context-accordion",
+            "url": "https://github.com/AVANT-ICONIC/context-accordion"
+          },
+          {
+            "title": "bravado-solutions/ai-saas-multi-tenant-repo",
+            "url": "https://github.com/bravado-solutions/ai-saas-multi-tenant-repo"
+          },
+          {
+            "title": "ArtJack/second-brain",
+            "url": "https://github.com/ArtJack/second-brain"
+          },
+          {
+            "title": "MuhammadMurtuzaZafar/Qdrant-MCP-Server",
+            "url": "https://github.com/MuhammadMurtuzaZafar/Qdrant-MCP-Server"
+          },
+          {
+            "title": "oldrebelmind/pydantic-agent",
+            "url": "https://github.com/oldrebelmind/pydantic-agent"
+          },
+          {
+            "title": "qdrant/qdrant-rag-eval",
+            "url": "https://github.com/qdrant/qdrant-rag-eval"
+          },
+          {
+            "title": "menloparklab/langchain-cohere-qdrant-retrieval",
+            "url": "https://github.com/menloparklab/langchain-cohere-qdrant-retrieval"
+          },
+          {
+            "title": "ddprrt/shuttle-qdrant-openai",
+            "url": "https://github.com/ddprrt/shuttle-qdrant-openai"
+          },
+          {
+            "title": "pranshuchaurasia/image-indexing-and-retrival-with-qdrant",
+            "url": "https://github.com/pranshuchaurasia/image-indexing-and-retrival-with-qdrant"
+          },
+          {
+            "title": "blaxel-templates/template-sales-kpi-reporter",
+            "url": "https://github.com/blaxel-templates/template-sales-kpi-reporter"
+          },
+          {
+            "title": "protesilaos/iosevka-comfy",
+            "url": "https://github.com/protesilaos/iosevka-comfy"
+          },
+          {
+            "title": "protesilaos/aporetic",
+            "url": "https://github.com/protesilaos/aporetic"
+          },
+          {
+            "title": "Linuxfabrik/monitoring-plugins",
+            "url": "https://github.com/Linuxfabrik/monitoring-plugins"
+          },
+          {
+            "title": "molyswu/hand_detection",
+            "url": "https://github.com/molyswu/hand_detection"
+          },
+          {
+            "title": "Sfedfcv/redesigned-pancake",
+            "url": "https://github.com/Sfedfcv/redesigned-pancake"
+          }
+        ],
+        "rubric_scores": {
+          "relevance": null,
+          "completeness": null,
+          "evidence_quality": null,
+          "conservativeness": null,
+          "usefulness": null,
+          "dissent_handling": null,
+          "evaluator_notes": ""
+        }
+      }
+    }
+  ]
+}

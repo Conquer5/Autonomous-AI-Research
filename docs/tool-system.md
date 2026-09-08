@@ -1,5 +1,7 @@
 # Research Tool System (Phase 2)
 
+> Current reliability update (2026-09-08): the application now has bounded research orchestration, consensus/verification, evidence persistence, and retrieval diagnostics. See the [hardening report](retrieval-hardening.md) for current contracts, tests and live measurements. Phase 1–2 descriptions below are historical.
+
 Each research source is independent and returns a `SearchBatch[T]` containing
 typed Pydantic items, retrieval time, partial-result status, and warnings. Raw
 HTML and unbounded documents never cross the tool boundary.

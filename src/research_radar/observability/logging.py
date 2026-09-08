@@ -57,6 +57,10 @@ def _safe_value(key: str, value: Any) -> Any:
     normalized_key = key.lower()
     if any(marker in normalized_key for marker in ("key", "token", "secret", "authorization")):
         return "[REDACTED]"
+    if isinstance(value, dict):
+        return {str(k): _safe_value(str(k), v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_safe_value("item", item) for item in value]
     if isinstance(value, str):
         return redact_text(value)
     if isinstance(value, (str, int, float, bool)) or value is None:

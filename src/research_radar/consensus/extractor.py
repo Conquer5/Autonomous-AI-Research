@@ -77,7 +77,7 @@ class ClaimExtractor:
             except Exception as exc:
                 logger.warning(
                     "LLM claim extraction failed; falling back to deterministic extraction",
-                    extra={"event": "claim_extraction_fallback", "error": str(exc)},
+                    extra={"event": "claim_extraction_fallback", "error_type": type(exc).__name__},
                 )
 
         # Deterministic extraction fallback

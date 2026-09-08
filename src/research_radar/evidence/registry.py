@@ -9,6 +9,8 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
+from research_radar.utils.deadline import bounded_timeout
+
 try:
     import fcntl
 except ImportError:
@@ -55,7 +57,7 @@ class EvidenceRegistry:
     def _connect(self) -> sqlite3.Connection:
         """Connect and ensure schema exists."""
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        conn = sqlite3.connect(self.path, timeout=30.0)
+        conn = sqlite3.connect(self.path, timeout=bounded_timeout(30.0))
         conn.row_factory = sqlite3.Row
         conn.execute("PRAGMA journal_mode=WAL")
         return conn

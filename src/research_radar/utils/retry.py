@@ -31,6 +31,7 @@ async def call_with_retry(
     policy: RetryPolicy,
     should_retry: Callable[[Exception], bool],
     on_retry: Callable[[Exception, int], None] | None = None,
+    minimum_delay: Callable[[Exception], float] | None = None,
     sleep: Callable[[float], Awaitable[None]] = asyncio.sleep,
 ) -> ResultT:
     """Execute an operation with bounded exponential backoff."""
@@ -47,6 +48,8 @@ async def call_with_retry(
                 policy.max_delay_seconds,
                 policy.base_delay_seconds * (2 ** (attempt - 1)),
             )
-            delay = base + random.uniform(0, policy.jitter_seconds)
+            delay = min(policy.max_delay_seconds, base + random.uniform(0, policy.jitter_seconds))
+            if minimum_delay is not None:
+                delay = max(delay, minimum_delay(exc))
             await sleep(delay)
     raise RuntimeError("retry loop exhausted unexpectedly")
