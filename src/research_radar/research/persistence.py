@@ -166,6 +166,10 @@ class ResearchStore:
                     json.dumps(
                         {
                             "coverage": state.coverage,
+                            "focus": state.focus.model_dump(mode="json") if state.focus else None,
+                            "planner_backend": state.plan.planner_backend if state.plan else None,
+                            "skill_id": state.plan.skill_id if state.plan else None,
+                            "skill_version": state.plan.skill_version if state.plan else None,
                             "uncertainties": state.uncertainties,
                             "provider_failures": [f.model_dump() for f in state.provider_failures],
                         }

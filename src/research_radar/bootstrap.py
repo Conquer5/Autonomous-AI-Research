@@ -141,7 +141,13 @@ def build_container(settings: AppSettings, *, require_runtime: bool = True) -> A
     )
     evidence_registry = EvidenceRegistry(Path(settings.digest_state_path))
     claim_verifier = ClaimVerifier()
-    planner = ResearchPlanner(llm_router=llm_router, hermes_runtime=hermes)
+    planner = ResearchPlanner(
+        llm_router=llm_router,
+        hermes_runtime=hermes,
+        available_sources=tools.available_sources(),
+        backend=settings.research_planner_backend,
+        recent_days=settings.research_recent_days,
+    )
     orchestrator = ResearchOrchestrator(
         settings=settings,
         tools=tools,

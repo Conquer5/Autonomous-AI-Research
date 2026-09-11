@@ -10,6 +10,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from research_radar.consensus.models import ConsensusLevel, ConsensusReport
 from research_radar.evidence.models import StructuredClaim
+from research_radar.research_focus import ResearchFocus
 from research_radar.retrieval import RetrievalFailure, RetrievalOperation
 
 
@@ -92,6 +93,10 @@ class ResearchPlan(BaseModel):
     sub_questions: list[str] = Field(default_factory=list)
     search_steps: list[SearchStep] = Field(default_factory=list)
     success_criteria: list[str] = Field(default_factory=list)
+    planner_backend: str = "deterministic"
+    skill_id: str = ""
+    skill_version: str = ""
+    warnings: list[str] = Field(default_factory=list)
 
 
 class KnowledgeGap(BaseModel):
@@ -132,6 +137,7 @@ class ResearchState(BaseModel):
     objective: str = ""
     status: ResearchStatus = ResearchStatus.PLANNING
     plan: ResearchPlan | None = None
+    focus: ResearchFocus | None = None
     iterations: int = 0
     budget: ResearchBudget = Field(default_factory=ResearchBudget)
     queries_executed: list[QueryExecutionRecord] = Field(default_factory=list)

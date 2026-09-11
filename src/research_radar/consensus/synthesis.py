@@ -12,6 +12,7 @@ from research_radar.consensus.models import ConsensusReport
 from research_radar.evidence.models import ClaimType, StructuredClaim
 from research_radar.llm.base import LLMRequest
 from research_radar.llm.router import LLMRouter, Workload
+from research_radar.research_focus import RESEARCH_DECISION_POLICY
 from research_radar.security.untrusted_content import (
     EVIDENCE_BOUNDARY_INSTRUCTION,
     wrap_evidence_for_llm,
@@ -166,7 +167,7 @@ class ConsensusSynthesizer:
                 LLMRequest(
                     prompt=prompt,
                     system_instruction=(
-                        f"{EVIDENCE_BOUNDARY_INSTRUCTION} "
+                        f"{EVIDENCE_BOUNDARY_INSTRUCTION} {RESEARCH_DECISION_POLICY} "
                         "You are an evidence-first AI research scientist specialized in consensus "
                         "and contradiction analysis. Ground every claim in evidence IDs. "
                         "Never fabricate consensus or suppress dissenting findings."

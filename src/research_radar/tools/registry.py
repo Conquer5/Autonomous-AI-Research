@@ -19,6 +19,18 @@ class ToolRegistry:
     news_search: RssNewsTool | None = None
     web_search: BraveWebSearchTool | None = None
 
+    def available_sources(self) -> frozenset[str]:
+        return frozenset(
+            name
+            for name, tool in (
+                ("github", self.github_search),
+                ("arxiv", self.arxiv_search),
+                ("news", self.news_search),
+                ("web", self.web_search),
+            )
+            if tool is not None
+        )
+
     def status(self) -> list[ToolHealth]:
         return [
             ToolHealth(name="github_search", configured=True),

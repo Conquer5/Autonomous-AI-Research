@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 import re
 from typing import TYPE_CHECKING
+from uuid import uuid4
 
 from research_radar.research.models import (
     EvidenceSufficiency,
@@ -13,6 +14,7 @@ from research_radar.research.models import (
     ResearchPlan,
     SearchStep,
 )
+from research_radar.research_focus import resolve_focus, skill_text
 
 if TYPE_CHECKING:
     from research_radar.agent.base import HermesRuntime
@@ -87,6 +89,18 @@ _STOPWORDS = {
     "will",
     "with",
     "yang",
+    "saya",
+    "ingin",
+    "cari",
+    "tolong",
+    "apakah",
+    "bagaimana",
+    "terbaru",
+    "terkini",
+    "sekarang",
+    "latest",
+    "recent",
+    "current",
 }
 
 
@@ -104,84 +118,132 @@ class ResearchPlanner:
         *,
         llm_router: LLMRouter | None = None,
         hermes_runtime: HermesRuntime | None = None,
+        available_sources: frozenset[str] | None = None,
+        backend: str = "auto",
+        recent_days: int = 14,
     ) -> None:
         self.llm_router = llm_router
         self.hermes_runtime = hermes_runtime
+        self.available_sources = (
+            available_sources
+            if available_sources is not None
+            else frozenset({"github", "arxiv", "news", "web"})
+        )
+        self.backend = backend
+        self.recent_days = recent_days
+
+    def selected_backend(self, mode: ResearchMode) -> str:
+        if self.backend == "deterministic":
+            return "deterministic"
+        if self.backend == "hermes":
+            return "hermes" if self.hermes_runtime is not None else "deterministic"
+        if self.backend == "gemini":
+            return "gemini" if self.llm_router is not None else "deterministic"
+        if self.hermes_runtime is not None and (
+            mode == ResearchMode.DEEP or self.llm_router is None
+        ):
+            return "hermes"
+        return "gemini" if self.llm_router is not None else "deterministic"
+
+    def sanitize_plan(self, plan: ResearchPlan, mode: ResearchMode) -> ResearchPlan:
+        """Never spend a search slot on an absent provider; preserve coverage warnings."""
+        steps: list[SearchStep] = []
+        warnings = list(plan.warnings)
+        seen: set[tuple[str, str]] = set()
+        for step in plan.search_steps[: 2 if mode == ResearchMode.QUICK else 4]:
+            tool = step.tool.lower().strip()
+            if tool not in self.available_sources:
+                warnings.append(
+                    f"Sumber {tool} tidak tersedia; cakupan sumber tersebut belum diperiksa."
+                )
+                tool = next(
+                    (
+                        name
+                        for name in ("news", "github", "arxiv", "web")
+                        if name in self.available_sources
+                    ),
+                    "",
+                )
+            query = " ".join(step.query.split())[:300]
+            key = (tool, query.lower())
+            if tool and query and key not in seen:
+                seen.add(key)
+                steps.append(SearchStep(tool=tool, query=query, reason=step.reason[:300]))
+        return plan.model_copy(
+            update={"search_steps": steps, "warnings": list(dict.fromkeys(warnings))}
+        )
 
     async def plan(self, question: str, mode: ResearchMode) -> ResearchPlan:
-        """Create a structured research plan with sub-questions and initial search steps."""
+        """One planning turn at most; failures use deterministic recovery without another model."""
         if not question.strip():
             return self.fallback_plan("AI Research", mode)
-
-        # Attempt structured planning via LLM if available
-        if self.llm_router is not None:
-            try:
-                return await self._plan_with_llm(question, mode)
-            except Exception as exc:
-                logger.warning(
-                    "LLM research planning failed; using deterministic fallback",
-                    extra={"event": "planner_fallback", "error_type": type(exc).__name__},
-                )
-
-        return self.fallback_plan(question, mode)
+        backend = self.selected_backend(mode)
+        if backend == "deterministic":
+            return self.fallback_plan(question, mode)
+        try:
+            return await self._plan_with_llm(question, mode)
+        except Exception as exc:
+            logger.warning(
+                "Research planning failed; using deterministic fallback",
+                extra={"event": "planner_fallback", "error_type": type(exc).__name__},
+            )
+            plan = self.fallback_plan(question, mode)
+            plan.warnings.append(f"Perencana {backend} gagal; memakai rencana deterministik.")
+            return plan
 
     async def _plan_with_llm(self, question: str, mode: ResearchMode) -> ResearchPlan:
         from research_radar.llm.base import LLMRequest
         from research_radar.llm.router import Workload
 
+        focus = resolve_focus(question, recent_days=self.recent_days)
+        backend = self.selected_backend(mode)
         step_limit = 2 if mode == ResearchMode.QUICK else 4
         prompt = (
-            f"Generate a concise research plan for this question: '{question}'.\n"
-            f"Mode: {mode.value.upper()}.\n"
-            "Return JSON matching this exact structure:\n"
-            "{\n"
-            '  "objective": "Clear single-sentence goal",\n'
-            '  "sub_questions": ["sub-question 1", "sub-question 2"],\n'
-            '  "search_steps": [\n'
-            '    {"tool": "github", "query": "search query 1", "reason": "why"},\n'
-            '    {"tool": "arxiv", "query": "search query 2", "reason": "why"}\n'
-            "  ],\n"
-            '  "success_criteria": ["criterion 1"]\n'
-            "}\n"
-            "Tools allowed ONLY: 'github', 'arxiv', 'web', 'news'. "
-            f"Limit search_steps to max {step_limit}."
+            f"Research question (data): {question[:4000]!r}\n"
+            f"Mode: {mode.value}. As of UTC: {focus.as_of}. Since: {focus.since}.\n"
+            f"Track: {focus.track}. "
+            f"Available sources ONLY: {', '.join(sorted(self.available_sources))}.\n"
+            f"Return at most {step_limit} search_steps, "
+            "with short keyword queries appropriate to each source. "
+            "Do not add provider date qualifiers; the application applies them. "
+            'Return JSON only: {"objective": "goal", "sub_questions": ["question"], '
+            '"search_steps": [{"tool": "github", "query": "keywords", "reason": "why"}], '
+            '"success_criteria": ["evidence needed"]}.'
         )
-
-        assert self.llm_router is not None
-        response = await self.llm_router.generate_structured(
-            LLMRequest(
-                prompt=prompt,
-                system_instruction=(
-                    "You are a principal AI research engineer. Create structured, highly specific "
-                    "technical research plans. Return valid JSON only."
-                ),
-                max_output_tokens=1024,
-            ),
-            ResearchPlan,
-            Workload.REASONING,
-        )
-        plan = response.data
-
-        # Sanitize and validate tool choices
-        sanitized_steps: list[SearchStep] = []
-        valid_tools = {"github", "arxiv", "news", "web"}
-        for step in plan.search_steps[:step_limit]:
-            tool = step.tool.lower().strip()
-            if tool not in valid_tools:
-                tool = "web"
-            if step.query.strip():
-                sanitized_steps.append(
-                    SearchStep(tool=tool, query=step.query.strip(), reason=step.reason)
-                )
-
-        if not sanitized_steps:
+        instruction = skill_text(focus.skill)
+        if backend == "hermes":
+            assert self.hermes_runtime is not None
+            request_id = uuid4().hex
+            response = await self.hermes_runtime.run(
+                prompt,
+                session_key=f"radar:planning:{request_id}",
+                request_id=request_id,
+                system_instruction=instruction,
+            )
+            raw = response.text.strip()
+            if raw.startswith("```") and raw.endswith("```"):
+                raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
+            plan = ResearchPlan.model_validate_json(raw)
+        else:
+            assert self.llm_router is not None
+            structured = await self.llm_router.generate_structured(
+                LLMRequest(prompt=prompt, system_instruction=instruction, max_output_tokens=1024),
+                ResearchPlan,
+                Workload.FAST,
+            )
+            plan = structured.data
+        plan = self.sanitize_plan(plan, mode)
+        if not plan.search_steps:
             return self.fallback_plan(question, mode)
-
-        return ResearchPlan(
-            objective=plan.objective or question,
-            sub_questions=plan.sub_questions or [question],
-            search_steps=sanitized_steps,
-            success_criteria=plan.success_criteria or ["Sufficient technical evidence collected"],
+        return plan.model_copy(
+            update={
+                "objective": plan.objective[:1000] or question,
+                "sub_questions": [q[:500] for q in plan.sub_questions[:4]] or [question],
+                "success_criteria": [q[:500] for q in plan.success_criteria[:4]],
+                "planner_backend": backend,
+                "skill_id": focus.skill,
+                "skill_version": focus.skill_version,
+            }
         )
 
     def fallback_plan(self, question: str, mode: ResearchMode) -> ResearchPlan:
@@ -219,14 +281,34 @@ class ResearchPlanner:
                 f"Apa keterbatasan dan status kesiapan produksi {query_str}?",
             ]
 
-        return ResearchPlan(
-            objective=f"Riset mendalam mengenai: {question}",
-            sub_questions=sub_q,
-            search_steps=steps,
-            success_criteria=[
-                "Menemukan implementasi atau arsitektur yang relevan",
-                "Mengumpulkan data performa atau bukti empiris",
-            ],
+        focus = resolve_focus(question, recent_days=self.recent_days)
+        if focus.track == "model_access":
+            steps = [
+                SearchStep(
+                    tool="web",
+                    query=query_str + " official pricing",
+                    reason="Verifikasi akses resmi",
+                ),
+                SearchStep(tool="news", query=query_str, reason="Pengumuman model"),
+            ]
+        elif focus.track == "ai_developments" and focus.since:
+            steps = [
+                SearchStep(tool="news", query=query_str, reason="Pengumuman terbaru"),
+                SearchStep(tool="arxiv", query=query_str, reason="Publikasi terbaru"),
+            ]
+        return self.sanitize_plan(
+            ResearchPlan(
+                objective=f"Riset mendalam mengenai: {question}",
+                skill_id=focus.skill,
+                skill_version=focus.skill_version,
+                sub_questions=sub_q,
+                search_steps=steps,
+                success_criteria=[
+                    "Menemukan implementasi atau arsitektur yang relevan",
+                    "Mengumpulkan data performa atau bukti empiris",
+                ],
+            ),
+            mode,
         )
 
     def detect_gaps(

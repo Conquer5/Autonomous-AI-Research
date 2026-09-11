@@ -1,67 +1,29 @@
-# Current Architecture (Phase 1–2 + Autonomous Digest)
+# Current architecture — 11 September 2026
 
-> Current reliability update (2026-09-08): the application now has bounded research orchestration, consensus/verification, evidence persistence, and retrieval diagnostics. See the [hardening report](retrieval-hardening.md) for current contracts, tests and live measurements. Phase 1–2 descriptions below are historical.
+Telegram handlers authorize users and pass natural-language, QUICK and DEEP
+requests to `RadarService.research`, then `ResearchOrchestrator`.
 
-## Decision
+1. Determine topic and any rolling date window.
+2. Select one versioned guide and create a plan with the configured backend.
+   Auto uses Gemini FAST for QUICK and Hermes for DEEP, with availability fallback.
+3. Validate tools against configured adapters. Search within query/time/evidence
+   budgets; keep recovery searches within the same temporal constraints.
+4. Register evidence, retain source date separately from observation date, analyze
+   consensus/contradictions and verify structured claims heuristically.
+5. Return answer, citations and uncertainty; persist diagnostics to SQLite.
 
-The application and Hermes Agent run as separate processes. The application
-owns Telegram product behavior and normalized research tools; Hermes owns its
-agent loop, internal tools, session context, memory, and skills.
+Application code owns retrieval and evidence persistence. Hermes is an external
+HTTP runtime, used for planning and explicit agent utilities. Its internal tools,
+memory and server permissions remain a separate boundary. A planning system
+instruction is not server-side tool isolation or cancellation.
 
-Hermes is deliberately not imported into this package. Its supported library
-workflow requires an editable upstream checkout and its stateful `AIAgent` is
-not safe to share across concurrent tasks. The authenticated API boundary is
-smaller, async-friendly, mockable, and independently upgradeable.
+Guides are packaged application assets, injected into planning requests on demand;
+this does not require or claim installation in `~/.hermes/skills`. `/skills` lists
+the local application catalog. Each research run records backend and guide version.
 
-## Runtime Flow
+Digest remains a distinct collect/rank/deduplicate/synthesize/deliver workflow.
+Direct source commands use application adapters. `/memory` still asks Hermes for
+its memory; SQLite research persistence does not yet implement conversational recall.
 
-```mermaid
-sequenceDiagram
-    participant U as Telegram user
-    participant T as TelegramHandlers
-    participant S as RadarService
-    participant H as Hermes API
-    participant G as Gemini
-
-    U->>T: natural-language request
-    T->>T: fail-closed allowlist
-    T->>U: typing progress
-    T->>S: ask_agent(text, user_id)
-    S->>S: start trace
-    S->>H: authenticated chat + session/idempotency keys
-    H->>G: native Gemini agent loop
-    G-->>H: model/tool response
-    H-->>S: normalized chat completion
-    S->>S: finish trace
-    S-->>T: RuntimeResponse
-    T-->>U: escaped, split response
-```
-
-Explicit source commands stop at the normalized tool result; they do not spend
-LLM tokens. The application-owned digest concurrently collects bounded evidence
-from GitHub, arXiv, RSS, and optional Brave; filters previously sent URLs with
-SQLite; then uses optional Gemini synthesis before proactive Telegram delivery.
-General natural-language turns still require a future planner to use that same
-cross-source workflow.
-
-## Trust Boundaries
-
-- Telegram sender ID is untrusted until allowlist validation.
-- Hermes HTTP is privileged because it may expose powerful tools. Keep it
-  private, authenticate every request, and configure Hermes tool permissions.
-- External API responses are untrusted and must pass Pydantic normalization.
-- Search snippets are discovery aids, not final evidence.
-- Logs must contain identifiers and error types, not raw tokens or response
-  payloads.
-
-## Ownership
-
-| Concern | Owner |
-|---|---|
-| Telegram authorization/formatting | Application |
-| Research source adapters | Application |
-| Domain traces and later DB | Application |
-| Agent loop and Hermes tools | Hermes |
-| Conversation/procedural context | Hermes |
-| Direct structured LLM calls | `LLMProvider` / Gemini |
-| Gemini calls made by Hermes | Hermes native provider |
+See [contracts and remaining work](ai-efficiency-radar.md),
+[retrieval diagnostics](retrieval-hardening.md), and [tool adapters](tool-system.md).

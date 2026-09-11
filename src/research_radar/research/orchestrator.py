@@ -49,6 +49,7 @@ from research_radar.research.models import (
 from research_radar.research.persistence import ResearchStore
 from research_radar.research.planner import ResearchPlanner, fallback_query
 from research_radar.research.verifier import ClaimVerifier, VerificationReport
+from research_radar.research_focus import ResearchFocus, resolve_focus, temporal_status
 from research_radar.retrieval import (
     RetrievalFailure,
     classify_failure,
@@ -110,7 +111,11 @@ class ResearchOrchestrator:
         self.llm_router = llm_router
         self.hermes_runtime = hermes_runtime
         self.planner = planner or ResearchPlanner(
-            llm_router=llm_router, hermes_runtime=hermes_runtime
+            llm_router=llm_router,
+            hermes_runtime=hermes_runtime,
+            available_sources=tools.available_sources(),
+            backend=settings.research_planner_backend,
+            recent_days=settings.research_recent_days,
         )
         self.store = store or ResearchStore(evidence_registry.path)
         self.extractor = extractor or ClaimExtractor(llm_router=llm_router)
@@ -172,18 +177,28 @@ class ResearchOrchestrator:
             },
         )
 
+        state.focus = resolve_focus(question, recent_days=self.settings.research_recent_days)
+        fallback_planner = ResearchPlanner(
+            available_sources=self.tools.available_sources(),
+            recent_days=self.settings.research_recent_days,
+        )
         # 1. Planning Phase
         deadline = start_wall_time + active_budget.max_wall_time_seconds
         try:
             if active_budget.max_llm_calls <= 0:
-                plan = ResearchPlanner().fallback_plan(question, mode)
+                plan = fallback_planner.fallback_plan(question, mode)
             else:
-                state.llm_calls += 1
+                if (
+                    not isinstance(self.planner, ResearchPlanner)
+                    or self.planner.selected_backend(mode) != "deterministic"
+                ):
+                    state.llm_calls += 1
                 async with asyncio.timeout(max(0, (deadline - perf_counter()) / 4)):
                     plan = await self.planner.plan(question, mode)
         except Exception as exc:
-            plan = ResearchPlanner().fallback_plan(question, mode)
+            plan = fallback_planner.fallback_plan(question, mode)
             state.uncertainties.append(f"Planning fallback: {type(exc).__name__}")
+        state.uncertainties.extend(plan.warnings)
         state.plan = plan
         state.objective = plan.objective
 
@@ -261,6 +276,25 @@ class ResearchOrchestrator:
                     )
                     continue
 
+                if tool_name not in self.tools.available_sources():
+                    warning = (
+                        f"Sumber {tool_name} tidak tersedia; "
+                        "pencarian dilewati tanpa memakai jatah tool."
+                    )
+                    if warning not in state.uncertainties:
+                        state.uncertainties.append(warning)
+                    tool_name = next(
+                        (
+                            name
+                            for name in ("github", "arxiv", "news", "web")
+                            if name in self.tools.available_sources()
+                        ),
+                        "",
+                    )
+                    if not tool_name:
+                        continue
+                    query_key = _normalize_query_key(tool_name, query_text)
+
                 # Skip duplicate queries
                 if query_key in executed_query_keys:
                     continue
@@ -292,6 +326,7 @@ class ResearchOrchestrator:
                             collected_evidence,
                             record=record,
                             max_evidence=active_budget.max_evidence,
+                            focus=state.focus,
                         )
                 except TimeoutError as exc:
                     new_ev, total_results, status_code = 0, 0, "failed"
@@ -530,7 +565,11 @@ class ResearchOrchestrator:
         verified_claims = self.claim_verifier.downgrade_unsupported_claims(claims, report)
 
         # 7. Finalize Result
-        if state.stop_reason == StopReason.ENOUGH_EVIDENCE and not state.provider_failures:
+        if (
+            state.stop_reason == StopReason.ENOUGH_EVIDENCE
+            and not state.provider_failures
+            and not state.uncertainties
+        ):
             state.status = ResearchStatus.COMPLETED
         elif not collected_evidence or state.stop_reason == StopReason.FAILED:
             state.status = ResearchStatus.FAILED
@@ -578,6 +617,8 @@ class ResearchOrchestrator:
                     }[c],
                 )
             )
+        if state.uncertainties and confidence == ConfidenceLevel.HIGH:
+            confidence = ConfidenceLevel.MEDIUM
         state.uncertainties = uncertainties_list
         raw_agreements = synthesis_output.get("agreements")
         agreements_list = (
@@ -644,16 +685,20 @@ class ResearchOrchestrator:
         *,
         record: QueryExecutionRecord | None = None,
         max_evidence: int = 30,
+        focus: ResearchFocus | None = None,
     ) -> tuple[int, int, str]:
         """Execute a safe tool query and register collected evidence."""
         new_evidence_count = 0
         total_items = 0
         status_code = "success"
         before_ids = set(collected_evidence)
+        focus = focus or ResearchFocus()
+        since = focus.since
+        evidence_date: datetime | None
 
         try:
             if tool == "github":
-                batch = await self.tools.github_search.search(query, limit=5)
+                batch = await self.tools.github_search.search(query, limit=5, updated_after=since)
                 total_items = len(batch.items)
                 if record is not None:
                     record.failures.extend(batch.failures)
@@ -667,6 +712,20 @@ class ResearchOrchestrator:
                         )
                 status_code = "partial" if batch.partial else "success" if total_items else "empty"
                 for repo in batch.items:
+                    evidence_date = repo.pushed_at or repo.updated_at
+                    freshness = temporal_status(evidence_date, focus)
+                    if freshness == "future" or (since and freshness != "in_window"):
+                        total_items -= 1
+                        if record is not None:
+                            record.failures.append(
+                                RetrievalFailure(
+                                    provider=tool,
+                                    failure_category="partial_response",
+                                    error_code="DATE_OUTSIDE_WINDOW_OR_UNKNOWN",
+                                )
+                            )
+                        status_code = "partial"
+                        continue
                     if len(collected_evidence) >= max_evidence:
                         break
                     metadata = {
@@ -695,13 +754,21 @@ class ResearchOrchestrator:
                         "source_type": "github",
                         "title": repo.full_name,
                         "url": ev_record.canonical_url,
+                        "observed_at": datetime.now(UTC).isoformat(),
+                        "source_date": evidence_date.isoformat() if evidence_date else None,
+                        "date_basis": "repository_activity" if tool == "github" else "publication",
+                        "freshness": freshness,
                         "description": repo.description,
                         "authority": authority.value,
                         "stars": repo.stars,
                     }
 
             elif tool == "arxiv":
-                batch_arxiv = await self.tools.arxiv_search.search(query, limit=5)
+                batch_arxiv = (
+                    await self.tools.arxiv_search.search(query, limit=5, published_after=since)
+                    if since
+                    else await self.tools.arxiv_search.search(query, limit=5)
+                )
                 total_items = len(batch_arxiv.items)
                 if record is not None:
                     record.failures.extend(batch_arxiv.failures)
@@ -717,6 +784,20 @@ class ResearchOrchestrator:
                     "partial" if batch_arxiv.partial else "success" if total_items else "empty"
                 )
                 for paper in batch_arxiv.items:
+                    evidence_date = paper.published_at
+                    freshness = temporal_status(evidence_date, focus)
+                    if freshness == "future" or (since and freshness != "in_window"):
+                        total_items -= 1
+                        if record is not None:
+                            record.failures.append(
+                                RetrievalFailure(
+                                    provider=tool,
+                                    failure_category="partial_response",
+                                    error_code="DATE_OUTSIDE_WINDOW_OR_UNKNOWN",
+                                )
+                            )
+                        status_code = "partial"
+                        continue
                     if len(collected_evidence) >= max_evidence:
                         break
                     metadata = {
@@ -744,12 +825,21 @@ class ResearchOrchestrator:
                         "source_type": "arxiv",
                         "title": paper.title,
                         "url": ev_record.canonical_url,
+                        "observed_at": datetime.now(UTC).isoformat(),
+                        "source_date": evidence_date.isoformat() if evidence_date else None,
+                        "date_basis": "repository_activity" if tool == "github" else "publication",
+                        "freshness": freshness,
                         "abstract": paper.abstract[:500],
                         "authority": authority.value,
                     }
 
             elif tool == "web" and self.tools.web_search is not None:
-                batch_web = await self.tools.web_search.search(query, limit=5)
+                batch_web = await self.tools.web_search.search(
+                    query,
+                    limit=5,
+                    start_date=since,
+                    end_date=focus.as_of if since else None,
+                )
                 total_items = len(batch_web.items)
                 if record is not None:
                     record.failures.extend(batch_web.failures)
@@ -765,6 +855,20 @@ class ResearchOrchestrator:
                     "partial" if batch_web.partial else "success" if total_items else "empty"
                 )
                 for web_res in batch_web.items:
+                    evidence_date = web_res.published_at
+                    freshness = temporal_status(evidence_date, focus)
+                    if freshness == "future" or (since and freshness != "in_window"):
+                        total_items -= 1
+                        if record is not None:
+                            record.failures.append(
+                                RetrievalFailure(
+                                    provider=tool,
+                                    failure_category="partial_response",
+                                    error_code="DATE_OUTSIDE_WINDOW_OR_UNKNOWN",
+                                )
+                            )
+                        status_code = "partial"
+                        continue
                     if len(collected_evidence) >= max_evidence:
                         break
                     metadata = {"title": web_res.title, "description": web_res.description}
@@ -787,12 +891,18 @@ class ResearchOrchestrator:
                         "source_type": "web",
                         "title": web_res.title,
                         "url": ev_record.canonical_url,
+                        "observed_at": datetime.now(UTC).isoformat(),
+                        "source_date": evidence_date.isoformat() if evidence_date else None,
+                        "date_basis": "repository_activity" if tool == "github" else "publication",
+                        "freshness": freshness,
                         "description": web_res.description,
                         "authority": authority.value,
                     }
 
             elif tool == "news" and self.tools.news_search is not None:
-                batch_news = await self.tools.news_search.search((query,), limit=5)
+                batch_news = await self.tools.news_search.search(
+                    (query,), limit=5, published_after=since
+                )
                 total_items = len(batch_news.items)
                 if record is not None:
                     record.failures.extend(batch_news.failures)
@@ -808,6 +918,20 @@ class ResearchOrchestrator:
                     "partial" if batch_news.partial else "success" if total_items else "empty"
                 )
                 for news_res in batch_news.items:
+                    evidence_date = news_res.published_at
+                    freshness = temporal_status(evidence_date, focus)
+                    if freshness == "future" or (since and freshness != "in_window"):
+                        total_items -= 1
+                        if record is not None:
+                            record.failures.append(
+                                RetrievalFailure(
+                                    provider=tool,
+                                    failure_category="partial_response",
+                                    error_code="DATE_OUTSIDE_WINDOW_OR_UNKNOWN",
+                                )
+                            )
+                        status_code = "partial"
+                        continue
                     if len(collected_evidence) >= max_evidence:
                         break
                     metadata = {"title": news_res.title, "description": news_res.description}
@@ -830,6 +954,10 @@ class ResearchOrchestrator:
                         "source_type": "news",
                         "title": news_res.title,
                         "url": ev_record.canonical_url,
+                        "observed_at": datetime.now(UTC).isoformat(),
+                        "source_date": evidence_date.isoformat() if evidence_date else None,
+                        "date_basis": "repository_activity" if tool == "github" else "publication",
+                        "freshness": freshness,
                         "description": news_res.description,
                         "authority": authority.value,
                     }

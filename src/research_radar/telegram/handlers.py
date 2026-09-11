@@ -110,7 +110,7 @@ class TelegramHandlers:
             "/digest — radar berita, GitHub, dan arXiv terbaru\n"
             "/weekly — alias untuk /digest\n"
             "/memory — ringkasan memory Hermes\n"
-            "/skills — daftar skill Hermes yang relevan\n"
+            "/skills — panduan riset berversi yang tersedia di Radar\n"
             "/status — health dan metrik proses ini",
         )
 
@@ -282,14 +282,14 @@ class TelegramHandlers:
         user_id = await self._authorized_user(update)
         if user_id is None:
             return
-        await self._safe_call(
+        from research_radar.research_focus import SKILLS
+
+        await self._send_plain(
             update,
-            lambda: self._agent_text(
-                "List the Hermes skills currently available that are relevant to AI research. "
-                "Be concise and do not claim a skill exists unless you can inspect it.",
-                user_id,
-            ),
-            html_result=False,
+            "Panduan riset Radar v1.0.0 (dimuat sesuai topik):\n"
+            + "\n".join(f"• {name}: {description}" for name, description in SKILLS.items())
+            + "\nMode auto: QUICK memakai Gemini bila tersedia; DEEP memakai Hermes bila tersedia. "
+            "Ini katalog aplikasi, bukan inventaris instalasi Hermes global.",
         )
 
     async def status(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

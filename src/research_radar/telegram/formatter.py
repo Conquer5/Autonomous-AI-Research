@@ -315,6 +315,18 @@ def format_research_result(result: object) -> str:
         f"<b>Status Konsensus:</b> {consensus_badge}"
     ]
 
+    if result.state.focus is not None:
+        focus = result.state.focus
+        if focus.since:
+            blocks.append(
+                f"<b>Jendela sumber:</b> {focus.since} – {focus.as_of} (UTC)\n"
+                + html.escape(focus.window_note)
+            )
+        else:
+            blocks.append(
+                f"<b>Diperiksa:</b> {focus.as_of} (UTC); sumber historis dapat disertakan."
+            )
+
     if result.answer:
         blocks.append(f"<b>Ringkasan Riset</b>\n{html.escape(result.answer)}")
 

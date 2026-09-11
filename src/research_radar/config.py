@@ -48,14 +48,15 @@ def _parse_csv_strings(value: object) -> tuple[str, ...]:
 CsvStrings = Annotated[tuple[str, ...], BeforeValidator(_parse_csv_strings)]
 
 DEFAULT_DIGEST_TOPICS = (
+    "coding agent efficiency and token optimization",
     "AI agents and agent frameworks",
     "efficient local AI and CPU-only inference",
     "free open-source AI models and tools",
 )
 DEFAULT_DIGEST_SEARCH_QUERIES = (
-    "AI agent",
+    "coding agent",
+    "context optimization",
     "local LLM",
-    "efficient inference",
     "open source AI model",
 )
 DEFAULT_GEMINI_FALLBACK_MODELS = (
@@ -64,9 +65,9 @@ DEFAULT_GEMINI_FALLBACK_MODELS = (
     "gemini-2.5-flash-lite",
 )
 DEFAULT_NEWS_QUERIES = (
-    "AI model release launch announcement",
-    "OpenAI GPT new model announcement",
-    "AI model release Anthropic Google DeepMind new lab",
+    "coding agent token efficiency tools",
+    "AI model free tier pricing availability",
+    "AI model release launch announcement GPT Gemini",
 )
 DEFAULT_NEWS_FEEDS = (
     "https://news.google.com/rss/search?q=AI+model+release+when:14d&hl=en-US&gl=US&ceid=US:en",
@@ -107,6 +108,8 @@ class AppSettings(BaseSettings):
     hermes_api_url: HttpUrl = HttpUrl("http://127.0.0.1:8642/v1")
     hermes_api_key: SecretStr | None = None
     hermes_model_name: str = "hermes-agent"
+    research_planner_backend: Literal["auto", "gemini", "hermes", "deterministic"] = "auto"
+    research_recent_days: int = Field(default=14, ge=1, le=365)
 
     telegram_bot_token: SecretStr | None = None
     telegram_allowed_user_ids: TelegramUserIds = frozenset()

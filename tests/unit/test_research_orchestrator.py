@@ -1017,7 +1017,7 @@ async def test_retrieval_failures_persist_coverage_and_partial_results(tmp_path,
         assert saved["evidence_count"] == 0
 
 
-async def test_missing_optional_provider_is_failure_and_falls_back(tmp_path):
+async def test_missing_optional_provider_is_skipped_without_spending_a_tool_slot(tmp_path):
     settings = _mock_settings(tmp_path)
     tools = _mock_tools()
     tools.web_search = None
@@ -1036,10 +1036,10 @@ async def test_missing_optional_provider_is_failure_and_falls_back(tmp_path):
         planner=planner,
     )
     result = await orchestrator.conduct_research("agent")
-    assert result.state.queries_executed[0].status == "failed"
-    assert result.state.provider_failures[0].failure_category == "provider_unavailable"
-    assert result.state.queries_executed[1].fallback
-    assert result.state.queries_executed[1].tool == "github"
+    assert result.state.tool_calls == 1
+    assert result.state.queries_executed[0].tool == "github"
+    assert not result.state.provider_failures
+    assert any("web" in warning and "tidak tersedia" in warning for warning in result.uncertainties)
     assert result.evidence_sources
     assert result.state.status == ResearchStatus.PARTIAL
 
