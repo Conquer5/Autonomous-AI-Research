@@ -47,3 +47,77 @@ async def test_arxiv_search_builds_query_and_parses_atom() -> None:
     assert result.items[0].authors == ["Alice Example"]
     assert str(result.items[0].url).startswith("https://")
     await http.aclose()
+
+
+async def test_concurrent_searches_use_one_connection_and_queue_outside_timeout() -> None:
+    import asyncio
+
+    active = 0
+    peak = 0
+
+    async def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal active, peak
+        active += 1
+        peak = max(peak, active)
+        await asyncio.sleep(0.02)
+        active -= 1
+        return httpx.Response(200, content=ATOM_FEED)
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http:
+        tool = ArxivSearchTool(
+            client=http,
+            min_interval_seconds=0.04,
+            timeout_seconds=0.03,
+            retry_policy=RetryPolicy(attempts=1),
+        )
+        batches = await asyncio.gather(*(tool.search(q) for q in ["agent", "LLM", "coding"]))
+    assert peak == 1
+    assert all(len(batch.items) == 1 for batch in batches)
+
+
+async def test_429_retry_waits_for_cooldown_then_recovers() -> None:
+    import time
+
+    starts = []
+
+    async def handler(request: httpx.Request) -> httpx.Response:
+        starts.append(time.monotonic())
+        if len(starts) == 1:
+            return httpx.Response(429)
+        return httpx.Response(200, content=ATOM_FEED)
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http:
+        tool = ArxivSearchTool(
+            client=http,
+            min_interval_seconds=0,
+            rate_limit_cooldown_seconds=0.04,
+            timeout_seconds=0.02,
+            retry_policy=RetryPolicy(attempts=2, base_delay_seconds=0, jitter_seconds=0),
+        )
+        result = await tool.search("agent")
+    assert len(result.items) == 1
+    assert starts[1] - starts[0] >= 0.04
+
+
+async def test_429_exhaustion_stops_other_queued_queries() -> None:
+    import asyncio
+
+    from research_radar.retrieval import RetrievalError
+
+    calls = 0
+
+    async def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal calls
+        calls += 1
+        return httpx.Response(429, headers={"Retry-After": "120"})
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http:
+        tool = ArxivSearchTool(
+            client=http, min_interval_seconds=0, retry_policy=RetryPolicy(attempts=3)
+        )
+        results = await asyncio.gather(
+            *(tool.search(q) for q in ["agent", "coding", "LLM"]), return_exceptions=True
+        )
+    assert calls == 1
+    assert all(isinstance(result, RetrievalError) for result in results)
+    assert tool._blocked_until > 0

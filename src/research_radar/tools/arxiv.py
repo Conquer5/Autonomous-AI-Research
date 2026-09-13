@@ -13,7 +13,13 @@ import httpx
 from pydantic import HttpUrl
 
 from research_radar.exceptions import InvalidResponseError
-from research_radar.retrieval import RetrievalFailure, observed_search, request_with_retry
+from research_radar.retrieval import (
+    RetrievalError,
+    RetrievalFailure,
+    observed_search,
+    request_with_retry,
+    retry_after,
+)
 from research_radar.schemas import PaperResult, SearchBatch, SourceType
 from research_radar.utils.retry import RetryPolicy
 
@@ -39,24 +45,32 @@ class ArxivSearchTool:
         self,
         *,
         base_url: str = "https://export.arxiv.org/api/query",
-        timeout_seconds: float = 30,
+        timeout_seconds: float = 60,
         min_interval_seconds: float = 3,
+        rate_limit_cooldown_seconds: float = 60,
         retry_policy: RetryPolicy | None = None,
         client: httpx.AsyncClient | None = None,
     ) -> None:
         self.base_url = base_url
         self.min_interval_seconds = min_interval_seconds
+        self.rate_limit_cooldown_seconds = rate_limit_cooldown_seconds
         self.retry_policy = retry_policy or RetryPolicy()
         self.timeout_seconds = timeout_seconds
         self._owns_client = client is None
         self._client = client or httpx.AsyncClient(timeout=httpx.Timeout(timeout_seconds))
         self._rate_lock = asyncio.Lock()
+        self._search_lock = asyncio.Lock()
         self._last_request_started = 0.0
+        self._blocked_until = 0.0
+        self._last_rate_failure: RetrievalError | None = None
 
     async def _respect_rate_limit(self) -> None:
         async with self._rate_lock:
             elapsed = time.monotonic() - self._last_request_started
-            delay = self.min_interval_seconds - elapsed
+            delay = max(
+                self.min_interval_seconds - elapsed,
+                self._blocked_until - time.monotonic(),
+            )
             if delay > 0:
                 await asyncio.sleep(delay)
             self._last_request_started = time.monotonic()
@@ -96,7 +110,6 @@ class ArxivSearchTool:
         search_query = self._query(query, categories, published_after)
 
         async def operation() -> httpx.Response:
-            await self._respect_rate_limit()
             response = await self._client.get(
                 self.base_url,
                 params={
@@ -108,12 +121,34 @@ class ArxivSearchTool:
                 },
                 headers={"User-Agent": "autonomous-ai-research-radar/0.2"},
             )
-            response.raise_for_status()
+            try:
+                response.raise_for_status()
+            except httpx.HTTPStatusError as exc:
+                if response.status_code == 429:
+                    self._blocked_until = time.monotonic() + max(
+                        self.rate_limit_cooldown_seconds, retry_after(exc)
+                    )
+                raise
             return response
 
-        response = await request_with_retry(
-            "arxiv", operation, policy=self.retry_policy, timeout_seconds=self.timeout_seconds
-        )
+        # Hold one connection across retries. Other queries must not keep hitting
+        # an already rate-limited provider after the retry budget is exhausted.
+        async with self._search_lock:
+            if self._last_rate_failure and time.monotonic() < self._blocked_until:
+                raise self._last_rate_failure
+            self._last_rate_failure = None
+            try:
+                response = await request_with_retry(
+                    "arxiv",
+                    operation,
+                    policy=self.retry_policy,
+                    timeout_seconds=self.timeout_seconds,
+                    before_attempt=self._respect_rate_limit,
+                )
+            except RetrievalError as exc:
+                if exc.failure.failure_category == "http_429":
+                    self._last_rate_failure = exc
+                raise
         if response.status_code == 204:
             return SearchBatch[PaperResult](query=query, source=SourceType.ARXIV, items=[])
         return self._parse_feed(response.content, query, published_after)

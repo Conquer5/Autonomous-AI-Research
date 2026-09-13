@@ -49,7 +49,12 @@ def adapter(name, http):
     if name == "github":
         return GitHubSearchTool(GitHubClient(client=http, retry_policy=RETRY)).search
     if name == "arxiv":
-        return ArxivSearchTool(client=http, min_interval_seconds=0, retry_policy=RETRY).search
+        return ArxivSearchTool(
+            client=http,
+            min_interval_seconds=0,
+            rate_limit_cooldown_seconds=0,
+            retry_policy=RETRY,
+        ).search
     if name == "web":
         return BraveWebSearchTool(api_key="private-key", client=http, retry_policy=RETRY).search
     tool = RssNewsTool(("https://example.com/feed",), client=http, retry_policy=RETRY)

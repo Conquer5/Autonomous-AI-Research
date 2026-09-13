@@ -104,6 +104,7 @@ class AppSettings(BaseSettings):
     gemini_reasoning_model: str | None = "gemini-3.5-flash-lite"
     gemini_fallback_models: CsvStrings = DEFAULT_GEMINI_FALLBACK_MODELS
     gemini_rpm_limit: int = Field(default=12, ge=1, le=60)
+    gemini_timeout_seconds: float = Field(default=120.0, gt=0, le=300)
 
     hermes_api_url: HttpUrl = HttpUrl("http://127.0.0.1:8642/v1")
     hermes_api_key: SecretStr | None = None
@@ -120,6 +121,7 @@ class AppSettings(BaseSettings):
 
     arxiv_api_url: HttpUrl = HttpUrl("https://export.arxiv.org/api/query")
     arxiv_min_interval_seconds: float = Field(default=3.0, ge=0, le=60)
+    arxiv_timeout_seconds: float = Field(default=60.0, gt=0, le=300)
 
     brave_search_api_key: SecretStr | None = None
     brave_search_api_url: HttpUrl = HttpUrl("https://api.search.brave.com/res/v1/web/search")

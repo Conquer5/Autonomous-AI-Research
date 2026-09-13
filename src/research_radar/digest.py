@@ -28,6 +28,7 @@ from research_radar.llm.router import LLMRouter, Workload
 from research_radar.observability.logging import current_run_id
 from research_radar.research.verifier import ClaimVerifier
 from research_radar.research_focus import RESEARCH_DECISION_POLICY
+from research_radar.retrieval import RetrievalError
 from research_radar.schemas import (
     DigestItemInsight,
     DigestSynthesis,
@@ -224,6 +225,17 @@ class DigestEngine:
         warnings: list[str] = []
         for (source, topic), response in zip(labels, responses, strict=True):
             if isinstance(response, BaseException):
+                if source == "arXiv" and isinstance(response, RetrievalError):
+                    category = response.failure.failure_category
+                    reason = {
+                        "http_429": "akses dibatasi sementara (HTTP 429); bukan hasil kosong",
+                        "timeout": "server tidak merespons sebelum batas waktu",
+                        "http_5xx": "server arXiv sedang bermasalah",
+                        "connection_failure": "koneksi ke arXiv gagal",
+                        "dns_failure": "alamat server arXiv tidak dapat ditemukan",
+                    }.get(category, f"pengambilan gagal ({category})")
+                    warnings.append(f"arXiv: {reason}.")
+                    continue
                 warnings.append(f"{source} gagal untuk '{topic}': {type(response).__name__}")
                 continue
             warnings.extend(response.warnings)
@@ -279,6 +291,8 @@ class DigestEngine:
         title_keys: set[str] = set()
         for batch in news_batches:
             for item in batch.items:
+                if item.published_at and item.published_at.astimezone(UTC) > now:
+                    continue
                 host = (urlsplit(str(item.url)).hostname or "").removeprefix("www.")
                 if host in {"github.com", "arxiv.org", "export.arxiv.org"}:
                     continue
@@ -477,8 +491,55 @@ class DigestEngine:
         return await self._synthesize(digest)
 
     async def _synthesize(self, digest: ResearchDigest) -> ResearchDigest:
-        if self.llm_router is None or not digest.evidence_urls():
+        if not digest.evidence_urls():
             return digest
+        if self.llm_router is None:
+            return digest.model_copy(
+                update={
+                    "warnings": [
+                        "Analisis AI tidak aktif: GEMINI_API_KEY belum dikonfigurasi.",
+                        *digest.warnings,
+                    ]
+                }
+            )
+
+        # Keep the requested fields within the output budget and isolate failures.
+        tagged = [
+            *(("news", item) for item in digest.news),
+            *(("repositories", item) for item in digest.repositories),
+            *(("papers", item) for item in digest.papers),
+        ]
+        if len(tagged) > 3:
+            merged: dict[str, Any] = {"news": [], "repositories": [], "papers": []}
+            warnings = list(digest.warnings)
+            overviews: list[str] = []
+            models: list[str] = []
+            for start in range(0, len(tagged), 3):
+                group = tagged[start : start + 3]
+                part = digest.model_copy(
+                    update={
+                        **{key: [item for kind, item in group if kind == key] for key in merged},
+                        "warnings": [],
+                        "overview": "",
+                        "synthesis_model": None,
+                    }
+                )
+                result = await self._synthesize(part)
+                for key in merged:
+                    merged[key].extend(getattr(result, key))
+                warnings.extend(result.warnings)
+                if result.overview:
+                    overviews.append(result.overview)
+                if result.synthesis_model:
+                    models.append(result.synthesis_model)
+            return digest.model_copy(
+                update={
+                    **merged,
+                    "warnings": list(dict.fromkeys(warnings)),
+                    "overview": "\n".join(overviews),
+                    "synthesis_model": ", ".join(dict.fromkeys(models)) or None,
+                }
+            )
 
         readmes: dict[str, str] = {}
         if digest.repositories:
@@ -587,8 +648,15 @@ class DigestEngine:
                 Workload.REASONING,
             )
         except Exception as exc:
+            logger.warning(
+                "Digest synthesis failed",
+                extra={
+                    "event": "digest_synthesis_failed",
+                    "error_type": type(exc).__name__,
+                },
+            )
             err_msg = f"Sintesis AI gagal ({type(exc).__name__}); ringkasan sumber tetap tersedia."
-            return digest.model_copy(update={"warnings": [*digest.warnings, err_msg]})
+            return digest.model_copy(update={"warnings": [err_msg, *digest.warnings]})
 
         synthesized = response.data
         by_id = {item.evidence_id: item for item in synthesized.items}

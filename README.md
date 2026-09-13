@@ -70,6 +70,15 @@ untuk query digest, model dan sumber. Nilai `.env` yang sudah ada tetap mengalah
 default kode. Harga dan kuota model harus dicek pada akun/provider; tidak ada
 jaminan akses gratis atau penghematan tertentu.
 
+arXiv memakai antrean satu koneksi per instance dengan jeda tiga detik dan timeout
+khusus `ARXIV_TIMEOUT_SECONDS=60`. Jika server mengembalikan HTTP 429, percobaan
+berikutnya menunggu setidaknya 60 detik; `Retry-After` yang lebih panjang tetap
+dihormati. Setelah retry habis, kueri lain ditunda selama cooldown, dan digest
+menjelaskan pembatasan akses tersebut (bukan menganggap pencarian kosong).
+Hindari menjalankan beberapa proses pencarian arXiv sekaligus: pembatasan arXiv
+berlaku gabungan untuk mesin yang digunakan, sesuai
+[ketentuan API arXiv](https://info.arxiv.org/help/api/tou.html).
+
 ## Verifikasi
 
 ```bash

@@ -59,7 +59,7 @@ def build_container(settings: AppSettings, *, require_runtime: bool = True) -> A
             default_model=settings.gemini_model,
             fallback_models=settings.gemini_fallback_models,
             rpm_limit=settings.gemini_rpm_limit,
-            timeout_seconds=settings.request_timeout_seconds,
+            timeout_seconds=settings.gemini_timeout_seconds,
             retry_policy=retry,
         )
         if settings.gemini_api_key
@@ -111,7 +111,7 @@ def build_container(settings: AppSettings, *, require_runtime: bool = True) -> A
     )
     arxiv = ArxivSearchTool(
         base_url=str(settings.arxiv_api_url),
-        timeout_seconds=settings.request_timeout_seconds,
+        timeout_seconds=settings.arxiv_timeout_seconds,
         min_interval_seconds=settings.arxiv_min_interval_seconds,
         retry_policy=retry,
     )

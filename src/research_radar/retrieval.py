@@ -197,6 +197,7 @@ async def request_with_retry(
     policy: RetryPolicy,
     timeout_seconds: float = 30,
     resource_id: str | None = None,
+    before_attempt: Callable[[], Awaitable[None]] | None = None,
 ) -> httpx.Response:
     attempt = 0
     trace = active_operation.get()
@@ -204,6 +205,9 @@ async def request_with_retry(
 
     async def request() -> httpx.Response:
         nonlocal attempt
+        # Queueing and provider pacing must not consume the HTTP timeout.
+        if before_attempt is not None:
+            await before_attempt()
         attempt += 1
         if trace is not None:
             trace.attempts += 1

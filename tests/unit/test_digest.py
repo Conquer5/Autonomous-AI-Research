@@ -523,3 +523,116 @@ async def test_news_search_queries_and_repository_links_are_separate(tmp_path: P
     assert [call.args[0] for call in registry.web_search.search.await_args_list] == list(
         settings.digest_news_queries
     )
+
+
+async def test_synthesis_batches_isolate_failure(tmp_path: Path) -> None:
+    settings = AppSettings(_env_file=None, digest_state_path=tmp_path / "batch.sqlite3")
+    router = MagicMock()
+    router.generate_structured = AsyncMock(
+        side_effect=[
+            RuntimeError("test failure"),
+            SimpleNamespace(
+                data=DigestSynthesis(
+                    items=[
+                        DigestItemSynthesis(evidence_id="news-1", what_it_is="Analisis tersedia")
+                    ]
+                ),
+                model="test-model",
+            ),
+        ]
+    )
+    engine = DigestEngine(
+        settings=settings,
+        tools=MagicMock(),
+        store=DigestStore(settings.digest_state_path),
+        llm_router=router,
+    )
+    digest = ResearchDigest(
+        topics=["AI"],
+        news=[NewsResult(title=f"AI {i}", url=f"https://example.com/{i}") for i in range(4)],
+    )
+    result = await engine._synthesize(digest)
+    assert router.generate_structured.await_count == 2
+    assert len(result.news) == 4
+    assert all(item.insight is None for item in result.news[:3])
+    assert result.news[3].insight.what_it_is == "Analisis tersedia"
+    assert any("Sintesis AI gagal" in warning for warning in result.warnings)
+
+
+async def test_missing_ai_configuration_is_visible(tmp_path: Path) -> None:
+    settings = AppSettings(_env_file=None, digest_state_path=tmp_path / "missing.sqlite3")
+    engine = DigestEngine(
+        settings=settings, tools=MagicMock(), store=DigestStore(settings.digest_state_path)
+    )
+    result = await engine._synthesize(
+        ResearchDigest(topics=["AI"], news=[NewsResult(title="AI", url="https://example.com/ai")])
+    )
+    assert "GEMINI_API_KEY" in result.warnings[0]
+    rendered = format_digest(result)
+    assert "Analisis AI: 0/1 item." in rendered
+    assert rendered.index("GEMINI_API_KEY") < rendered.index("Perkembangan teknologi")
+
+
+async def test_future_news_is_excluded_before_synthesis(tmp_path: Path) -> None:
+    from datetime import timedelta
+
+    settings = AppSettings(_env_file=None, digest_state_path=tmp_path / "future.sqlite3")
+    engine = DigestEngine(
+        settings=settings, tools=MagicMock(), store=DigestStore(settings.digest_state_path)
+    )
+    now = datetime.now(UTC)
+    valid = NewsResult(title="AI today", url="https://example.com/today", published_at=now)
+    future = NewsResult(
+        title="AI future", url="https://example.com/future", published_at=now + timedelta(days=2)
+    )
+    engine._collect_batches = AsyncMock(
+        return_value=(
+            [],
+            [],
+            [SearchBatch(query="AI", source=SourceType.NEWS, items=[valid, future])],
+            [],
+        )
+    )
+    result = await engine.generate(force=True)
+    assert [item.title for item in result.news] == ["AI today"]
+    assert engine.evidence_registry.get_by_url(str(future.url)) is None
+
+
+async def test_arxiv_rate_limit_warning_explains_failure(tmp_path: Path) -> None:
+    from research_radar.retrieval import RetrievalError, RetrievalFailure
+
+    settings = AppSettings(
+        _env_file=None,
+        digest_state_path=tmp_path / "rate.sqlite3",
+        digest_search_queries="coding agent,local LLM",
+    )
+    tools = ToolRegistry(
+        github_search=SimpleNamespace(
+            search=AsyncMock(
+                return_value=SearchBatch(query="AI", source=SourceType.GITHUB, items=[])
+            )
+        ),
+        github_analyzer=MagicMock(),
+        arxiv_search=SimpleNamespace(
+            search=AsyncMock(
+                side_effect=RetrievalError(
+                    RetrievalFailure(
+                        provider="arxiv",
+                        failure_category="http_429",
+                        error_code="HTTP_429",
+                        retryable=True,
+                    ),
+                    status_code=429,
+                )
+            )
+        ),
+    )
+    engine = DigestEngine(
+        settings=settings, tools=tools, store=DigestStore(settings.digest_state_path)
+    )
+    result = await engine.generate()
+    warnings = [warning for warning in result.warnings if "arXiv" in warning]
+    assert len(warnings) == 1
+    assert "HTTP 429" in warnings[0]
+    assert "bukan hasil kosong" in warnings[0]
+    assert "RetrievalError" not in format_digest(result)

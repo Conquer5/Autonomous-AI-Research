@@ -225,6 +225,14 @@ def format_digest(digest: ResearchDigest) -> str:
         "<b>🔥 Autonomous AI Research Radar</b>\n"
         f"{generated:%d-%m-%Y %H:%M} WIB · berita, repository, dan riset terbaru"
     ]
+    items = [*digest.news, *digest.repositories, *digest.papers]
+    if items:
+        analyzed = sum(item.insight is not None for item in items)
+        blocks.append(f"Analisis AI: {analyzed}/{len(items)} item.")
+        if analyzed < len(items):
+            ai_warnings = [warning for warning in digest.warnings if "AI" in warning]
+            if ai_warnings:
+                blocks.append(html.escape(truncate(ai_warnings[0], 180)))
     if digest.overview:
         blocks.append(f"<b>Ringkasan AI</b>\n{html.escape(truncate(digest.overview, 1000))}")
 
